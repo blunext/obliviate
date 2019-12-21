@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Private and secure notes - send your secrets safely.</title>
+    <meta name="description" content="Highly secure message encryption open source tool."/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script src="/static/nacl.min.js"></script>
+    <script src="/static/nacl-util.min.js"></script>
+</head>
+<body>
+</br>
+<h3 class="text-secondary text-center">Private notes</h3>
+
+<div class="container border border-primary">
+    <br/>
+    <div class="form-group d-none" id="inputMessageBlock">
+        <label for="message" class="text-secondary">Enter text message to be encrypted</label>
+        <textarea class="form-control" id="message" rows="4" autofocus></textarea>
+        </br>
+        <div class="container">
+            <div class="row">
+                <div class="col-1"></div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" id="encodeButton"
+                            onclick="processEncode()">Secure message
+                    </button>
+                </div>
+                <div class="col-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group d-none" id="linkBlock">
+        <label for="link" class="text-secondary">Copy link and send it to a friend. Message will be deleted after being
+            read or after 4 weeks when not read.</label>
+        <textarea class="form-control" id="link" rows="1" autofocus></textarea>
+        </br>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <button type="button" class="btn btn-warning btn-lg btn-block" data-clipboard-action="copy"
+                            data-clipboard-target="#link">Copy link
+                    </button>
+                </div>
+                <div class="col-sm-1">&nbsp;</div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group d-none" id="presentationBlock">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm text-secondary">
+                    <p class="text-center">Decoded message:</p>
+                    <div class="border-top my-3"></div>
+                    <p id="decodedMessage">
+                    </p>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group d-none" id="decodeBlock">
+        <div class="container">
+            <div class="row d-none" id="errorForDecodedMessage">
+                <div class="col-sm">
+                    <p class="text-secondary">Message was already read, deleted or link is corrupted
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm" id="decodeButtonBlock">
+                    <button type="button" class="btn btn-warning btn-lg btn-block" id="decodeButton"
+                            onclick="processDecode()">Read message
+                    </button>
+                </div>
+                <div class="col-sm-1" id="decodedSpaceBlock">&nbsp;</div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    new ClipboardJS('.btn');
+
+    const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
+    let keys = nacl.box.keyPair();
+    let urlNonce = '';
+
+    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+    if (isMobile) {
+        $("#link").attr('rows', 2);
+    }
+
+    query = window.location.search.substring(1);
+    if (query.length == 0) {
+        showEnterMessage();
+    } else {
+        showDecodeButton()
+    }
+
+    //--
+
+    function processEncode() {
+
+        const message = $('#message').val();
+        if (message.length === 0) {
+            return;
+        }
+        // encode message with secretbox
+        const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+        const secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
+        const messageUTF8 = nacl.util.decodeUTF8(message);
+        const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, secretKey);
+
+        // nonce will be use in link param
+        urlNonce = nacl.util.encodeBase64(messageNonce);
+
+        // store secret key in the message
+        const fullMessage = new Uint8Array(secretKey.length + encryptedMessage.length);
+        fullMessage.set(secretKey);
+        fullMessage.set(encryptedMessage, secretKey.length);
+
+        // encode message transmission with box
+        const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength);
+        const transmission = nacl.box(fullMessage, transmissionNonce, serverPublicKey, keys.secretKey);
+
+        const obj = {};
+        obj.message = nacl.util.encodeBase64(transmission);
+        obj.nonce = nacl.util.encodeBase64(transmissionNonce);
+        obj.hash = nacl.util.encodeBase64(nacl.hash(messageNonce));
+        obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+
+
+        $("#encodeButton").addClass('disabled');
+        post(obj, '/save', encodeSuccess, encodeError);
+    }
+
+    function encodeSuccess(result) {
+        const url = document.location.origin + '/?' + urlNonce;
+        $('#link').val(url);
+        showLink();
+    }
+
+    function encodeError(XMLHttpRequest, textStatus, errorThrown) {
+        alert('Something went wrong. Cannot encrypt the message');
+        $("#encodeButton").removeClass('disabled');
+    }
+
+    //--
+
+    function processDecode() {
+        try {
+            urlNonce = nacl.util.decodeBase64(window.location.search.substring(1));
+        } catch (error) {
+            alert("Link is corrupted");
+            return;
+        }
+
+        const obj = {};
+        obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
+        obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+
+        $("#decodeButton").addClass('disabled');
+        post(obj, '/read', decodeSuccess, decodeError);
+    }
+
+    function decodeSuccess(result) {
+
+        // decode transmission with box
+        const messageWithNonceAsUint8Array = nacl.util.decodeBase64(result.message);
+        const noncePart = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength);
+        const messagePart = messageWithNonceAsUint8Array.slice(
+            nacl.box.nonceLength,
+            result.message.length
+        );
+
+        const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
+        if (!decrypted) {
+            $('#decodedMessage').html("Something went wrong. Try again later.");
+            showDecodedMessage();
+            return
+        }
+
+        // decode message with secretbox
+        const key = decrypted.slice(0, nacl.secretbox.keyLength);
+        const encodedMessage = decrypted.slice(
+            nacl.secretbox.keyLength,
+            decrypted.length
+        );
+
+        const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, key);
+        if (messageBytes.length === 0) {
+            $('#decodedMessage').html("Something went wrong. Try again later.");
+            showDecodedMessage();
+            return
+        }
+
+        const message = nacl.util.encodeUTF8(messageBytes);
+
+        const escape = document.createElement('textarea');
+        escape.textContent = message;
+        escape.innerHTML;
+
+        const str = replaceAll(escape.innerHTML, '\n', '<br />');
+        $('#decodedMessage').html(str);
+        showDecodedMessage();
+    }
+
+    function decodeError(XMLHttpRequest, textStatus, errorThrown) {
+        $("#decodeButtonBlock").addClass('d-none');
+        $("#decodedSpaceBlock").addClass('d-none');
+        $("#errorForDecodedMessage").removeClass('d-none');
+
+        $("#decodeButton").removeClass('disabled');
+
+    }
+
+    //--
+
+    function again() {
+        keys = nacl.box.keyPair();
+        showEnterMessage();
+    }
+
+    function post(webObject, url, postSuccess, postError) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: "json",
+            data: JSON.stringify(webObject),
+            success: postSuccess,
+            error: postError
+        });
+    }
+
+    function replaceAll(str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    //--
+
+    function showEnterMessage() {
+        $("#inputMessageBlock").removeClass('d-none');
+        $("#linkBlock").addClass('d-none');
+        $("#decodeBlock").addClass('d-none');
+        $("#presentationBlock").addClass('d-none');
+
+        $("#message").focus();
+        $('#link').val("");
+    }
+
+    function showLink() {
+        $("#inputMessageBlock").addClass('d-none');
+        $("#linkBlock").removeClass('d-none');
+        $("#decodeBlock").addClass('d-none');
+        $("#presentationBlock").addClass('d-none');
+
+        $("#message").val("");
+        $("#encodeButton").removeClass('disabled');
+    }
+
+    function showDecodeButton() {
+        $("#inputMessageBlock").addClass('d-none');
+        $("#linkBlock").addClass('d-none');
+        $("#decodeBlock").removeClass('d-none');
+        $("#presentationBlock").addClass('d-none');
+    }
+
+    function showDecodedMessage() {
+        $("#inputMessageBlock").addClass('d-none');
+        $("#linkBlock").addClass('d-none');
+        $("#decodeBlock").addClass('d-none');
+        $("#presentationBlock").removeClass('d-none');
+
+        $("#decodeButton").removeClass('disabled');
+
+    }
+
+</script>
+</body>
+</html>
