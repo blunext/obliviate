@@ -11,5 +11,10 @@ All keys and nonces on browser side are unique for every action. NaCl Box server
 started for the first time and are encrytped at rest using RSASSA-PSS 3072 bit key with a SHA-256 digest. 
 RSA endryption/decryption use hardware security module (HSM).
 
-
-  
+To Do List:
+- [ ] internalization support 
+- [ ] password, extra layer of security
+- [ ] different destruction times
+- [ ] more tests
+- [ ] more info, faq, etc.
+ 
