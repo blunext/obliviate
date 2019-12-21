@@ -34,46 +34,6 @@ func init() {
 	conf.Db = mock.StorageMock()
 }
 
-//
-//func TestRandomAndChecksum(t *testing.T) {
-//
-//	texts := []string{
-//		"Asseco Resovia Rzeszów już drugi sezon z rzędu zalicza trudny początek rozgrywek PlusLigi. W środę zespół przegrał 1:3 z beniaminkiem PlusLigi, MKS-em Ślepsk Malow Suwałki, czyli drużyną prowadzoną przez byłego szkoleniowca rzeszowian, Andrzeja Kowala.",
-//		"基于谷歌Duplex及AI技术实现自然的人与科技互动 用户拨打电话接入人工客服前，智能机器人优先 进行解答，不仅节省了80%人力成本 还提升了200%的工作效率",
-//		"Ce nom de domaine a été réservé par l'intermédiaire de Safebrands",
-//		//"",
-//	}
-//
-//	pass := []string{
-//		"Resovia Rzeszów już drugi sezon z rzędu",
-//		"智能机器人优先 进行解答",
-//		"réservé par l'intermédiaire de Safebrands",
-//		//"",
-//	}
-//
-//	for _, s := range texts {
-//		for _, p := range pass {
-//			cipherText := Encrypt([]byte(s), p)
-//			decrypted, ok := Decrypt(cipherText, p)
-//			assert.True(t, ok, "decode failed")
-//			assert.Equal(t, []byte(s), decrypted, "encode/decode error")
-//		}
-//	}
-//
-//	for len := 10; len < 20; len++ {
-//		for sum := 2; sum < 8; sum++ {
-//			rand := RandomKey(len, sum)
-//			check := Checksum(rand, len, sum)
-//			assert.True(t, check, "Checksum not valid")
-//		}
-//	}
-//
-//	rand := RandomKey(20, 2)
-//	check := Checksum(rand+"a", 20, 2)
-//	assert.True(t, !check, "Checksum not valid")
-//
-//}
-
 func TestKeysGenerationAndStorage(t *testing.T) {
 
 	rsa := rsa.NewMockAlgorithm()

@@ -12,7 +12,10 @@ func setStatusAndHeader(w http.ResponseWriter, status int) {
 }
 
 func jsonStruct(s interface{}) string {
-	j, _ := json.Marshal(s) // TODO: oblużyc blad
+	j, err := json.Marshal(s)
+	if err != nil {
+		logrus.Errorf("cannot marshal %v, err: %v", s, err)
+	}
 	return string(j)
 }
 

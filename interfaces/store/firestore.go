@@ -15,10 +15,7 @@ import (
 )
 
 type Connection interface {
-	// TODO: error processing
-
 	SaveMessage(ctx context.Context, data model.MessageModel) error
-
 	GetMessage(context.Context, string) (model.MessageType, error)
 	DeleteMessage(context.Context, string)
 	DeleteBeforeNow(context.Context) error
