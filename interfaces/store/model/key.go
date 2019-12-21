@@ -1,5 +1,5 @@
 package model
 
 type Key struct {
-	Key []byte `firestore:"key,omitempty"`
+	Key []byte `firestore:"key"`
 }
