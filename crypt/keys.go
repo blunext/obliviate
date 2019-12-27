@@ -82,11 +82,20 @@ func (keys *Keys) BoxOpen(encrypted []byte, senderPublicKey *[32]byte, decryptNo
 func (keys *Keys) BoxSeal(msg []byte, recipientPublicKey *[32]byte) ([]byte, error) {
 
 	var nonce [24]byte
-	if _, err := io.ReadFull(rand.Reader, nonce[:]); err != nil {
-		return nil, fmt.Errorf("cannot generate nounce, err: %v", err)
+	var err error
+	if nonce, err = keys.GenerateNonce(); err != nil {
+		return nil, err
 	}
 
 	encrypted := box.Seal(nonce[:], msg, &nonce, recipientPublicKey, keys.PrivateKey)
 	// nonce is already included in first 24 bytes of encrypted message
 	return encrypted, nil
+}
+
+func (keys *Keys) GenerateNonce() ([24]byte, error) {
+	var nonce [24]byte
+	if _, err := io.ReadFull(rand.Reader, nonce[:]); err != nil {
+		return nonce, fmt.Errorf("cannot generate nounce, err: %w", err)
+	}
+	return nonce, nil
 }

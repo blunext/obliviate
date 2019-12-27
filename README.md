@@ -15,6 +15,6 @@ To Do List:
 - [ ] internalization support 
 - [ ] password, extra layer of security
 - [ ] different destruction times
-- [ ] more tests
+- [x] test the handlers
 - [ ] more info, faq, etc.
  
