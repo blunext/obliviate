@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
@@ -13,18 +12,18 @@ import (
 
 type SaveRequest struct {
 	Message           []byte `json:"message"`
-	TransmissionNonce string `json:"nonce"`
+	TransmissionNonce []byte `json:"nonce"`
 	Hash              string `json:"hash"`
-	PublicKey         string `json:"publicKey"`
+	PublicKey         []byte `json:"publicKey"`
 }
 
 type ReadRequest struct {
 	Hash      string `json:"hash"`
-	PublicKey string `json:"publicKey"`
+	PublicKey []byte `json:"publicKey"`
 }
 
 type ReadResponse struct {
-	Message string `json:"message"`
+	Message []byte `json:"message"`
 }
 
 type templateData struct {
@@ -86,27 +85,16 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		nonce, err := base64.StdEncoding.DecodeString(data.TransmissionNonce)
-		if err != nil {
-			finishRequestWithErr(w, "TransmissionNonce cannot be decoded", http.StatusBadRequest)
-			return
-		}
-		if len(nonce) != 24 {
+		if len(data.TransmissionNonce) != 24 {
 			finishRequestWithErr(w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest)
 			return
 		}
-
-		publicKey, err := base64.StdEncoding.DecodeString(data.PublicKey)
-		if err != nil {
-			finishRequestWithErr(w, "PublicKey cannot be decoded", http.StatusBadRequest)
-			return
-		}
-		if len(publicKey) != 32 {
+		if len(data.PublicKey) != 32 {
 			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest)
 			return
 		}
 
-		err = app.ProcessSave(r.Context(), data.Message, nonce, data.Hash, publicKey)
+		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
 			return
@@ -142,18 +130,12 @@ func Read(app *app.App) http.HandlerFunc {
 			finishRequestWithErr(w, "PublicKey not found", http.StatusBadRequest)
 			return
 		}
-
-		publicKey, err := base64.StdEncoding.DecodeString(data.PublicKey)
-		if err != nil {
-			finishRequestWithErr(w, "PublicKey cannot be decoded", http.StatusBadRequest)
-			return
-		}
-		if len(publicKey) != 32 {
+		if len(data.PublicKey) != 32 {
 			finishRequestWithErr(w, "PublicKey length is wrong !=32", http.StatusBadRequest)
 			return
 		}
 
-		encrypted, err := app.ProcessRead(r.Context(), data.Hash, publicKey)
+		encrypted, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
 			return
@@ -164,8 +146,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		msgBase64 := base64.StdEncoding.EncodeToString(encrypted)
-		message := ReadResponse{Message: msgBase64}
+		message := ReadResponse{Message: encrypted}
 
 		setStatusAndHeader(w, http.StatusOK)
 		w.Write([]byte(jsonStruct(message)))
