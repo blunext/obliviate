@@ -16,6 +16,7 @@ import (
 	"obliviate/config"
 	"obliviate/crypt"
 	"obliviate/crypt/rsa"
+	"obliviate/interfaces/store"
 	"obliviate/interfaces/store/mock"
 	"os"
 	"testing"
@@ -28,6 +29,7 @@ type testParams struct {
 }
 
 var conf *config.Configuration
+var db store.Connection
 
 var params = []testParams{
 
@@ -62,17 +64,18 @@ func init() {
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
 	//conf.Db = store.Connect(context.Background(), "test")
-	conf.Db = mock.StorageMock()
+	db = mock.StorageMock()
+
 }
 
 func TestEncodeDecodeMessage(t *testing.T) {
 	rsa := rsa.NewMockAlgorithm()
 	//rsa := rsa.NewAlgorithm()
-	keys, err := crypt.NewKeys(conf, rsa)
+	keys, err := crypt.NewKeys(db, conf, rsa)
 	if err != nil {
 		logrus.Panicf("cannot create key pair, err: %v", err)
 	}
-	app := app.NewApp(conf, keys)
+	app := app.NewApp(db, conf, keys)
 
 	for _, tab := range params {
 

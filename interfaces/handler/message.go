@@ -154,16 +154,12 @@ func Read(app *app.App) http.HandlerFunc {
 	}
 }
 
-func Expired(config *config.Configuration) http.HandlerFunc {
+func Expired(app *app.App) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		logrus.Trace("Expired handler")
 
-		if err := config.Db.DeleteBeforeNow(r.Context()); err != nil {
-			logrus.Errorf("Delete expired error: %v", err)
-		} else {
-			logrus.Info("Delete expired done")
-		}
+		app.ProcessDeleteExpired(r.Context())
 
 		setStatusAndHeader(w, http.StatusOK)
 		w.Write([]byte("[]"))

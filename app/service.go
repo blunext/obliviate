@@ -3,9 +3,11 @@ package app
 import (
 	"context"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"net/url"
 	"obliviate/config"
 	"obliviate/crypt"
+	"obliviate/interfaces/store"
 	"obliviate/interfaces/store/model"
 	"time"
 )
@@ -13,12 +15,14 @@ import (
 type App struct {
 	config *config.Configuration
 	keys   *crypt.Keys
+	db     store.Connection
 }
 
-func NewApp(config *config.Configuration, keys *crypt.Keys) *App {
+func NewApp(db store.Connection, config *config.Configuration, keys *crypt.Keys) *App {
 	app := App{
 		config: config,
 		keys:   keys,
+		db:     db,
 	}
 	return &app
 }
@@ -28,7 +32,7 @@ func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce
 	hashEncoded := url.PathEscape(hash)
 	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey)
 
-	err := s.config.Db.SaveMessage(ctx, data)
+	err := s.db.SaveMessage(ctx, data)
 	if err != nil {
 		return fmt.Errorf("cannot save message, err: %v", err)
 	}
@@ -39,7 +43,7 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte) ([
 
 	hashEncoded := url.PathEscape(hash)
 
-	data, err := s.config.Db.GetMessage(ctx, hashEncoded)
+	data, err := s.db.GetMessage(ctx, hashEncoded)
 	if err != nil {
 		return nil, fmt.Errorf("errod in GetMessage, err: %v", err)
 	}
@@ -68,11 +72,19 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte) ([
 	if s.config.ProdEnv {
 		go func() {
 			ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
-			s.config.Db.DeleteMessage(ct, hashEncoded)
+			s.db.DeleteMessage(ct, hashEncoded)
 		}()
 	} else { // for testing purposes
-		s.config.Db.DeleteMessage(ctx, hashEncoded)
+		s.db.DeleteMessage(ctx, hashEncoded)
 	}
 
 	return encrypted, nil
+}
+
+func (s *App) ProcessDeleteExpired(ctx context.Context) {
+	if err := s.db.DeleteBeforeNow(ctx); err != nil {
+		logrus.Errorf("Delete expired error: %v", err)
+	} else {
+		logrus.Info("Delete expired done")
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"obliviate/config"
 	"obliviate/crypt/rsa"
+	"obliviate/interfaces/store"
 	"obliviate/interfaces/store/mock"
 	"os"
 	"testing"
@@ -12,6 +13,7 @@ import (
 )
 
 var conf *config.Configuration
+var db store.Connection
 
 func init() {
 	formatter := new(logrus.TextFormatter)
@@ -31,7 +33,7 @@ func init() {
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
 	//conf.Db = store.Connect(context.Background(), "test")
-	conf.Db = mock.StorageMock()
+	db = mock.StorageMock()
 }
 
 func TestKeysGenerationAndStorage(t *testing.T) {
@@ -39,7 +41,7 @@ func TestKeysGenerationAndStorage(t *testing.T) {
 	rsa := rsa.NewMockAlgorithm()
 	//rsa := rsa.NewAlgorithm()
 
-	keys, err := NewKeys(conf, rsa)
+	keys, err := NewKeys(db, conf, rsa)
 	assert.NoError(t, err, "should not be error")
 
 	pubKey := keys.PublicKeyEncoded
@@ -49,7 +51,7 @@ func TestKeysGenerationAndStorage(t *testing.T) {
 	pub = *keys.PublicKey
 	priv = *keys.PrivateKey
 
-	keys, err = NewKeys(conf, rsa)
+	keys, err = NewKeys(db, conf, rsa)
 	assert.NoError(t, err, "should not be error")
 
 	assert.Equal(t, pubKey, keys.PublicKeyEncoded, "private keys should be the same")

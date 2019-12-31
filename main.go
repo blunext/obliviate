@@ -37,21 +37,23 @@ func main() {
 	}
 
 	var algorithm rsa.RSA
+	var db store.Connection
+
 	if conf.ProdEnv {
-		conf.Db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
+		db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {
-		conf.Db = mock.StorageMock()
+		db = mock.StorageMock()
 		algorithm = rsa.NewMockAlgorithm()
 	}
 
-	keys, err := crypt.NewKeys(&conf, algorithm)
+	keys, err := crypt.NewKeys(db, &conf, algorithm)
 	if err != nil {
 		logrus.Panicf("error getting keys, err: %v", err)
 	}
 
-	app := app.NewApp(&conf, keys)
+	app := app.NewApp(db, &conf, keys)
 
 	r := chi.NewRouter()
 	r.Use(middleware.DefaultCompress)
@@ -59,7 +61,7 @@ func main() {
 	r.Get("/", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
 	r.Post("/save", handler.Save(app))
 	r.Post("/read", handler.Read(app))
-	r.Delete("/expired", handler.Expired(&conf))
+	r.Delete("/expired", handler.Expired(app))
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, "static")
