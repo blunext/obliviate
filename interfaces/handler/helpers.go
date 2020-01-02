@@ -11,12 +11,12 @@ func setStatusAndHeader(w http.ResponseWriter, status int) {
 	w.WriteHeader(status)
 }
 
-func jsonStruct(s interface{}) string {
+func jsonFromStruct(s interface{}) []byte {
 	j, err := json.Marshal(s)
 	if err != nil {
 		logrus.Errorf("cannot marshal %v, err: %v", s, err)
 	}
-	return string(j)
+	return j
 }
 
 func finishRequestWithErr(w http.ResponseWriter, msg string, status int) {

@@ -63,7 +63,7 @@ func init() {
 		KmsCredentialFile:       os.Getenv("KMS_CREDENTIAL_FILE"),
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
-	//conf.Db = store.Connect(context.Background(), "test")
+	//db = store.NewConnection(context.Background(), "local", conf.FirestoreCredentialFile, os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 	db = mock.StorageMock()
 
 }
@@ -96,7 +96,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 			PublicKey:         browserPublicKey[:],
 		}
 
-		code, _ := makePost(t, jsonStruct(saveRequest), Save(app))
+		code, _ := makePost(t, jsonFromStruct(saveRequest), Save(app))
 		assert.Equal(t, tab.status, code, "response code not expected")
 
 		// read
@@ -108,7 +108,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 			PublicKey: browserPublicKey[:],
 		}
 
-		code, readResponse := makePost(t, jsonStruct(readRequest), Read(app))
+		code, readResponse := makePost(t, jsonFromStruct(readRequest), Read(app))
 		assert.Equal(t, tab.status, code, "response code not expected")
 
 		if code != http.StatusOK {
@@ -130,29 +130,22 @@ func TestEncodeDecodeMessage(t *testing.T) {
 		copy(messageSecretKey[:], decryptedTransmission)
 
 		decryptedMessage, ok := secretbox.Open(nil, decryptedTransmission[32:], &messageNonce, messageSecretKey)
-		assert.True(t, ok, "błąd otwierania secretbox")
+		assert.True(t, ok, "error opening secretbox")
 		if !ok {
 			continue
 		}
 
-		assert.Equal(t, string(decryptedMessage), tab.message, "nie poprawnie rozkodowana wiadomość")
+		assert.Equal(t, string(decryptedMessage), tab.message, "decrypted message is not the same")
 	}
 }
 
-func makePost(t *testing.T, jsonMessage string, handler http.Handler) (int, string) {
-	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-	// pass 'nil' as the third parameter.
-	req, err := http.NewRequest("POST", "/post", bytes.NewBuffer([]byte(jsonMessage)))
+func makePost(t *testing.T, jsonMessage []byte, handler http.Handler) (int, string) {
+	req, err := http.NewRequest("POST", "/post", bytes.NewBuffer(jsonMessage))
 	if err != nil {
 		t.Fatal(err)
 	}
-	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	r := httptest.NewRecorder()
-	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-	// directly and pass in our Request and ResponseRecorder.
 	handler.ServeHTTP(r, req)
-	// Check the status code is what we expect.
-
 	return r.Code, r.Body.String()
 }
 

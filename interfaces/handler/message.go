@@ -149,7 +149,7 @@ func Read(app *app.App) http.HandlerFunc {
 		message := ReadResponse{Message: encrypted}
 
 		setStatusAndHeader(w, http.StatusOK)
-		w.Write([]byte(jsonStruct(message)))
+		w.Write(jsonFromStruct(message))
 
 	}
 }
