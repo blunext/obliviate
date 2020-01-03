@@ -25,6 +25,7 @@ RUN apk add --no-cache ca-certificates
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/server /server
+
 COPY --from=builder /app/template.html /.
 COPY --from=builder /app/static/ /static/
 
