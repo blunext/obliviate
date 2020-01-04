@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="shortcut icon" href="/static/favicon.ico" >
+    <link rel="shortcut icon" href="/static/favicon.ico">
 
     <title>Private and secure notes - send your secrets safely.</title>
     <meta name="description" content="Highly secure message encryption open source tool."/>
@@ -19,7 +19,7 @@
     <script src="/static/nacl-util.min.js"></script>
 </head>
 <body>
-</br>
+<br/>
 <h3 class="text-secondary text-center">Private secure notes</h3>
 
 <div class="container border border-primary">
@@ -27,7 +27,7 @@
     <div class="form-group d-none" id="inputMessageBlock">
         <label for="message" class="text-secondary">Enter text message to be encrypted</label>
         <textarea class="form-control" id="message" rows="4" autofocus></textarea>
-        </br>
+        <br/>
         <div class="container">
             <div class="row">
                 <div class="col-1"></div>
@@ -44,8 +44,8 @@
     <div class="form-group d-none" id="linkBlock">
         <label for="link" class="text-secondary">Copy link and send it to a friend. Message will be deleted after being
             read or after 4 weeks when not read.</label>
-        <textarea class="form-control" id="link" rows="1" autofocus></textarea>
-        </br>
+        <textarea class="form-control" id="link" rows="1"></textarea>
+        <br/>
         <div class="container">
             <div class="row">
                 <div class="col-sm">
@@ -68,9 +68,8 @@
                 <div class="col-sm text-secondary">
                     <p class="text-center">Decoded message:</p>
                     <div class="border-top my-3"></div>
-                    <p id="decodedMessage">
-                    </p>
-                    </p>
+                    <p id="decodedMessage"></p>
+                    <p/>
                 </div>
             </div>
             <div class="row">
@@ -130,7 +129,8 @@
                 <small>
                     This tool was built with care and respect to your privacy. Tool uses various method of encryption to
                     ensure maximum privacy. Tool is open source and code is publicly accessible. Feel free to look and
-                    see how it was made. More info you can find on <a href="https://github.com/blunext/obliviate" target="_blank">GitHub</a>.
+                    see how it was made. More info you can find on
+                    <a href="https://github.com/blunext/obliviate" target="_blank">GitHub</a>.
                 </small>
             </p>
         </div>
@@ -141,7 +141,7 @@
 
 </body>
 
-<script>
+<script type="text/javascript">
     new ClipboardJS('.btn');
 
     const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
