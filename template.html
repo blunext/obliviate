@@ -152,15 +152,17 @@
     if (isMobile) {
         $("#link").attr('rows', 2);
     }
-
-    query = window.location.search.substring(1);
-    if (query.length == 0) {
-        showEnterMessage();
-    } else {
+    if (window.location.hash) {
         showDecodeButton()
+    } else {
+        // for compatibility purposes needed till 05.02.2020
+        query = window.location.search.substring(1);
+        if (query.length == 0) {
+            showEnterMessage();
+        } else {
+            showDecodeButton()
+        }
     }
-
-    //--
 
     function processEncode() {
 
@@ -198,7 +200,7 @@
     }
 
     function encodeSuccess(result) {
-        const url = document.location.origin + '/?' + urlNonce;
+        const url = document.location.origin + '/?#' + urlNonce;
         $('#link').val(url);
         showLink();
     }
@@ -211,11 +213,21 @@
     //--
 
     function processDecode() {
-        try {
-            urlNonce = nacl.util.decodeBase64(window.location.search.substring(1));
-        } catch (error) {
-            alert("Link is corrupted");
-            return;
+        if (window.location.hash) {
+            try {
+                urlNonce = nacl.util.decodeBase64(window.location.hash.substring(1));
+            } catch (error) {
+                alert("Link is corrupted");
+                return;
+            }
+        } else {
+            // for compatibility purposes needed till 05.02.2020
+            try {
+                urlNonce = nacl.util.decodeBase64(window.location.search.substring(1));
+            } catch (error) {
+                alert("Link is corrupted");
+                return;
+            }
         }
 
         const obj = {};
