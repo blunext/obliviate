@@ -17,4 +17,5 @@ To Do List:
 - [ ] different destruction times
 - [x] test the handlers
 - [ ] more info, faq, etc.
+- [ ] change link format
  
