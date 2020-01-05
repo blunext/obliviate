@@ -69,6 +69,7 @@ func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *tran
 	}
 
 	tran["PublicKey"] = publicKey
+
 	t.list[acceptedTag] = &tran
 
 	logrus.Debugf("language created: %v", acceptedTag)

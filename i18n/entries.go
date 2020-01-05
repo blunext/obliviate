@@ -22,7 +22,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"readMessageButton", "Read message"},
 		{"infoHeader", "info about"},
 		{"info", "This tool was built with care and respect to your privacy. " +
-			"Tool uses various method of encryption to ensure maximum privacy. Tool is open source and code is publicly accessible. " +
+			"Tool uses various method of encryption to ensure maximum privacy. Tool is Open Source and code is publicly accessible. " +
 			"Feel free to look and see how it was made. More info you can find on"},
 		{"linkCorrupted", "Link is corrupted"},
 		{"generalError", "Something went wrong. Try again later."},
@@ -40,9 +40,9 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"messageRead", "Wiadomość odczytana, przeterminowana lub link jest błędny"},
 		{"readMessageButton", "Odszyfruj wiadomość"},
 		{"infoHeader", "opis"},
-		{"info", "This tool was built with care and respect to your privacy. " +
-			"Tool uses various method of encryption to ensure maximum privacy. Tool is open source and code is publicly accessible. " +
-			"Feel free to look and see how it was made. More info you can find on"},
+		{"info", "Narzędzie używa różnych metod szyfrowania aby zapewnić maksymalne bezpieczeństwo. " +
+			"Bez posiadania linku nie ma możliwości odszyfrowania wiadomości. " +
+			"Kod źródłowy narzędzia jest otwarty i możesz go sobie pobrać lub przejrzeć w serwisie "},
 		{"linkCorrupted", "Link uszkodzony"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
 	},
