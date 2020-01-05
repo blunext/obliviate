@@ -17,7 +17,7 @@ type i18n struct {
 
 func NewTranslation() *i18n {
 
-	langs := []language.Tag{}
+	var langs []language.Tag
 
 	langs = append(langs, language.English)
 
@@ -36,7 +36,7 @@ func NewTranslation() *i18n {
 	return &tr
 }
 
-func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) translations {
+func (t *i18n) GetTranslation(acceptLanguage string) translations {
 
 	var acceptedTag language.Tag
 
@@ -67,9 +67,6 @@ func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) trans
 			}
 		}
 	}
-
-	tran["PublicKey"] = publicKey
-
 	t.list[acceptedTag] = tran
 
 	logrus.Debugf("language created: %v", acceptedTag)

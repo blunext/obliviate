@@ -50,7 +50,8 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-		data := translation.GetLazyTranslation(r.Header.Get("Accept-Language"), publicKey)
+		data := translation.GetTranslation(r.Header.Get("Accept-Language"))
+		data["PublicKey"] = publicKey
 		t.Execute(w, data)
 	}
 }
