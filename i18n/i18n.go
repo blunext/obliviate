@@ -10,7 +10,7 @@ import (
 type translations map[string]string
 
 type i18n struct {
-	list    map[language.Tag]*translations
+	list    map[language.Tag]translations
 	matcher language.Matcher
 	sync.Mutex
 }
@@ -32,11 +32,11 @@ func NewTranslation() *i18n {
 			}
 		}
 	}
-	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[language.Tag]*translations)}
+	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[language.Tag]translations)}
 	return &tr
 }
 
-func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *translations {
+func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) translations {
 
 	var acceptedTag language.Tag
 
@@ -51,7 +51,7 @@ func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *tran
 	defer t.Unlock()
 
 	if tran, ok := t.list[acceptedTag]; ok {
-		logrus.Trace("translation %v exists", acceptedTag)
+		logrus.Tracef("translation %v exists", acceptedTag)
 		return tran
 	}
 
@@ -70,8 +70,8 @@ func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *tran
 
 	tran["PublicKey"] = publicKey
 
-	t.list[acceptedTag] = &tran
+	t.list[acceptedTag] = tran
 
 	logrus.Debugf("language created: %v", acceptedTag)
-	return &tran
+	return tran
 }
