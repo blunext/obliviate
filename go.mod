@@ -10,6 +10,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2
 	github.com/stretchr/testify v1.4.0
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
+	golang.org/x/text v0.3.2
 	google.golang.org/api v0.15.0
 	google.golang.org/genproto v0.0.0-20191216205247-b31c10ee225f
 	google.golang.org/grpc v1.26.0
