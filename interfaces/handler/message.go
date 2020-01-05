@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
+	"obliviate/i18n"
 )
 
 type SaveRequest struct {
@@ -38,7 +39,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		t = template.Must(template.New("template.html").ParseFiles("template.html"))
 	}
 
-	translation := NewTranslation()
+	translation := i18n.NewTranslation()
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		logrus.Trace("ProcessTemplate Handler")
