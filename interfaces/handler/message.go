@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
+	"obliviate/i18n"
 )
 
 type SaveRequest struct {
@@ -26,24 +27,21 @@ type ReadResponse struct {
 	Message []byte `json:"message"`
 }
 
-type templateData struct {
-	PublicKey string
-}
-
 const (
 	jsonErrMsg = "input json error"
 	emptyBody  = "empty body post, no json expected"
 )
 
 func ProcessTemplate(config *config.Configuration, publicKey string) http.HandlerFunc {
-	data := templateData{PublicKey: publicKey}
 
 	var t *template.Template
 	if config.ProdEnv {
 		t = template.Must(template.New("template.html").ParseFiles("template.html"))
 	}
-	return func(w http.ResponseWriter, r *http.Request) {
 
+	translation := i18n.NewTranslation()
+
+	return func(w http.ResponseWriter, r *http.Request) {
 		logrus.Trace("ProcessTemplate Handler")
 
 		if !config.ProdEnv {
@@ -51,6 +49,8 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		data := translation.GetLazyTranslation(r.Header.Get("Accept-Language"), publicKey)
 		t.Execute(w, data)
 	}
 }

@@ -12,10 +12,10 @@ started for the first time and are encrytped at rest using RSASSA-PSS 3072 bit k
 RSA endryption/decryption keys use hardware security module (HSM).
 
 To Do List:
-- [ ] internalization support 
+- [x] internalization support 
+- [x] move param link into anchor part
+- [x] test the handlers
 - [ ] password, extra layer of security
 - [ ] different destruction times
-- [x] test the handlers
 - [ ] more info, faq, etc.
-- [ ] change link format
  

@@ -1,5 +1,5 @@
 
-gcloud auth configure-docker
+#gcloud auth configure-docker
 
 docker build . --tag gcr.io/obliviate/obliviate
 docker push gcr.io/obliviate/obliviate

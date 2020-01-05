@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="/static/favicon.ico">
 
-    <title>Private and secure notes - send your secrets safely.</title>
-    <meta name="description" content="Highly secure message encryption open source tool."/>
+    <title>{{.title}}</title>
+    <meta name="description" content="{{.description}}"/>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -20,12 +20,12 @@
 </head>
 <body>
 <br/>
-<h3 class="text-secondary text-center">Private secure notes</h3>
+<h3 class="text-secondary text-center">{{.header}}</h3>
 
 <div class="container border border-primary">
     <br/>
     <div class="form-group d-none" id="inputMessageBlock">
-        <label for="message" class="text-secondary">Enter text message to be encrypted</label>
+        <label for="message" class="text-secondary">{{.enterTextMessage}}</label>
         <textarea class="form-control" id="message" rows="4" autofocus></textarea>
         <br/>
         <div class="container">
@@ -33,7 +33,7 @@
                 <div class="col-1"></div>
                 <div class="col-sm">
                     <button type="button" class="btn btn-primary btn-lg btn-block" id="encodeButton"
-                            onclick="processEncode()">Secure message
+                            onclick="processEncode()">{{.secureButton}}
                     </button>
                 </div>
                 <div class="col-1"></div>
@@ -42,20 +42,20 @@
     </div>
 
     <div class="form-group d-none" id="linkBlock">
-        <label for="link" class="text-secondary">Copy link and send it to a friend. Message will be deleted after being
-            read or after 4 weeks when not read.</label>
+        <label for="link" class="text-secondary">{{.copyLink}}</label>
         <textarea class="form-control" id="link" rows="1"></textarea>
         <br/>
         <div class="container">
             <div class="row">
                 <div class="col-sm">
                     <button type="button" class="btn btn-warning btn-lg btn-block" data-clipboard-action="copy"
-                            data-clipboard-target="#link">Copy link
+                            data-clipboard-target="#link">{{.copyLinkButton}}
                     </button>
                 </div>
                 <div class="col-sm-1">&nbsp;</div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    <button type="button" class="btn btn-primary btn-lg btn-block"
+                            onclick="again()">{{.newMessageButton}}
                     </button>
                 </div>
             </div>
@@ -66,7 +66,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm text-secondary">
-                    <p class="text-center">Decoded message:</p>
+                    <p class="text-center">{{.decodedMessage}}:</p>
                     <div class="border-top my-3"></div>
                     <p id="decodedMessage"></p>
                     <p/>
@@ -74,7 +74,8 @@
             </div>
             <div class="row">
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    <button type="button" class="btn btn-primary btn-lg btn-block"
+                            onclick="again()">{{.newMessageButton}}
                     </button>
                 </div>
             </div>
@@ -85,19 +86,20 @@
         <div class="container">
             <div class="row d-none" id="errorForDecodedMessage">
                 <div class="col-sm">
-                    <p class="text-secondary">Message was already read, deleted or link is corrupted
+                    <p class="text-secondary">{{.messageRead}}
                     </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm" id="decodeButtonBlock">
                     <button type="button" class="btn btn-warning btn-lg btn-block" id="decodeButton"
-                            onclick="processDecode()">Read message
+                            onclick="processDecode()">{{.readMessageButton}}
                     </button>
                 </div>
                 <div class="col-sm-1" id="decodedSpaceBlock">&nbsp;</div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="again()">New message
+                    <button type="button" class="btn btn-primary btn-lg btn-block"
+                            onclick="again()">{{.newMessageButton}}
                     </button>
                 </div>
             </div>
@@ -114,7 +116,7 @@
         <div class="col">
             <hr>
         </div>
-        <div class="col-auto text-secondary"><small>info about</small></div>
+        <div class="col-auto text-secondary"><small>{{.infoHeader}}</small></div>
         <div class="col">
             <hr>
         </div>
@@ -126,12 +128,7 @@
         </div>
         <div class="col-sm-8">
             <p class="text-secondary">
-                <small>
-                    This tool was built with care and respect to your privacy. Tool uses various method of encryption to
-                    ensure maximum privacy. Tool is open source and code is publicly accessible. Feel free to look and
-                    see how it was made. More info you can find on
-                    <a href="https://github.com/blunext/obliviate" target="_blank">GitHub</a>.
-                </small>
+                <small>{{.info}} <a href="https://github.com/blunext/obliviate" target="_blank">GitHub</a>.</small>
             </p>
         </div>
         <div class="col-sm-2">
@@ -217,7 +214,7 @@
             try {
                 urlNonce = nacl.util.decodeBase64(window.location.hash.substring(1));
             } catch (error) {
-                alert("Link is corrupted");
+                alert("{{.linkCorrupted}}");
                 return;
             }
         } else {
@@ -225,7 +222,7 @@
             try {
                 urlNonce = nacl.util.decodeBase64(window.location.search.substring(1));
             } catch (error) {
-                alert("Link is corrupted");
+                alert("{{.linkCorrupted}}");
                 return;
             }
         }
@@ -250,7 +247,7 @@
 
         const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
         if (!decrypted) {
-            $('#decodedMessage').html("Something went wrong. Try again later.");
+            $('#decodedMessage').html("{{.generalError}}");
             showDecodedMessage();
             return
         }
