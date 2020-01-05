@@ -6,64 +6,66 @@ import (
 	"golang.org/x/text/message"
 )
 
-type trans map[string]string
+type translations map[string]string
 
-type translations struct {
-	list    map[language.Tag]*trans
+type i18n struct {
+	list    map[language.Tag]*translations
 	matcher language.Matcher
 }
 
-func NewTranslation() *translations {
+func NewTranslation() *i18n {
 
-	langsMap := make(map[language.Tag]bool)
 	langs := []language.Tag{}
 
 	langs = append(langs, language.English)
-	langsMap[language.English] = true
 
-	for _, e := range entries {
-		err := message.SetString(e.tag, e.key, e.msg)
-		if err != nil {
-			logrus.Errorf("translation population error: %v", err)
+	for tag, transList := range translationsSet {
+		if tag != language.English {
+			langs = append(langs, tag)
 		}
-		if !langsMap[e.tag] {
-			langsMap[e.tag] = true
-			langs = append(langs, e.tag)
+		for _, tr := range transList {
+			err := message.SetString(tag, tr.key, tr.msg)
+			if err != nil {
+				logrus.Errorf("pair population error: %v", err)
+			}
 		}
 	}
-
-	tr := translations{matcher: language.NewMatcher(langs), list: make(map[language.Tag]*trans)}
+	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[language.Tag]*translations)}
 	return &tr
 }
 
-func (t *translations) GetLazyTranslation(acceptLanguage string, publicKey string) (*trans, error) {
+func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *translations {
 
-	acceptTagList, _, _ := language.ParseAcceptLanguage(acceptLanguage) //todo: error
-	tag, _, _ := t.matcher.Match(acceptTagList...)
+	var acceptedTag language.Tag
 
-	if tran, ok := t.list[tag]; ok {
-		logrus.Trace("translation %v exists", tag)
-		return tran, nil
+	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
+	if err != nil {
+		acceptedTag = language.English
+	} else {
+		acceptedTag, _, _ = t.matcher.Match(acceptTagList...)
 	}
 
-	tran := trans{}
-	printer := message.NewPrinter(tag)
-	acceptedTagBase, _ := tag.Base()
+	if tran, ok := t.list[acceptedTag]; ok {
+		logrus.Trace("translation %v exists", acceptedTag)
+		return tran
+	}
 
-	for _, e := range entries {
-		base, _ := e.tag.Base()
+	tran := translations{}
+	printer := message.NewPrinter(acceptedTag)
+	acceptedTagBase, _ := acceptedTag.Base()
+
+	for tag, transList := range translationsSet {
+		base, _ := tag.Base()
 		if base == acceptedTagBase {
-			tran[e.key] = printer.Sprintf(e.key)
+			for _, tr := range transList {
+				tran[tr.key] = printer.Sprintf(tr.key)
+			}
 		}
-	}
-	if len(tran) == 0 {
-		logrus.Warn("language %v not found", tag)
-		return t.GetLazyTranslation("en", publicKey)
 	}
 
 	tran["PublicKey"] = publicKey
-	t.list[tag] = &tran
+	t.list[acceptedTag] = &tran
 
-	logrus.Debugf("language created: %v", tag)
-	return &tran, nil
+	logrus.Debugf("language created: %v", acceptedTag)
+	return &tran
 }
