@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+	"sync"
 )
 
 type translations map[string]string
@@ -11,6 +12,7 @@ type translations map[string]string
 type i18n struct {
 	list    map[language.Tag]*translations
 	matcher language.Matcher
+	sync.Mutex
 }
 
 func NewTranslation() *i18n {
@@ -44,6 +46,9 @@ func (t *i18n) GetLazyTranslation(acceptLanguage string, publicKey string) *tran
 	} else {
 		acceptedTag, _, _ = t.matcher.Match(acceptTagList...)
 	}
+
+	t.Lock()
+	defer t.Unlock()
 
 	if tran, ok := t.list[acceptedTag]; ok {
 		logrus.Trace("translation %v exists", acceptedTag)
