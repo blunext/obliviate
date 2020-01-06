@@ -67,6 +67,11 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 			}
 		}
 	}
+
+	if len(tran) == 0 {
+		logrus.Errorf("could not determine translation for acceptedTag = %v, acceptedTagBase = %v ", acceptedTag, acceptedTagBase)
+	}
+
 	t.list[acceptedTag] = tran
 
 	logrus.Debugf("language created: %v", acceptedTag)
