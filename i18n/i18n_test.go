@@ -20,7 +20,7 @@ func TestI18n_GetLazyTranslation(t *testing.T) {
 
 	trans := NewTranslation()
 	for _, list := range testData {
-		translation := trans.GetLazyTranslation(list.tag, "")
+		translation := trans.GetTranslation(list.tag)
 
 		var msg string
 		var ok bool

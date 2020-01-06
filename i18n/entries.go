@@ -30,17 +30,17 @@ var translationsSet = map[language.Tag][]translationPair{
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
 		{"header", "Prywatne wiadomości"},
-		{"description", "Bezpieczene zakodowane wiadomości"},
+		{"description", "Bezpieczne zakodowane wiadomości"},
 		{"enterTextMessage", "Wprowadź wiadomość"},
-		{"secureButton", "Zaszufruj wiadomość"},
-		{"copyLink", "Skopiuj link i prześlij do przyjaciela. Wiadomość będzie skasowana po odczytaniu lub po 4 tygodniach."},
+		{"secureButton", "Szyfruj wiadomość"},
+		{"copyLink", "Skopiuj link i prześlij do przyjaciela. Wiadomość będzie skasowana natychmiast po odczytaniu lub po 4 tygodniach."},
 		{"copyLinkButton", "Skopiuj link"},
 		{"newMessageButton", "Nowa wiadomość"},
 		{"decodedMessage", "Odszyfrowana wiadomość"},
 		{"messageRead", "Wiadomość odczytana, przeterminowana lub link jest błędny"},
 		{"readMessageButton", "Odszyfruj wiadomość"},
 		{"infoHeader", "opis"},
-		{"info", "Narzędzie używa różnych metod szyfrowania aby zapewnić maksymalne bezpieczeństwo. " +
+		{"info", "Narzędzie używa różnych metod szyfrowania, aby zapewnić maksymalne bezpieczeństwo. " +
 			"Bez posiadania linku nie ma możliwości odszyfrowania wiadomości. " +
 			"Kod źródłowy narzędzia jest otwarty i możesz go sobie pobrać lub przejrzeć w serwisie "},
 		{"linkCorrupted", "Link uszkodzony"},
