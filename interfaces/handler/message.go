@@ -73,8 +73,9 @@ func Save(app *app.App) http.HandlerFunc {
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
 			return
 		}
-		if len(data.Message) == 0 {
-			finishRequestWithErr(w, "Message is empty", http.StatusBadRequest)
+		if len(data.Message) == 0 || len(data.Message) > 300000 {
+			// 282818 is encoded length of 256k of txt
+			finishRequestWithErr(w, fmt.Sprintf("Message len is wrong = %d", len(data.Message)), http.StatusBadRequest)
 			return
 		}
 		if len(data.TransmissionNonce) == 0 {
