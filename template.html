@@ -191,7 +191,7 @@
     }
 
     function encodeSuccess(result) {
-        const url = document.location.origin + '/?#' + urlNonce;
+        const url = document.location.origin + '/?' + nonceWithHash();
         $('#link').val(url);
         showLink();
     }
@@ -204,7 +204,8 @@
     //--
 
     function processDecode() {
-        urlNonce = nacl.util.decodeBase64(window.location.hash.substring(1));
+        const nonce = nonceWithoutHash();
+        urlNonce = nacl.util.decodeBase64(nonce);
         const obj = {};
         obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
         obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
@@ -284,6 +285,14 @@
 
     function replaceAll(str, find, replace) {
         return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    function nonceWithHash() {
+        return urlNonce.slice(0, 3) + "#" + urlNonce.slice(3, 32)
+    }
+
+    function nonceWithoutHash() {
+        return window.location.search.substring(1) + window.location.hash.substring(1);
     }
 
     //--
