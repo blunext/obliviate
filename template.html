@@ -150,15 +150,9 @@
         $("#link").attr('rows', 2);
     }
     if (window.location.hash) {
-        showDecodeButton()
+        showDecodeButton();
     } else {
-        // for compatibility purposes needed till 05.02.2020
-        query = window.location.search.substring(1);
-        if (query.length == 0) {
-            showEnterMessage();
-        } else {
-            showDecodeButton()
-        }
+        showEnterMessage();
     }
 
     function processEncode() {
@@ -210,23 +204,7 @@
     //--
 
     function processDecode() {
-        if (window.location.hash) {
-            try {
-                urlNonce = nacl.util.decodeBase64(window.location.hash.substring(1));
-            } catch (error) {
-                alert("{{.linkCorrupted}}");
-                return;
-            }
-        } else {
-            // for compatibility purposes needed till 05.02.2020
-            try {
-                urlNonce = nacl.util.decodeBase64(window.location.search.substring(1));
-            } catch (error) {
-                alert("{{.linkCorrupted}}");
-                return;
-            }
-        }
-
+        urlNonce = nacl.util.decodeBase64(window.location.hash.substring(1));
         const obj = {};
         obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
         obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
