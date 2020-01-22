@@ -69,7 +69,6 @@
                     <p class="text-center">{{.decodedMessage}}:</p>
                     <div class="border-top my-3"></div>
                     <p id="decodedMessage"></p>
-                    <p/>
                 </div>
             </div>
             <div class="row">
@@ -139,6 +138,23 @@
 </body>
 
 <script type="text/javascript">
+
+
+    function arraySlice(arr, x, y) {
+        if (!document.documentMode && !/Edge/.test(navigator.userAgent)) {
+            return arr.slice(x, y);
+        }
+
+        let ret = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (i >= x && i < y) {
+                ret.push(arr[i]);
+            }
+        }
+        return nacl.util.decodeBase64(nacl.util.encodeBase64(ret));
+    }
+
+
     new ClipboardJS('.btn');
 
     const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
@@ -149,6 +165,7 @@
     if (isMobile) {
         $("#link").attr('rows', 2);
     }
+
     if (window.location.hash) {
         showDecodeButton();
     } else {
@@ -191,7 +208,7 @@
     }
 
     function encodeSuccess(result) {
-        const url = document.location.origin + '/?' + urlNonce.slice(0, 3) + "#" + urlNonce.slice(3, 32);
+        const url = document.location.origin + '/?' + urlNonce.substring(0, 3) + "#" + urlNonce.substring(3, 32);
         $('#link').val(url);
         showLink();
     }
@@ -218,8 +235,8 @@
 
         // decode transmission with box
         const messageWithNonceAsUint8Array = nacl.util.decodeBase64(result.message);
-        const noncePart = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength);
-        const messagePart = messageWithNonceAsUint8Array.slice(nacl.box.nonceLength, result.message.length);
+        const noncePart = arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
+        const messagePart = arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
 
         const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
         if (!decrypted) {
@@ -229,8 +246,8 @@
         }
 
         // decode message with secretbox
-        const key = decrypted.slice(0, nacl.secretbox.keyLength);
-        const encodedMessage = decrypted.slice(nacl.secretbox.keyLength, decrypted.length);
+        const key = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+        const encodedMessage = arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
 
         const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, key);
         if (messageBytes.length === 0) {
