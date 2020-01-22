@@ -191,7 +191,7 @@
     }
 
     function encodeSuccess(result) {
-        const url = document.location.origin + '/?' + nonceWithHash();
+        const url = document.location.origin + '/?' + urlNonce.slice(0, 3) + "#" + urlNonce.slice(3, 32);
         $('#link').val(url);
         showLink();
     }
@@ -204,7 +204,7 @@
     //--
 
     function processDecode() {
-        const nonce = nonceWithoutHash();
+        const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
         urlNonce = nacl.util.decodeBase64(nonce);
         const obj = {};
         obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
@@ -219,10 +219,7 @@
         // decode transmission with box
         const messageWithNonceAsUint8Array = nacl.util.decodeBase64(result.message);
         const noncePart = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength);
-        const messagePart = messageWithNonceAsUint8Array.slice(
-            nacl.box.nonceLength,
-            result.message.length
-        );
+        const messagePart = messageWithNonceAsUint8Array.slice(nacl.box.nonceLength, result.message.length);
 
         const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
         if (!decrypted) {
@@ -233,10 +230,7 @@
 
         // decode message with secretbox
         const key = decrypted.slice(0, nacl.secretbox.keyLength);
-        const encodedMessage = decrypted.slice(
-            nacl.secretbox.keyLength,
-            decrypted.length
-        );
+        const encodedMessage = decrypted.slice(nacl.secretbox.keyLength, decrypted.length);
 
         const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, key);
         if (messageBytes.length === 0) {
@@ -285,14 +279,6 @@
 
     function replaceAll(str, find, replace) {
         return str.replace(new RegExp(find, 'g'), replace);
-    }
-
-    function nonceWithHash() {
-        return urlNonce.slice(0, 3) + "#" + urlNonce.slice(3, 32)
-    }
-
-    function nonceWithoutHash() {
-        return window.location.search.substring(1) + window.location.hash.substring(1);
     }
 
     //--
