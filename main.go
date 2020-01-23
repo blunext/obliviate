@@ -26,7 +26,6 @@ const (
 )
 
 func main() {
-	initLogrus(logrus.DebugLevel)
 
 	conf := config.Configuration{
 		DefaultDurationTime:     messageDurationTime,
@@ -40,10 +39,12 @@ func main() {
 	var db store.Connection
 
 	if conf.ProdEnv {
+		initLogrus(logrus.DebugLevel)
 		db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {
+		initLogrus(logrus.TraceLevel)
 		db = mock.StorageMock()
 		algorithm = rsa.NewMockAlgorithm()
 	}
