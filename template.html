@@ -198,7 +198,7 @@
     }
 
     function encodeError(XMLHttpRequest, textStatus, errorThrown) {
-        alert('Something went wrong. Cannot encrypt the message');
+        alert('{{.encryptError}}');
         $("#encodeButton").removeClass('disabled');
     }
 
