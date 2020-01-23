@@ -139,22 +139,6 @@
 
 <script type="text/javascript">
 
-
-    function arraySlice(arr, x, y) {
-        if (!document.documentMode && !/Edge/.test(navigator.userAgent)) {
-            return arr.slice(x, y);
-        }
-
-        let ret = [];
-        for (let i = 0; i < arr.length; i++) {
-            if (i >= x && i < y) {
-                ret.push(arr[i]);
-            }
-        }
-        return nacl.util.decodeBase64(nacl.util.encodeBase64(ret));
-    }
-
-
     new ClipboardJS('.btn');
 
     const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
@@ -251,7 +235,7 @@
 
         const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, key);
         if (messageBytes.length === 0) {
-            $('#decodedMessage').html("Something went wrong. Try again later.");
+            $('#decodedMessage').html("{{.generalError}}");
             showDecodedMessage();
             return
         }
@@ -273,7 +257,6 @@
         $("#errorForDecodedMessage").removeClass('d-none');
 
         $("#decodeButton").removeClass('disabled');
-
     }
 
     //--
@@ -296,6 +279,19 @@
 
     function replaceAll(str, find, replace) {
         return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    function arraySlice(arr, x, y) {
+        if (!document.documentMode && !/Edge/.test(navigator.userAgent)) {
+            return arr.slice(x, y);
+        }
+        let ret = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (i >= x && i < y) {
+                ret.push(arr[i]);
+            }
+        }
+        return nacl.util.decodeBase64(nacl.util.encodeBase64(ret));
     }
 
     //--
