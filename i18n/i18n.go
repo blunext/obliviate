@@ -10,7 +10,7 @@ import (
 type translations map[string]string
 
 type i18n struct {
-	list    map[language.Tag]translations
+	list    map[string]translations
 	matcher language.Matcher
 	sync.Mutex
 }
@@ -32,7 +32,7 @@ func NewTranslation() *i18n {
 			}
 		}
 	}
-	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[language.Tag]translations)}
+	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[string]translations)}
 	return &tr
 }
 
@@ -46,22 +46,21 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 	} else {
 		acceptedTag, _, _ = t.matcher.Match(acceptTagList...)
 	}
+	acceptedBaseLang := acceptedTag.String()[:2]
 
 	t.Lock()
 	defer t.Unlock()
 
-	if tran, ok := t.list[acceptedTag]; ok {
-		logrus.Tracef("translation %v exists", acceptedTag)
+	if tran, ok := t.list[acceptedBaseLang]; ok {
+		logrus.Tracef("translation %v exists", acceptedBaseLang)
 		return tran
 	}
 
 	tran := translations{}
 	printer := message.NewPrinter(acceptedTag)
-	acceptedTagBase, _ := acceptedTag.Base()
 
 	for tag, transList := range translationsSet {
-		base, _ := tag.Base()
-		if base == acceptedTagBase {
+		if tag.String()[:2] == acceptedBaseLang {
 			for _, tr := range transList {
 				tran[tr.key] = printer.Sprintf(tr.key)
 			}
@@ -69,11 +68,11 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 	}
 
 	if len(tran) == 0 {
-		logrus.Errorf("could not determine translation for acceptedTag = %v, acceptedTagBase = %v ", acceptedTag, acceptedTagBase)
+		logrus.Errorf("could not determine translation for acceptedTag = %v, acceptedBaseLang = %v ", acceptedTag, acceptedBaseLang)
 	}
 
-	t.list[acceptedTag] = tran
+	t.list[acceptedBaseLang] = tran
 
-	logrus.Debugf("language created: %v", acceptedTag)
+	logrus.Debugf("language created: %v", acceptedBaseLang)
 	return tran
 }
