@@ -62,7 +62,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 func Save(app *app.App) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		logrus.Debug("Save Handler")
+		logrus.Trace("Save Handler")
 
 		defer r.Body.Close()
 		if r.Body == nil {

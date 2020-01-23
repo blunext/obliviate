@@ -78,11 +78,12 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 		if status.Code(err) != codes.NotFound {
 			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
 		}
-		logrus.Debug("message not found")
+		logrus.Trace("message not found")
 		return data.Message, nil
 	}
 
 	if err := doc.DataTo(&data.Message); err != nil {
+		logrus.Trace("message found")
 		return data.Message, fmt.Errorf("error mapping data into message struct: %v", err)
 	}
 
