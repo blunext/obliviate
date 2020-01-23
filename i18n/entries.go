@@ -27,6 +27,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"linkCorrupted", "Link is corrupted"},
 		{"generalError", "Something went wrong. Try again later."},
 		{"encryptError", "Something went wrong. Cannot encrypt the message. Please try again."},
+		{"decryptError", "Something went wrong. Cannot decrypt the message. Please try again."},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -46,6 +47,7 @@ var translationsSet = map[language.Tag][]translationPair{
 			"Kod źródłowy narzędzia jest otwarty i możesz go sobie pobrać lub przejrzeć w serwisie "},
 		{"linkCorrupted", "Link uszkodzony"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
-		{"encryptError", "Coś poszło nie tak. Nie mogę zaszyfrować wiadomośći. Spróbuj ponownie."},
+		{"encryptError", "Coś poszło nie tak. Nie mogę zaszyfrować wiadomości. Spróbuj ponownie."},
+		{"decryptError", "Coś poszło nie tak. Nie mogę odszyfrować wiadomości. Spróbuj ponownie."},
 	},
 }

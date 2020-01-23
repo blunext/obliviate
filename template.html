@@ -252,11 +252,16 @@
     }
 
     function decodeError(XMLHttpRequest, textStatus, errorThrown) {
-        $("#decodeButtonBlock").addClass('d-none');
-        $("#decodedSpaceBlock").addClass('d-none');
-        $("#errorForDecodedMessage").removeClass('d-none');
+        if (XMLHttpRequest.status == 404) {
+            $("#decodeButtonBlock").addClass('d-none');
+            $("#decodedSpaceBlock").addClass('d-none');
+            $("#errorForDecodedMessage").removeClass('d-none');
 
-        $("#decodeButton").removeClass('disabled');
+            $("#decodeButton").removeClass('disabled');
+        }else{
+            alert('{{.decryptError}}')
+            $("#decodeButton").removeClass('disabled');
+        }
     }
 
     //--

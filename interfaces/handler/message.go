@@ -147,7 +147,7 @@ func Read(app *app.App) http.HandlerFunc {
 		}
 		if encrypted == nil {
 			// not found
-			finishRequestWithWarn(w, "Message not found", http.StatusBadRequest)
+			finishRequestWithWarn(w, "Message not found", http.StatusNotFound)
 			return
 		}
 
