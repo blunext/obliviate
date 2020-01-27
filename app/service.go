@@ -81,10 +81,10 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte) ([
 	return encrypted, nil
 }
 
-func (s *App) ProcessDeleteExpired(ctx context.Context) {
+func (s *App) ProcessDeleteExpired(ctx context.Context) error {
 	if err := s.db.DeleteBeforeNow(ctx); err != nil {
-		logrus.Errorf("Delete expired error: %v", err)
-	} else {
-		logrus.Trace("Delete expired done")
+		return fmt.Errorf("delete expired error: %v", err)
 	}
+	logrus.Trace("Delete expired done")
+	return nil
 }

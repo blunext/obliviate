@@ -164,9 +164,12 @@ func Expired(app *app.App) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logrus.Trace("Expired handler")
 
-		app.ProcessDeleteExpired(r.Context())
-
-		setStatusAndHeader(w, http.StatusOK)
+		if err := app.ProcessDeleteExpired(r.Context()); err != nil {
+			logrus.Errorf(err.Error())
+			setStatusAndHeader(w, http.StatusInternalServerError)
+		} else {
+			setStatusAndHeader(w, http.StatusOK)
+		}
 		w.Write([]byte("[]"))
 	}
 }
