@@ -85,6 +85,6 @@ func (s *App) ProcessDeleteExpired(ctx context.Context) {
 	if err := s.db.DeleteBeforeNow(ctx); err != nil {
 		logrus.Errorf("Delete expired error: %v", err)
 	} else {
-		logrus.Info("Delete expired done")
+		logrus.Trace("Delete expired done")
 	}
 }
