@@ -1,4 +1,4 @@
-Tool uses various method of encryption to ensure maximum privacy (Curve25519, XSalsa20, Poly1305, RSA)
+Tool uses various method of encryption to ensure maximum privacy (Curve25519, XSalsa20, RSA)
 
 Message is ecrypted with NaCl Secret Box using https://tweetnacl.js.org/, JavaScript implementation of 
 Networking and Cryptography library (NaCl https://nacl.cr.yp.to/).  Nonce used for Secret Box is used 
