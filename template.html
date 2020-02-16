@@ -182,7 +182,7 @@
     });
 
     const decrypt = {
-        key: '',
+        secretKey: '',
         salt: '',
         encodedMessage: '',
         password: false,
@@ -215,7 +215,7 @@
             if (decrypt.password) {
                 decrypt.salt = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
             } else {
-                decrypt.key = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+                decrypt.secretKey = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
             }
             decrypt.encodedMessage = arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
             decrypt.decryptMessage();
@@ -229,11 +229,11 @@
             decrypt.continue();
         },
         scyptCallback: function (key) {
-            decrypt.key = key;
+            decrypt.secretKey = key;
             decrypt.continue();
         },
         continue: function () {
-            const messageBytes = nacl.secretbox.open(decrypt.encodedMessage, urlNonce, decrypt.key);
+            const messageBytes = nacl.secretbox.open(decrypt.encodedMessage, urlNonce, decrypt.secretKey);
             if (messageBytes == null) {
                 if (decrypt.password) {
                     $('#decodedMessage').html("{{.wrongPassword}}");
