@@ -350,7 +350,7 @@
 
     function calculateKeyDerived(password, salt, callback) {
         window.setTimeout(function () {
-            // try {
+            try {try
             scrypt(password, salt, {
                     logN: 11,
                     r: 8,
@@ -361,9 +361,9 @@
                 },
                 callback,
             );
-            //     } catch (ex) {
-            //         alert(ex.message); //todo: process the exception
-            //     }
+                } catch (ex) {
+                alert(ex.message); //todo: process the exception
+            }
         });
     }
 
