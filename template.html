@@ -15,8 +15,8 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
-    <script src="/static/nacl.js"></script>
-    <script src="/static/nacl-util.js"></script>
+    <script src="/static/nacl.min.js"></script>
+    <script src="/static/nacl-util.min.js"></script>
     <script src="/static/scrypt-async.js"></script>
 </head>
 <body>
@@ -161,7 +161,6 @@
     new ClipboardJS('.btn');
 
     const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
-    const salt = "n680&LF^ghbec@cqx3s"; // in case of weak password
     let keys = nacl.box.keyPair();
     let urlNonce = '';
     const queryIndexWithPassword = 4;
@@ -215,7 +214,7 @@
         },
         decryptMessage: function () {
             let messageBytes = "";
-            if (passwordRequired()) {
+            if (decrypt.passwordRequired()) {
                 const passwordSalted = nacl.util.decodeUTF8($('#decryptPassword').val() + salt);
                 const passwordHash = nacl.hash(passwordSalted);
                 const keyPart = arraySlice(passwordHash, 0, nacl.secretbox.keyLength);
@@ -264,12 +263,17 @@
                 alert('{{.decryptError}}')
                 $("#decodeButton").removeClass('disabled');
             }
+        },
+        passwordRequired: function () {
+            return window.location.search.substring(1).length === queryIndexWithPassword;
         }
     };
 
     const encrypt = {
         secretKey: '',
         message: '',
+        salt: '',
+        password: false,
         processEncode: function () {
             encrypt.message = $('#message').val();
             if (encrypt.message.length === 0) {
@@ -277,7 +281,9 @@
             }
             const password = $('#password').val();
             if (password.length > 0) {
-                calculateKeyDerived(password, salt, encrypt.scryptCallback);
+                encrypt.password = true;
+                encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
+                calculateKeyDerived(password, encrypt.salt, encrypt.scryptCallback);
                 return;
             }
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
@@ -288,21 +294,25 @@
             encrypt.continue();
         },
         continue: function () {
-            // encode message with secretbox
+            // encrypt message with nacl secretbox
             const messageUTF8 = nacl.util.decodeUTF8(encrypt.message);
             const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
 
             const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, encrypt.secretKey);
 
-            // nonce will be use in link param
+            // nonce will be used as a link anchor
             urlNonce = nacl.util.encodeBase64(messageNonce);
 
             // store secret key in the message
             const fullMessage = new Uint8Array(encrypt.secretKey.length + encryptedMessage.length);
-            fullMessage.set(encrypt.secretKey);
+            if (encrypt.password) {
+                fullMessage.set(encrypt.salt);
+            } else {
+                fullMessage.set(encrypt.secretKey);
+            }
             fullMessage.set(encryptedMessage, encrypt.secretKey.length);
 
-            // encode message transmission with box
+            // encrypt message transmission with nacl box
             const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength);
             const transmission = nacl.box(fullMessage, transmissionNonce, serverPublicKey, keys.secretKey);
 
@@ -311,7 +321,6 @@
             obj.nonce = nacl.util.encodeBase64(transmissionNonce);
             obj.hash = nacl.util.encodeBase64(nacl.hash(messageNonce));
             obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
-//        obj.password = password.length > 0;
 
             $("#encodeButton").addClass('disabled');
             post(obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
@@ -397,9 +406,6 @@
         return new Uint8Array(ret);
     }
 
-    function passwordRequired() {
-        return window.location.search.substring(1).length === queryIndexWithPassword;
-    }
 
     //--
 
