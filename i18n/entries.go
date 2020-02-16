@@ -28,6 +28,10 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"generalError", "Something went wrong. Try again later."},
 		{"encryptError", "Something went wrong. Cannot encrypt the message. Please try again."},
 		{"decryptError", "Something went wrong. Cannot decrypt the message. Please try again."},
+		{"password", "Password"},
+		{"passwordEncodePlaceholder", "for max safety"},
+		{"passwordDecodePlaceholder", "enter password"},
+		{"wrongPassword", "wrong password"},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -49,5 +53,9 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
 		{"encryptError", "Coś poszło nie tak. Nie mogę zaszyfrować wiadomości. Spróbuj ponownie."},
 		{"decryptError", "Coś poszło nie tak. Nie mogę odszyfrować wiadomości. Spróbuj ponownie."},
+		{"password", "Hasło"},
+		{"passwordEncodePlaceholder", "dla maksymalnego bezpieczeństwa"},
+		{"passwordDecodePlaceholder", "wprowadź hasło"},
+		{"wrongPassword", "błędne hasło"},
 	},
 }
