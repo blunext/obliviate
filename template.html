@@ -156,6 +156,7 @@
 </body>
 
 <script type="text/javascript">
+    'use strict';
 
     new ClipboardJS('.btn');
 
@@ -282,8 +283,9 @@
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
             encrypt.continue();
         },
-        scryptCallback: function (res) {
-            encrypt.secretKey = res;
+        scryptCallback: function (key) {
+            encrypt.secretKey = key;
+            encrypt.continue();
         },
         continue: function () {
             // encode message with secretbox
@@ -315,6 +317,7 @@
             post(obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
         },
         encodeSuccess: function encodeSuccess(result) {
+            let index;
             if ($('#password').val().length > 0) {
                 index = queryIndexWithPassword;
             } else {
@@ -340,9 +343,9 @@
                         p: 1,
                         dkLen: nacl.secretbox.keyLength, // 32
                         interruptStep: 0,
-                        encoding: 'hex' // hex, base64, binary
+                        encoding: 'binary' // hex, base64, binary
                     },
-                    callback
+                    callback,
                 );
             } catch (ex) {
                 alert(ex.message); //todo: process the exception
