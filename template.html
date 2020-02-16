@@ -312,7 +312,21 @@
 //        obj.password = password.length > 0;
 
             $("#encodeButton").addClass('disabled');
-            post(obj, '/save', encodeSuccess, encodeError);
+            post(obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
+        },
+        encodeSuccess: function encodeSuccess(result) {
+            if ($('#password').val().length > 0) {
+                index = queryIndexWithPassword;
+            } else {
+                index = 3;
+            }
+            const url = document.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
+            $('#link').val(url);
+            showLink();
+        },
+        encodeError: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert('{{.encryptError}}');
+            $("#encodeButton").removeClass('disabled');
         }
     };
 
@@ -329,31 +343,11 @@
                         encoding: 'hex' // hex, base64, binary
                     },
                     callback
-                    //faaa
-                    // function (res) {
-                    //     alert(res);
-                    //
                 );
             } catch (ex) {
-                alert(ex.message);
+                alert(ex.message); //todo: process the exception
             }
         });
-    }
-
-    function encodeSuccess(result) {
-        if ($('#password').val().length > 0) {
-            index = queryIndexWithPassword;
-        } else {
-            index = 3;
-        }
-        const url = document.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
-        $('#link').val(url);
-        showLink();
-    }
-
-    function encodeError(XMLHttpRequest, textStatus, errorThrown) {
-        alert('{{.encryptError}}');
-        $("#encodeButton").removeClass('disabled');
     }
 
     //--
