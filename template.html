@@ -350,18 +350,18 @@
 
     function calculateKeyDerived(password, salt, callback) {
         window.setTimeout(function () {
-            try {try
-            scrypt(password, salt, {
-                    logN: 11,
-                    r: 8,
-                    p: 1,
-                    dkLen: nacl.secretbox.keyLength, // 32
-                    interruptStep: 0,
-                    encoding: 'binary' // hex, base64, binary
-                },
-                callback,
-            );
-                } catch (ex) {
+            try {
+                scrypt(password, salt, {
+                        logN: 11,
+                        r: 8,
+                        p: 1,
+                        dkLen: nacl.secretbox.keyLength, // 32
+                        interruptStep: 0,
+                        encoding: 'binary' // hex, base64, binary
+                    },
+                    callback,
+                );
+            } catch (ex) {
                 alert(ex.message); //todo: process the exception
             }
         });
