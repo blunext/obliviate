@@ -104,7 +104,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-group input-group-sm mb-2">
+                <div class="input-group input-group-sm mb-2" id="decryptPasswordBlock">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{.password}}</span>
                     </div>
@@ -162,47 +162,28 @@
 
 <script type="text/javascript">
     'use strict';
-
-    new ClipboardJS('.btn');
-
-    const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
-    let keys = nacl.box.keyPair();
-    let urlNonce = '';
-    const queryIndexWithPassword = 4;
-    const scryptLogN = 14;
-
-    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
-    if (isMobile) {
-        $("#link").attr('rows', 2);
-    }
-
-    if (window.location.hash) {
-        showDecodeButton();
-    } else {
-        showEnterMessage();
-    }
-
-    // necessary for .off('click')
-    $("#decodeButton").click(function (e) {
-        decrypt.loadCypher();
-    });
-
     const encrypt = {
         secretKey: '',
         message: '',
         salt: '',
         password: false,
         processEncode: function () {
+            if ($("#passwordBlock").hasClass("collapsing")) {
+                return;
+            }
             encrypt.message = $('#message').val();
             if (encrypt.message.length === 0) {
                 return;
             }
-            const password = $('#password').val();
-            if (password.length > 0) {
-                encrypt.password = true;
-                encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
-                calculateKeyDerived(password, encrypt.salt, scryptLogN, encrypt.scryptCallback);
-                return;
+
+            if ($("#passwordBlock").hasClass("show")) {
+                const password = $('#password').val();
+                if (password.length > 0) {
+                    encrypt.password = true;
+                    encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
+                    calculateKeyDerived(password, encrypt.salt, scryptLogN, encrypt.scryptCallback);
+                    return;
+                }
             }
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
             encrypt.continue();
@@ -245,7 +226,7 @@
         },
         encodeSuccess: function encodeSuccess(result) {
             let index;
-            if ($('#password').val().length > 0) {
+            if (encrypt.password) {
                 index = queryIndexWithPassword;
             } else {
                 index = 3;
@@ -307,7 +288,7 @@
                 return
             }
 
-            decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+//            decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
 
             // decode message with secretbox
             if (decrypt.password) {
@@ -372,8 +353,33 @@
         }
     };
 
+    // ----- init
+    new ClipboardJS('.btn');
 
-    //--
+    const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
+    let keys = nacl.box.keyPair();
+    let urlNonce = '';
+    const queryIndexWithPassword = 4;
+    const scryptLogN = 14;
+
+    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+    if (isMobile) {
+        $("#link").attr('rows', 2);
+    }
+
+    if (window.location.hash) {
+        decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+        showDecodeButton();
+    } else {
+        showEnterMessage();
+    }
+
+    // necessary for .off('click')
+    $("#decodeButton").click(function (e) {
+        decrypt.loadCypher();
+    });
+
+    // -------
 
     function again() {
         keys = nacl.box.keyPair();
@@ -425,8 +431,11 @@
         $("#decodeBlock").addClass('d-none');
         $("#presentationBlock").addClass('d-none');
 
+        $("#passwordBlock").removeClass('show');
+
         $("#message").focus();
         $('#link').val("");
+        $('#password').val("");
     }
 
     function showLink() {
@@ -440,6 +449,11 @@
     }
 
     function showDecodeButton() {
+        if (decrypt.password) {
+            $("#decryptPasswordBlock").removeClass('d-none');
+        } else {
+            $("#decryptPasswordBlock").addClass('d-none');
+        }
         $("#inputMessageBlock").addClass('d-none');
         $("#linkBlock").addClass('d-none');
         $("#decodeBlock").removeClass('d-none');
