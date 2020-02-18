@@ -14,6 +14,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+
 
     <script src="/static/nacl.min.js"></script>
     <script src="/static/nacl-util.min.js"></script>
@@ -22,34 +26,35 @@
 <body>
 <br/>
 <h4 class="text-secondary text-center">{{.header}}</h4>
-
 <div class="container border border-primary">
     <br/>
+    {{/* new message */}}
     <div class="form-group d-none" id="inputMessageBlock">
         <label for="message" class="text-secondary">{{.enterTextMessage}}</label>
-        <textarea class="form-control" id="message" rows="4" maxlength="262144" autofocus></textarea>
-        <br/>
+        <textarea class="form-control mb-3" id="message" rows="4" maxlength="262144" autofocus></textarea>
         <div class="container">
-            <div class="row">
-                <div class="input-group input-group-sm mb-3">
+            <div class="row"> {{/* password */}}
+                <div class="input-group input-group-sm mb-2 collapse" id="passwordBlock">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{.password}}</span>
                     </div>
-                    <input type="text" class="form-control" id="password" placeholder="{{.passwordEncodePlaceholder}}">
+                    <input type="text" class="form-control" id="password"
+                           placeholder="{{.passwordEncodePlaceholder}}">
                 </div>
             </div>
             <div class="row">
-                <div class="col-1"></div>
-                <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block" id="encodeButton"
+                <div class="input-group d-flex justify-content-center">
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="collapse"
+                            data-target="#passwordBlock">Hasło
+                    </button>&nbsp;
+                    <button type="button" class="btn btn-primary btn-sm" id="encodeButton"
                             onclick="encrypt.processEncode();">{{.secureButton}}
                     </button>
                 </div>
-                <div class="col-1"></div>
             </div>
         </div>
     </div>
-
+    {{/* final link */}}
     <div class="form-group d-none" id="linkBlock">
         <label for="link" class="text-secondary">{{.copyLink}}</label>
         <textarea class="form-control" id="link" rows="1"></textarea>
@@ -70,7 +75,7 @@
             </div>
         </div>
     </div>
-
+    {{/* decoded message */}}
     <div class="form-group d-none" id="presentationBlock">
         <div class="container">
             <div class="row">
@@ -89,7 +94,7 @@
             </div>
         </div>
     </div>
-
+    {{/* decode splash screen */}}
     <div class="form-group d-none" id="decodeBlock">
         <div class="container">
             <div class="row d-none" id="errorForDecodedMessage">
@@ -99,7 +104,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-group input-group-sm mb-3">
+                <div class="input-group input-group-sm mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{.password}}</span>
                     </div>
@@ -164,6 +169,7 @@
     let keys = nacl.box.keyPair();
     let urlNonce = '';
     const queryIndexWithPassword = 4;
+    const scryptLogN = 14;
 
     const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
     if (isMobile) {
@@ -181,99 +187,6 @@
         decrypt.loadCypher();
     });
 
-    const decrypt = {
-        secretKey: '',
-        salt: '',
-        encodedMessage: '',
-        password: false,
-        loadCypher: function () {
-            const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
-            urlNonce = nacl.util.decodeBase64(nonce);
-            const obj = {};
-            obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
-            obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
-
-            $("#decodeButton").addClass('disabled');
-            post(obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
-        },
-        decryptTransmission: function (result) {
-            // decode transmission with box
-            const messageWithNonceAsUint8Array = nacl.util.decodeBase64(result.message);
-            const noncePart = arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
-            const messagePart = arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
-
-            const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
-            if (!decrypted) {
-                $('#decodedMessage').html("{{.generalError}}");
-                showDecodedMessage();
-                return
-            }
-
-            decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
-
-            // decode message with secretbox
-            if (decrypt.password) {
-                decrypt.salt = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
-            } else {
-                decrypt.secretKey = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
-            }
-            decrypt.encodedMessage = arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
-            decrypt.decryptMessage();
-        },
-        decryptMessage: function () {
-            if (decrypt.password) {
-                const password = $('#decryptPassword').val();
-                calculateKeyDerived(password, decrypt.salt, decrypt.scyptCallback);
-                return;
-            }
-            decrypt.continue();
-        },
-        scyptCallback: function (key) {
-            decrypt.secretKey = key;
-            decrypt.continue();
-        },
-        continue: function () {
-            const messageBytes = nacl.secretbox.open(decrypt.encodedMessage, urlNonce, decrypt.secretKey);
-            if (messageBytes == null) {
-                if (decrypt.password) {
-                    $('#decodedMessage').html("{{.wrongPassword}}");
-
-                    $("#decodeButton").off('click');
-                    $("#decodeButton").click(function (e) {
-                        decrypt.decryptMessage();
-                    });
-
-                    $("#decodeButton").removeClass('disabled');
-                } else {
-                    $('#decodedMessage').html("{{.generalError}}");
-                    showDecodedMessage();
-                }
-                return;
-            }
-            const message = nacl.util.encodeUTF8(messageBytes);
-
-            const escape = document.createElement('textarea');
-            escape.textContent = message;
-            escape.innerHTML;
-
-            const str = replaceAll(escape.innerHTML, '\n', '<br/>');
-            $('#decodedMessage').html(str);
-            showDecodedMessage();
-        },
-        loadError: function (XMLHttpRequest, textStatus, errorThrown) {
-            if (XMLHttpRequest.status == 404) {
-                $("#decodeButtonBlock").addClass('d-none');
-                $("#decodedSpaceBlock").addClass('d-none');
-                $("#errorForDecodedMessage").removeClass('d-none');
-
-                $("#decodeButton").removeClass('disabled');
-            } else {
-                alert('{{.decryptError}}')
-                $("#decodeButton").removeClass('disabled');
-            }
-        }
-    };
-
     const encrypt = {
         secretKey: '',
         message: '',
@@ -288,7 +201,7 @@
             if (password.length > 0) {
                 encrypt.password = true;
                 encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
-                calculateKeyDerived(password, encrypt.salt, encrypt.scryptCallback);
+                calculateKeyDerived(password, encrypt.salt, scryptLogN, encrypt.scryptCallback);
                 return;
             }
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
@@ -347,12 +260,11 @@
         }
     };
 
-
-    function calculateKeyDerived(password, salt, callback) {
+    function calculateKeyDerived(password, salt, logN, callback) {
         window.setTimeout(function () {
             try {
                 scrypt(password, salt, {
-                        logN: 11,
+                        logN: logN,
                         r: 8,
                         p: 1,
                         dkLen: nacl.secretbox.keyLength, // 32
@@ -366,6 +278,100 @@
             }
         });
     }
+
+    const decrypt = {
+        secretKey: '',
+        salt: '',
+        encodedMessage: '',
+        password: false,
+        loadCypher: function () {
+            const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
+            urlNonce = nacl.util.decodeBase64(nonce);
+            const obj = {};
+            obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
+            obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+
+            $("#decodeButton").addClass('disabled');
+            post(obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
+        },
+        decryptTransmission: function (result) {
+            // decode transmission with box
+            const messageWithNonceAsUint8Array = nacl.util.decodeBase64(result.message);
+            const noncePart = arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
+            const messagePart = arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
+
+            const decrypted = nacl.box.open(messagePart, noncePart, serverPublicKey, keys.secretKey);
+            if (!decrypted) {
+                $('#decodedMessage').html("{{.generalError}}");
+                showDecodedMessage();
+                return
+            }
+
+            decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+
+            // decode message with secretbox
+            if (decrypt.password) {
+                decrypt.salt = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+            } else {
+                decrypt.secretKey = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+            }
+            decrypt.encodedMessage = arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
+            decrypt.decryptMessage();
+        },
+        decryptMessage: function () {
+            if (decrypt.password) {
+                const password = $('#decryptPassword').val();
+                calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scyptCallback);
+                return;
+            }
+            decrypt.continue();
+        },
+        scyptCallback: function (key) {
+            decrypt.secretKey = key;
+            decrypt.continue();
+        },
+        continue: function () {
+            const messageBytes = nacl.secretbox.open(decrypt.encodedMessage, urlNonce, decrypt.secretKey);
+            if (messageBytes == null) {
+                if (decrypt.password) {
+                    $('#decodedMessage').html("{{.wrongPassword}}");
+
+                    $("#decodeButton").off('click');
+                    $("#decodeButton").click(function (e) {
+                        decrypt.decryptMessage();
+                    });
+
+                    $("#decodeButton").removeClass('disabled');
+                } else {
+                    $('#decodedMessage').html("{{.generalError}}");
+                    showDecodedMessage();
+                }
+                return;
+            }
+            const message = nacl.util.encodeUTF8(messageBytes);
+
+            const escape = document.createElement('textarea');
+            escape.textContent = message;
+            escape.innerHTML;
+
+            const str = replaceAll(escape.innerHTML, '\n', '<br/>');
+            $('#decodedMessage').html(str);
+            showDecodedMessage();
+        },
+        loadError: function (XMLHttpRequest, textStatus, errorThrown) {
+            if (XMLHttpRequest.status == 404) {
+                $("#decodeButtonBlock").addClass('d-none');
+                $("#decodedSpaceBlock").addClass('d-none');
+                $("#errorForDecodedMessage").removeClass('d-none');
+
+                $("#decodeButton").removeClass('disabled');
+            } else {
+                alert('{{.decryptError}}')
+                $("#decodeButton").removeClass('disabled');
+            }
+        }
+    };
+
 
     //--
 
@@ -411,7 +417,6 @@
         return new Uint8Array(ret);
     }
 
-
     //--
 
     function showEnterMessage() {
@@ -448,7 +453,6 @@
         $("#presentationBlock").removeClass('d-none');
 
         $("#decodeButton").removeClass('disabled');
-
     }
 
 </script>
