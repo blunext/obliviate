@@ -173,8 +173,10 @@
             }
             encrypt.message = $('#message').val();
             if (encrypt.message.length === 0) {
+                $("#message").addClass('is-invalid');
                 return;
             }
+            $("#message").removeClass('is-invalid');
 
             if ($("#passwordBlock").hasClass("show")) {
                 const password = $('#password').val();
@@ -182,8 +184,11 @@
                     encrypt.password = true;
                     encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
                     calculateKeyDerived(password, encrypt.salt, scryptLogN, encrypt.scryptCallback);
-                    return;
+                    $('#password').removeClass('is-invalid');
+                } else {
+                    $('#password').addClass('is-invalid');
                 }
+                return;
             }
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
             encrypt.continue();
@@ -287,9 +292,6 @@
                 showDecodedMessage();
                 return
             }
-
-//            decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
-
             // decode message with secretbox
             if (decrypt.password) {
                 decrypt.salt = arraySlice(decrypted, 0, nacl.secretbox.keyLength);
@@ -302,7 +304,13 @@
         decryptMessage: function () {
             if (decrypt.password) {
                 const password = $('#decryptPassword').val();
-                calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scyptCallback);
+                if (password.length > 0) {
+                    calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scyptCallback);
+                } else {
+                    $("#decryptPassword").addClass('is-invalid');
+                    $("#decodeButton").removeClass('disabled');
+                    decrypt.changeAction();
+                }
                 return;
             }
             decrypt.continue();
@@ -317,10 +325,7 @@
                 if (decrypt.password) {
                     $('#decodedMessage').html("{{.wrongPassword}}");
 
-                    $("#decodeButton").off('click');
-                    $("#decodeButton").click(function (e) {
-                        decrypt.decryptMessage();
-                    });
+                    decrypt.changeAction();
 
                     $("#decodeButton").removeClass('disabled');
                 } else {
@@ -350,6 +355,13 @@
                 alert('{{.decryptError}}')
                 $("#decodeButton").removeClass('disabled');
             }
+        },
+        changeAction: function () {
+            $("#decodeButton").off('click');
+            $("#decodeButton").click(function (e) {
+                decrypt.decryptMessage();
+            });
+
         }
     };
 
