@@ -27,10 +27,10 @@ func NewApp(db store.Connection, config *config.Configuration, keys *crypt.Keys)
 	return &app
 }
 
-func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce []byte, hash string, publicKey []byte) error {
+func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce []byte, hash string, publicKey []byte, t int) error {
 
 	hashEncoded := url.PathEscape(hash)
-	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey)
+	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey, t)
 
 	err := s.db.SaveMessage(ctx, data)
 	if err != nil {

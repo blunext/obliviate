@@ -9,6 +9,7 @@ type MessageType struct {
 	ValidTo   time.Time `firestore:"valid"`
 	Nonce     []byte    `firestore:"nonce"`
 	PublicKey []byte    `firestore:"publicKey"`
+	Time      int       `firestore:"time"`
 }
 
 type MessageModel struct {
@@ -16,7 +17,7 @@ type MessageModel struct {
 	Message MessageType
 }
 
-func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte) MessageModel {
+func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte, time int) MessageModel {
 	m := MessageModel{
 		key: key,
 		Message: MessageType{
@@ -24,6 +25,7 @@ func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey
 			ValidTo:   valid,
 			Nonce:     nonce,
 			PublicKey: publicKey,
+			Time:      time,
 		},
 	}
 	return m

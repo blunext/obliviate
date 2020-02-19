@@ -16,6 +16,7 @@ type SaveRequest struct {
 	TransmissionNonce []byte `json:"nonce"`
 	Hash              string `json:"hash"`
 	PublicKey         []byte `json:"publicKey"`
+	Time              int    `json:"time"`
 }
 
 type ReadRequest struct {
@@ -99,7 +100,7 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey)
+		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey, data.Time)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
 			return

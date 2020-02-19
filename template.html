@@ -167,6 +167,7 @@
         message: '',
         salt: '',
         password: false,
+        time: 0,
         processEncode: function () {
             if ($("#passwordBlock").hasClass("collapsing")) {
                 return;
@@ -193,8 +194,9 @@
             encrypt.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
             encrypt.continue();
         },
-        scryptCallback: function (key) {
+        scryptCallback: function (key, time) {
             encrypt.secretKey = key;
+            encrypt.time = time;
             encrypt.continue();
         },
         continue: function () {
@@ -225,6 +227,9 @@
             obj.nonce = nacl.util.encodeBase64(transmissionNonce);
             obj.hash = nacl.util.encodeBase64(nacl.hash(messageNonce));
             obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+            if (encrypt.password) {
+                obj.time = encrypt.time;
+            }
 
             $("#encodeButton").addClass('disabled');
             post(obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
@@ -245,25 +250,6 @@
             $("#encodeButton").removeClass('disabled');
         }
     };
-
-    function calculateKeyDerived(password, salt, logN, callback) {
-        window.setTimeout(function () {
-            try {
-                scrypt(password, salt, {
-                        logN: logN,
-                        r: 8,
-                        p: 1,
-                        dkLen: nacl.secretbox.keyLength, // 32
-                        interruptStep: 0,
-                        encoding: 'binary' // hex, base64, binary
-                    },
-                    callback,
-                );
-            } catch (ex) {
-                alert(ex.message); //todo: process the exception
-            }
-        });
-    }
 
     const decrypt = {
         secretKey: '',
@@ -305,7 +291,7 @@
             if (decrypt.password) {
                 const password = $('#decryptPassword').val();
                 if (password.length > 0) {
-                    calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scyptCallback);
+                    calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scryptCallback);
                 } else {
                     $("#decryptPassword").addClass('is-invalid');
                     $("#decodeButton").removeClass('disabled');
@@ -315,7 +301,7 @@
             }
             decrypt.continue();
         },
-        scyptCallback: function (key) {
+        scryptCallback: function (key, time) { // do nothing with time while decrypt
             decrypt.secretKey = key;
             decrypt.continue();
         },
@@ -361,7 +347,6 @@
             $("#decodeButton").click(function (e) {
                 decrypt.decryptMessage();
             });
-
         }
     };
 
@@ -423,17 +408,35 @@
         return new Uint8Array(ret);
     }
 
-    function xorArray(a, b) {
-        let ret = [];
-        let x = 0;
-        for (let i = 0; i < a.length; i++) {
-            ret.push(a[i] ^ b[x]);
-            if (x++ > b.length) {
-                x = 0;
+    function calculateKeyDerived(password, salt, logN, callback) {
+        window.setTimeout(function () {
+            try {
+                const t1 = getTime();
+                scrypt(password, salt, {
+                        logN: logN,
+                        r: 8,
+                        p: 1,
+                        dkLen: nacl.secretbox.keyLength, // 32
+                        interruptStep: 0,
+                        encoding: 'binary' // hex, base64, binary
+                    },
+                    function (res) {
+                        const time = Math.round(getTime() - t1);
+                        callback(res, time);
+                    },
+                );
+            } catch (ex) {
+                alert(ex.message); //todo: process the exception
             }
-        }
-        return new Uint8Array(ret);
+        });
     }
+
+    var getTime = (function () {
+        if (typeof performance !== "undefined") {
+            return performance.now.bind(performance);
+        }
+        return Date.now.bind(Date);
+    })();
 
     //--
 
