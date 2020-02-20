@@ -333,12 +333,14 @@
             $('#decodedMessage').html(str);
             showDecodedMessage();
 
-            const obj = {};
-            obj.hash = decrypt.hash;
-
             $("#encodeButton").addClass('disabled');
 
-            post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteError);
+            if (decrypt.password){
+                const obj = {};
+                obj.hash = decrypt.hash;
+                post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteError);
+            }
+
         },
         loadError: function (XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest.status == 404) {
