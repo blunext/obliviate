@@ -63,6 +63,7 @@ func main() {
 	r.Post("/save", handler.Save(app))
 	r.Post("/read", handler.Read(app))
 	r.Delete("/expired", handler.Expired(app))
+	r.Delete("/delete", handler.Delete(app))
 
 	workDir, _ := os.Getwd()
 	filesDir := filepath.Join(workDir, "static")

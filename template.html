@@ -232,7 +232,7 @@
             }
 
             $("#encodeButton").addClass('disabled');
-            post(obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
+            post('POST', obj, '/save', encrypt.encodeSuccess, encrypt.encodeError);
         },
         encodeSuccess: function encodeSuccess(result) {
             let index;
@@ -256,18 +256,20 @@
         salt: '',
         encodedMessage: '',
         password: false,
+        hash: '',
         loadCypher: function () {
             const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
             urlNonce = nacl.util.decodeBase64(nonce);
+            decrypt.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
             const obj = {};
-            obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
+            obj.hash = decrypt.hash;
             obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
             if (decrypt.password) {
                 obj.password = true;
             }
 
             $("#decodeButton").addClass('disabled');
-            post(obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
+            post('POST', obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
         },
         decryptTransmission: function (result) {
             // decode transmission with box
@@ -313,14 +315,12 @@
             if (messageBytes == null) {
                 if (decrypt.password) {
                     $('#decodedMessage').html("{{.wrongPassword}}");
-
                     decrypt.changeAction();
-
                     $("#decodeButton").removeClass('disabled');
-                } else {
-                    $('#decodedMessage').html("{{.generalError}}");
-                    showDecodedMessage();
+                    return;
                 }
+                $('#decodedMessage').html("{{.generalError}}");
+                showDecodedMessage(); // TODO: remove "Decoded message:" header
                 return;
             }
             const message = nacl.util.encodeUTF8(messageBytes);
@@ -332,6 +332,13 @@
             const str = replaceAll(escape.innerHTML, '\n', '<br/>');
             $('#decodedMessage').html(str);
             showDecodedMessage();
+
+            const obj = {};
+            obj.hash = decrypt.hash;
+
+            $("#encodeButton").addClass('disabled');
+
+            post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteError);
         },
         loadError: function (XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest.status == 404) {
@@ -350,6 +357,10 @@
             $("#decodeButton").click(function (e) {
                 decrypt.decryptMessage();
             });
+        },
+        deleteSuccess: function () { // do nothing
+        },
+        deleteError: function (XMLHttpRequest, textStatus, errorThrown) { // do nothing
         }
     };
 
@@ -386,10 +397,10 @@
         showEnterMessage();
     }
 
-    function post(webObject, url, postSuccess, postError) {
+    function post(method, webObject, url, postSuccess, postError) {
         $.ajax({
             url: url,
-            type: 'POST',
+            type: method,
             dataType: "json",
             data: JSON.stringify(webObject),
             success: postSuccess,
@@ -429,7 +440,7 @@
                     },
                 );
             } catch (ex) {
-                alert(ex.message); //todo: process the exception
+                alert(ex.message); //TODO: process the exception
             }
         });
     }

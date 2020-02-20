@@ -96,7 +96,6 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 }
 
 func (d *db) DeleteMessage(ctx context.Context, key string) {
-
 	_, err := d.client.Collection(d.messageColl).Doc(key).Delete(ctx)
 	if err != nil {
 		logrus.Errorf("cannot remove doc, key: %v\n", key)

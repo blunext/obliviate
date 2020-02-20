@@ -26,8 +26,7 @@ type ReadRequest struct {
 }
 
 type DeleteRequest struct {
-	Hash      string `json:"hash"`
-	PublicKey []byte `json:"publicKey"`
+	Hash string `json:"hash"`
 }
 
 type ReadResponse struct {
@@ -163,6 +162,35 @@ func Read(app *app.App) http.HandlerFunc {
 		setStatusAndHeader(w, http.StatusOK)
 		w.Write(jsonFromStruct(message))
 
+	}
+}
+
+func Delete(app *app.App) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		logrus.Trace("Delete Handler")
+
+		defer r.Body.Close()
+		if r.Body == nil {
+			finishRequestWithErr(w, emptyBody, http.StatusBadRequest)
+			return
+		}
+
+		data := DeleteRequest{}
+		err := json.NewDecoder(r.Body).Decode(&data)
+		if err != nil {
+			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
+			return
+		}
+		if len(data.Hash) == 0 {
+			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest)
+			return
+		}
+
+		app.ProcessDelete(r.Context(), data.Hash)
+
+		setStatusAndHeader(w, http.StatusOK)
+		w.Write([]byte("[]"))
 	}
 }
 

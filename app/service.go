@@ -84,6 +84,11 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, pa
 	return encrypted, nil
 }
 
+func (s *App) ProcessDelete(ctx context.Context, hash string) {
+	hashEncoded := url.PathEscape(hash)
+	s.db.DeleteMessage(ctx, hashEncoded)
+}
+
 func (s *App) ProcessDeleteExpired(ctx context.Context) error {
 	if err := s.db.DeleteBeforeNow(ctx); err != nil {
 		return fmt.Errorf("delete expired error: %v", err)
