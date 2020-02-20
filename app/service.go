@@ -39,7 +39,7 @@ func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce
 	return nil
 }
 
-func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte) ([]byte, error) {
+func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, password bool) ([]byte, error) {
 
 	hashEncoded := url.PathEscape(hash)
 
@@ -69,13 +69,16 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte) ([
 		return nil, fmt.Errorf("cannot seal message, err: %v", err)
 	}
 
-	if s.config.ProdEnv {
-		go func() {
-			ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
-			s.db.DeleteMessage(ct, hashEncoded)
-		}()
-	} else { // for testing purposes
-		s.db.DeleteMessage(ctx, hashEncoded)
+	if !password {
+		// delete only when password is not required
+		if s.config.ProdEnv {
+			go func() {
+				ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
+				s.db.DeleteMessage(ct, hashEncoded)
+			}()
+		} else { // for testing purposes
+			s.db.DeleteMessage(ctx, hashEncoded)
+		}
 	}
 
 	return encrypted, nil

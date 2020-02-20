@@ -22,6 +22,12 @@ type SaveRequest struct {
 type ReadRequest struct {
 	Hash      string `json:"hash"`
 	PublicKey []byte `json:"publicKey"`
+	Password  bool   `json:"password"`
+}
+
+type DeleteRequest struct {
+	Hash      string `json:"hash"`
+	PublicKey []byte `json:"publicKey"`
 }
 
 type ReadResponse struct {
@@ -141,7 +147,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		encrypted, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey)
+		encrypted, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey, data.Password)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
 			return
