@@ -262,6 +262,9 @@
             const obj = {};
             obj.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
             obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+            if (decrypt.password) {
+                obj.password = true;
+            }
 
             $("#decodeButton").addClass('disabled');
             post(obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
