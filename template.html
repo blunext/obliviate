@@ -317,7 +317,7 @@
             const messageBytes = nacl.secretbox.open(decrypt.encodedMessage, urlNonce, decrypt.secretKey);
             if (messageBytes == null) {
                 if (decrypt.password) {
-                    $('#decodedMessage').html("{{.wrongPassword}}");
+                    $("#decryptPassword").addClass('is-invalid');
                     decrypt.changeAction();
                     decodeButtonAccessibility(true);
                     return;
@@ -326,6 +326,7 @@
                 showDecodedMessage(); // TODO: remove "Decoded message:" header
                 return;
             }
+
             const message = nacl.util.encodeUTF8(messageBytes);
 
             const escape = document.createElement('textarea');
