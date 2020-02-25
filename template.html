@@ -4,10 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="shortcut icon" href="/static/favicon.ico">
-
     <title>{{.title}}</title>
     <meta name="description" content="{{.description}}"/>
-
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -17,8 +15,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
-
-
     <script src="/static/nacl.min.js"></script>
     <script src="/static/nacl-util.min.js"></script>
     <script src="/static/scrypt-async.min.js"></script>
@@ -43,11 +39,13 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-group d-flex justify-content-center">
-                    <button type="button" class="btn btn-danger btn-sm" data-toggle="collapse"
+                <div class="col-sm mb-2">
+                    <button type="button" class="btn btn-success btn-block" data-toggle="collapse"
                             data-target="#passwordBlock">Hasło
-                    </button>&nbsp;
-                    <button type="button" class="btn btn-primary btn-sm" id="encodeButton"
+                    </button>
+                </div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary btn-block" id="encodeButton"
                             onclick="encrypt.processEncode();">{{.secureButton}}
                     </button>
                 </div>
@@ -57,16 +55,14 @@
     {{/* final link */}}
     <div class="form-group d-none" id="linkBlock">
         <label for="link" class="text-secondary">{{.copyLink}}</label>
-        <textarea class="form-control" id="link" rows="1"></textarea>
-        <br/>
+        <textarea class="form-control mb-2" id="link" rows="1"></textarea>
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm mb-2">
                     <button type="button" class="btn btn-warning btn-block" data-clipboard-action="copy"
                             data-clipboard-target="#link">{{.copyLinkButton}}
                     </button>
                 </div>
-                <div class="col-sm-1">&nbsp;</div>
                 <div class="col-sm">
                     <button type="button" class="btn btn-primary btn-block"
                             onclick="again();">{{.newMessageButton}}
@@ -113,12 +109,11 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm" id="decodeButtonBlock">
+                <div class="col-sm mb-2" id="decodeButtonBlock">
                     <button type="button" class="btn btn-warning btn-block"
                             id="decodeButton"{{/* onclick="processDecode();"*/}}>{{.readMessageButton}}
                     </button>
                 </div>
-                <div class="col-sm-1" id="decodedSpaceBlock">&nbsp;</div>
                 <div class="col-sm">
                     <button type="button" class="btn btn-primary btn-block"
                             onclick="again();">{{.newMessageButton}}
@@ -162,6 +157,7 @@
 
 <script type="text/javascript">
     'use strict';
+
     const encrypt = {
         secretKey: '',
         message: '',
@@ -333,7 +329,7 @@
             $('#decodedMessage').html(str);
             showDecodedMessage();
 
-            if (decrypt.password){
+            if (decrypt.password) {
                 const obj = {};
                 obj.hash = decrypt.hash;
                 post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteError);
@@ -343,7 +339,6 @@
         loadError: function (XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest.status == 404) {
                 $("#decodeButtonBlock").addClass('d-none');
-                $("#decodedSpaceBlock").addClass('d-none');
                 $("#errorForDecodedMessage").removeClass('d-none');
 
                 $("#decodeButton").removeClass('disabled');
