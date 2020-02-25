@@ -15,7 +15,7 @@ To Do List:
 - [x] internalization support 
 - [x] move param link into anchor part
 - [x] test the handlers
-- [ ] password, extra layer of security
+- [x] password, extra layer of security
 - [ ] different destruction times
 - [ ] more info, faq, etc.
  
