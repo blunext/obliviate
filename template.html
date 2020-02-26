@@ -260,6 +260,8 @@
         password: false,
         hash: '',
         loadCypher: function () {
+            decodeButtonAccessibility(false);
+
             const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
             urlNonce = nacl.util.decodeBase64(nonce);
             decrypt.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
@@ -270,7 +272,6 @@
                 obj.password = true;
             }
 
-            decodeButtonAccessibility(false);
             post('POST', obj, '/read', decrypt.decryptTransmission, decrypt.loadError);
         },
         decryptTransmission: function (result) {
@@ -295,10 +296,10 @@
             decrypt.decryptMessage();
         },
         decryptMessage: function () {
+            decodeButtonAccessibility(false);
             if (decrypt.password) {
                 const password = $('#decryptPassword').val();
                 if (password.length > 0) {
-                    decodeButtonAccessibility(false);
                     calculateKeyDerived(password, decrypt.salt, scryptLogN, decrypt.scryptCallback);
                 } else {
                     $("#decryptPassword").addClass('is-invalid');
