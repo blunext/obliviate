@@ -30,7 +30,7 @@
         <textarea class="form-control mb-3" id="message" rows="4" maxlength="262144" autofocus></textarea>
         <div class="container">
             <div class="row"> {{/* password */}}
-                <div class="input-group input-group-sm mb-2 collapse" id="passwordBlock">
+                <div class="input-group mb-3 collapse" id="passwordBlock">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{.password}}</span>
                     </div>
@@ -40,12 +40,12 @@
             </div>
             <div class="row">
                 <div class="col-sm mb-2">
-                    <button type="button" class="btn btn-success btn-block" data-toggle="collapse"
+                    <button type="button" class="btn btn-success btn-block btn-lg" data-toggle="collapse"
                             data-target="#passwordBlock">Hasło
                     </button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block" id="encodeButton"
+                    <button type="button" class="btn btn-primary btn-block btn-lg" id="encodeButton"
                             onclick="encrypt.processEncode();">
                         <span class="spinner-border spinner-border-sm d-none" id="encodeButtonSpinner"></span>
                         {{.secureButton}}
@@ -57,16 +57,16 @@
     {{/* final link */}}
     <div class="form-group d-none" id="linkBlock">
         <label for="link" class="text-secondary">{{.copyLink}}</label>
-        <textarea class="form-control mb-2" id="link" rows="1"></textarea>
+        <textarea class="form-control mb-3" id="link" rows="1"></textarea>
         <div class="container">
             <div class="row">
                 <div class="col-sm mb-2">
-                    <button type="button" class="btn btn-warning btn-block" data-clipboard-action="copy"
+                    <button type="button" class="btn btn-warning btn-block btn-lg" data-clipboard-action="copy"
                             data-clipboard-target="#link">{{.copyLinkButton}}
                     </button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block"
+                    <button type="button" class="btn btn-primary btn-block btn-lg"
                             onclick="again();">{{.newMessageButton}}
                     </button>
                 </div>
@@ -85,7 +85,7 @@
             </div>
             <div class="row">
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block"
+                    <button type="button" class="btn btn-primary btn-block btn-lg"
                             onclick="again();">{{.newMessageButton}}
                     </button>
                 </div>
@@ -102,7 +102,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-group input-group-sm mb-2" id="decryptPasswordBlock">
+                <div class="input-group mb-3" id="decryptPasswordBlock">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{.password}}</span>
                     </div>
@@ -112,14 +112,14 @@
             </div>
             <div class="row">
                 <div class="col-sm mb-2" id="decodeButtonBlock">
-                    <button type="button" class="btn btn-warning btn-block"
+                    <button type="button" class="btn btn-warning btn-block btn-lg"
                             id="decodeButton"{{/* onclick="processDecode();"*/}}>
                         <span class="spinner-border spinner-border-sm d-none" id="decodeButtonSpinner"></span>
                         {{.readMessageButton}}
                     </button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block"
+                    <button type="button" class="btn btn-primary btn-block btn-lg"
                             onclick="again();">{{.newMessageButton}}
                     </button>
                 </div>
@@ -261,9 +261,14 @@
         hash: '',
         loadCypher: function () {
             decodeButtonAccessibility(false);
-
             const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
-            urlNonce = nacl.util.decodeBase64(nonce);
+            try {
+                urlNonce = nacl.util.decodeBase64(nonce);
+            } catch (ex) {
+                decodeButtonAccessibility(true);
+                alert('{{.linkIsCorrupted}}');
+                return;
+            }
             decrypt.hash = nacl.util.encodeBase64(nacl.hash(urlNonce));
             const obj = {};
             obj.hash = decrypt.hash;
@@ -296,6 +301,7 @@
             decrypt.decryptMessage();
         },
         decryptMessage: function () {
+            // $("#decryptPassword").removeClass('is-invalid');
             decodeButtonAccessibility(false);
             if (decrypt.password) {
                 const password = $('#decryptPassword').val();
@@ -348,6 +354,7 @@
         loadError: function (XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest.status == 404) {
                 $("#decodeButtonBlock").addClass('d-none');
+                $("#decryptPasswordBlock").addClass('d-none');
                 $("#errorForDecodedMessage").removeClass('d-none');
                 decodeButtonAccessibility(true);
             } else {
@@ -374,7 +381,7 @@
     let keys = nacl.box.keyPair();
     let urlNonce = '';
     const queryIndexWithPassword = 4;
-    const scryptLogN = 14;
+    const scryptLogN = 18;
 
     const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
     if (isMobile) {
@@ -445,7 +452,7 @@
             } catch (ex) {
                 alert(ex.message); //TODO: process the exception
             }
-        });
+        }, 100); // it freezes the UI sometimes so  postpone invocation
     }
 
     var getTime = (function () {
@@ -505,7 +512,6 @@
         if (state) {
             $("#encodeButton").removeClass('disabled');
             $("#encodeButtonSpinner").addClass('d-none');
-
         } else {
             $("#encodeButton").addClass('disabled');
             $("#encodeButtonSpinner").removeClass('d-none');
@@ -516,7 +522,6 @@
         if (state) {
             $("#decodeButton").removeClass('disabled');
             $("#decodeButtonSpinner").addClass('d-none');
-
         } else {
             $("#decodeButton").addClass('disabled');
             $("#decodeButtonSpinner").removeClass('d-none');

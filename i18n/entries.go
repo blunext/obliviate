@@ -31,7 +31,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"password", "Password"},
 		{"passwordEncodePlaceholder", "for max safety"},
 		{"passwordDecodePlaceholder", "enter password"},
-		{"wrongPassword", "wrong password"},
+		{"linkIsCorrupted", "Link is corrupted"},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -56,6 +56,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"password", "Hasło"},
 		{"passwordEncodePlaceholder", "dla maksymalnego bezpieczeństwa"},
 		{"passwordDecodePlaceholder", "wprowadź hasło"},
-		{"wrongPassword", "błędne hasło"},
+		{"linkIsCorrupted", "Link jest uszkodzony"},
 	},
 }
