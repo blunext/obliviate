@@ -301,7 +301,7 @@
             decrypt.decryptMessage();
         },
         decryptMessage: function () {
-            // $("#decryptPassword").removeClass('is-invalid');
+            $("#decryptPassword").removeClass('is-invalid');
             decodeButtonAccessibility(false);
             if (decrypt.password) {
                 const password = $('#decryptPassword').val();
