@@ -344,7 +344,7 @@
             if (decrypt.password) {
                 const obj = {};
                 obj.hash = decrypt.hash;
-                post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteError);
+                post('DELETE', obj, '/delete', decrypt.deleteSuccess, decrypt.deleteAgain(obj));
             }
 
         },
@@ -367,7 +367,15 @@
         },
         deleteSuccess: function () { // do nothing
         },
-        deleteError: function (XMLHttpRequest, textStatus, errorThrown) { // do nothing
+        deleteAgain: function (obj) {
+            return function (XMLHttpRequest, textStatus, errorThrown) {
+                // try to delate again
+                window.setTimeout(function () {
+                    post('DELETE', obj, '/delete?again', decrypt.deleteSuccess, decrypt.deleteError);
+                }, 500);
+            }
+        },
+        deleteError: function (XMLHttpRequest, textStatus, errorThrown) {// do nothing
         }
     };
 
