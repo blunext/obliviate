@@ -1,9 +1,10 @@
-Tool uses various method of encryption to ensure maximum privacy (Curve25519, XSalsa20, RSA)
+Tool uses various method of encryption to ensure maximum privacy (Curve25519, XSalsa20, RSA, Scrypt key derivation function).
 
 Message is ecrypted with NaCl Secret Box using https://tweetnacl.js.org/, JavaScript implementation of 
-Networking and Cryptography library (NaCl https://nacl.cr.yp.to/).  Nonce used for Secret Box is used 
-as a part of the link generated to retrieve the message. Nonce is necessary to decrypt the message, it is not 
-saved anywhere else so only user using the link can decode the message. 
+Networking and Cryptography library (NaCl https://nacl.cr.yp.to/). Nonce used for Secret Box is used to generate 
+link anchor which is used then to retrieve the message. Nonce is necessary to decrypt the message, it is not 
+saved anywhere else so only user using the link can decode the message. To increase security one can use a password. 
+This password will be used to generate ephemeral security key. 
 
 Encrypted message with secret key is sealed again using asymetric algoritm NaCl Box and stored in Database. 
 

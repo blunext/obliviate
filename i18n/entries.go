@@ -22,14 +22,15 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"readMessageButton", "Read message"},
 		{"infoHeader", "info about"},
 		{"info", "This tool was built with care and respect to your privacy. " +
-			"Tool uses various method of encryption to ensure maximum privacy. Tool is Open Source and code is publicly accessible. " +
-			"Feel free to look and see how it was made. More info you can find on"},
+			"Tool uses various method of encryption to ensure maximum privacy. To increase security feel free to use password. " +
+			"Tool is Open Source and code is publicly accessible. " +
+			"Feel free to look and see how it was made. More info you can find on "},
 		{"linkCorrupted", "Link is corrupted"},
 		{"generalError", "Something went wrong. Try again later."},
 		{"encryptNetworkError", "Something went wrong. Cannot save the message. Please try again."},
 		{"decryptNetworkError", "Something went wrong. Cannot load the message. Please try again."},
 		{"password", "Password"},
-		{"passwordEncodePlaceholder", "for max safety"},
+		{"passwordEncodePlaceholder", "Use password to increase security"},
 		{"passwordDecodePlaceholder", "enter password"},
 		{"linkIsCorrupted", "Link is corrupted"},
 	},
@@ -47,14 +48,14 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"readMessageButton", "Odszyfruj wiadomość"},
 		{"infoHeader", "opis"},
 		{"info", "Narzędzie używa różnych metod szyfrowania, aby zapewnić maksymalne bezpieczeństwo. " +
-			"Bez posiadania linku nie ma możliwości odszyfrowania wiadomości. " +
-			"Kod źródłowy narzędzia jest otwarty i możesz go sobie pobrać lub przejrzeć w serwisie "},
+			"Bez posiadania linku nie ma możliwości odszyfrowania wiadomości. Użyj hasła aby dodatkowo zwiększyć bezpieczeństwo. " +
+			"Kod źródłowy narzędzia jest otwarty i możesz go obejrzeć w serwisie "},
 		{"linkCorrupted", "Link uszkodzony"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
 		{"encryptNetworkError", "Coś poszło nie tak. Nie mogę zapisać wiadomości. Spróbuj ponownie."},
 		{"decryptNetworkError", "Coś poszło nie tak. Nie mogę odczytać wiadomości. Spróbuj ponownie."},
 		{"password", "Hasło"},
-		{"passwordEncodePlaceholder", "dla maksymalnego bezpieczeństwa"},
+		{"passwordEncodePlaceholder", "Użyj hasła aby zwiększyć bezpieczeństwo"},
 		{"passwordDecodePlaceholder", "wprowadź hasło"},
 		{"linkIsCorrupted", "Link jest uszkodzony"},
 	},
