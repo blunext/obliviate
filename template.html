@@ -369,10 +369,10 @@
         },
         deleteAgain: function (obj) {
             return function (XMLHttpRequest, textStatus, errorThrown) {
-                // try to delate again
+                // try to delete again
                 window.setTimeout(function () {
                     post('DELETE', obj, '/delete?again', decrypt.deleteSuccess, decrypt.deleteError);
-                }, 500);
+                }, 750);
             }
         },
         deleteError: function (XMLHttpRequest, textStatus, errorThrown) {// do nothing
