@@ -154,9 +154,7 @@
     </div>
 </div>
 
-</body>
-
-<script type="text/javascript">
+<script>
     'use strict';
 
     const encrypt = {
@@ -428,6 +426,9 @@
     }
 
     function arraySlice(arr, x, y) {
+        if (!document.documentMode && !/Edge/.test(navigator.userAgent)) {
+            return arr.slice(x, y);
+        }
         let ret = [];
         for (let i = 0; i < arr.length; i++) {
             if (i >= x && i < y) {
@@ -452,7 +453,7 @@
                     function (res) {
                         const time = Math.round(getTime() - t1);
                         callback(res, time);
-                    },
+                    }
                 );
             } catch (ex) {
                 alert(ex.message); //TODO: process the exception
@@ -532,8 +533,8 @@
             $("#decodeButtonSpinner").removeClass('d-none');
         }
     }
-
 </script>
+</body>
 </html>
 
 
