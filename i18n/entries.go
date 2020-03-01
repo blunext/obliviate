@@ -33,7 +33,8 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncodePlaceholder", "Use password to increase security"},
 		{"passwordDecodePlaceholder", "enter password"},
 		{"linkIsCorrupted", "Link is corrupted"},
-		{"ieWarning", "Internet Explorer detected. Operation may take few seconds. Please be patient."},
+		{"ieEncryptWarning", "Internet Explorer detected. Encryption may take a few seconds. Please be patient."},
+		{"ieDecryptWarning", "Internet Explorer detected. Decryption may take a few seconds. Please be patient."},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -59,6 +60,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncodePlaceholder", "Użyj hasła aby zwiększyć bezpieczeństwo"},
 		{"passwordDecodePlaceholder", "wprowadź hasło"},
 		{"linkIsCorrupted", "Link jest uszkodzony"},
-		{"ieWarning", "Używasz Internet Explorera. Operacja może potrwać parę sekund. Proszę o cierpliwość."},
+		{"ieEncryptWarning", "Używasz Internet Explorera. Szyfrowanie może potrwać parę sekund. Proszę o cierpliwość."},
+		{"ieDecryptWarning", "Używasz Internet Explorera. Odszyfrowanie może potrwać parę sekund. Proszę o cierpliwość."},
 	},
 }

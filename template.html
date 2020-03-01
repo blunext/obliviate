@@ -37,7 +37,8 @@
                         <input type="text" class="form-control" id="password"
                                placeholder="{{.passwordEncodePlaceholder}}">
                     </div>
-                    <div class="col-sm text-danger text-center font-weight-light d-none" id="ie">{{.ieWarning}}</div>
+                    <div class="col-sm text-danger text-center font-weight-light d-none"
+                         id="ieEncryptWarning">{{.ieEncryptWarning}}</div>
                 </div>
             </div>
             <div class="row">
@@ -105,11 +106,15 @@
             </div>
             <div class="row">
                 <div class="input-group mb-3" id="decryptPasswordBlock">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{.password}}</span>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{.password}}</span>
+                        </div>
+                        <input type="text" class="form-control" id="decryptPassword"
+                               placeholder="{{.passwordDecodePlaceholder}}">
                     </div>
-                    <input type="text" class="form-control" id="decryptPassword"
-                           placeholder="{{.passwordDecodePlaceholder}}">
+                    <div class="col-sm text-danger text-center font-weight-light d-none"
+                         id="ieDecryptWarning">{{.ieDecryptWarning}}</div>
                 </div>
             </div>
             <div class="row">
@@ -380,32 +385,6 @@
         }
     };
 
-    // ----- init
-    new ClipboardJS('.btn');
-
-    const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
-    let keys = nacl.box.keyPair();
-    let urlNonce = '';
-    const queryIndexWithPassword = 4;
-    const scryptLogN = 14;
-
-    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
-    if (isMobile) {
-        $("#link").attr('rows', 2);
-    }
-
-    if (window.location.hash) {
-        decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
-        showDecodeButton();
-    } else {
-        showEnterMessage();
-    }
-
-    // necessary for .off('click')
-    $("#decodeButton").click(function (e) {
-        decrypt.loadCypher();
-    });
-
     // -------
 
     function again() {
@@ -468,6 +447,37 @@
 
     function IE() {
         return window.document.documentMode;
+    }
+
+    // ----- init
+    new ClipboardJS('.btn');
+
+    const serverPublicKey = nacl.util.decodeBase64('{{.PublicKey}}');
+    let keys = nacl.box.keyPair();
+    let urlNonce = '';
+    const queryIndexWithPassword = 4;
+    const scryptLogN = 14;
+
+    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+    if (isMobile) {
+        $("#link").attr('rows', 2);
+    }
+
+    if (window.location.hash) {
+        decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+        showDecodeButton();
+    } else {
+        showEnterMessage();
+    }
+
+    // necessary for .off('click')
+    $("#decodeButton").click(function (e) {
+        decrypt.loadCypher();
+    });
+
+    if (IE()) {
+        $("#ieEncryptWarning").removeClass('d-none');
+        $("#ieDecryptWarning").removeClass('d-none');
     }
 
     var getTime = (function () {
