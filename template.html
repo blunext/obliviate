@@ -30,11 +30,14 @@
         <div class="container">
             <div class="row"> {{/* password */}}
                 <div class="input-group mb-3 collapse" id="passwordBlock">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{.password}}</span>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{.password}}</span>
+                        </div>
+                        <input type="text" class="form-control" id="password"
+                               placeholder="{{.passwordEncodePlaceholder}}">
                     </div>
-                    <input type="text" class="form-control" id="password"
-                           placeholder="{{.passwordEncodePlaceholder}}">
+                    <div class="col-sm text-danger text-center font-weight-light d-none" id="ie">{{.ieWarning}}</div>
                 </div>
             </div>
             <div class="row">
@@ -426,9 +429,10 @@
     }
 
     function arraySlice(arr, x, y) {
-        if (!document.documentMode && !/Edge/.test(navigator.userAgent)) {
+        if (!IE()) {
             return arr.slice(x, y);
         }
+        // IE stuff
         let ret = [];
         for (let i = 0; i < arr.length; i++) {
             if (i >= x && i < y) {
@@ -439,6 +443,7 @@
     }
 
     function calculateKeyDerived(password, salt, logN, callback) {
+        let postpone = IE() ? 0 : 750;
         window.setTimeout(function () {
             try {
                 const t1 = getTime();
@@ -458,7 +463,11 @@
             } catch (ex) {
                 alert(ex.message); //TODO: process the exception
             }
-        }, 750); // it freezes the UI sometimes so  postpone invocation
+        }, postpone); // it freezes the UI so postpone invocation
+    }
+
+    function IE() {
+        return window.document.documentMode;
     }
 
     var getTime = (function () {
@@ -520,7 +529,9 @@
             $("#encodeButtonSpinner").addClass('d-none');
         } else {
             $("#encodeButton").addClass('disabled');
-            $("#encodeButtonSpinner").removeClass('d-none');
+            if (!IE()) {
+                $("#encodeButtonSpinner").removeClass('d-none');
+            }
         }
     }
 
@@ -530,7 +541,9 @@
             $("#decodeButtonSpinner").addClass('d-none');
         } else {
             $("#decodeButton").addClass('disabled');
-            $("#decodeButtonSpinner").removeClass('d-none');
+            if (!IE()) {
+                $("#decodeButtonSpinner").removeClass('d-none');
+            }
         }
     }
 </script>
