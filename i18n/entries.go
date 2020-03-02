@@ -17,7 +17,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"copyLink", "Copy link and send it to a friend. Message will be deleted after being read or after 4 weeks when not read."},
 		{"copyLinkButton", "Copy link"},
 		{"newMessageButton", "New message"},
-		{"decodedMessage", "Decoded message"},
+		{"decodedMessage", "Decrypted message"},
 		{"messageRead", "Message was already read, deleted or link is corrupted"},
 		{"readMessageButton", "Read message"},
 		{"infoHeader", "info about"},
