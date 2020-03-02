@@ -13,7 +13,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"header", "Private secure notes"},
 		{"description", "Highly secure message encryption open source tool."},
 		{"enterTextMessage", "Enter text message to be encrypted"},
-		{"secureButton", "Secure message"},
+		{"secureButton", "Encrypt message"},
 		{"copyLink", "Copy link and send it to a friend. Message will be deleted after being read or after 4 weeks when not read."},
 		{"copyLinkButton", "Copy link"},
 		{"newMessageButton", "New message"},

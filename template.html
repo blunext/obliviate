@@ -48,7 +48,7 @@
                     </button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-block btn-lg" id="encodeButton"
+                    <button type="button" class="btn btn-danger btn-block btn-lg" id="encodeButton"
                             onclick="encrypt.processEncode();">
                         <span class="spinner-border spinner-border-sm d-none" id="encodeButtonSpinner"></span>
                         {{.secureButton}}
@@ -119,7 +119,7 @@
             </div>
             <div class="row">
                 <div class="col-sm mb-2" id="decodeButtonBlock">
-                    <button type="button" class="btn btn-warning btn-block btn-lg"
+                    <button type="button" class="btn btn-danger btn-block btn-lg"
                             id="decodeButton"{{/* onclick="processDecode();"*/}}>
                         <span class="spinner-border spinner-border-sm d-none" id="decodeButtonSpinner"></span>
                         {{.readMessageButton}}
