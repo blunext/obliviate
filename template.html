@@ -34,8 +34,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">{{.password}}</span>
                         </div>
-                        <input type="text" class="form-control" id="password"
-                               placeholder="{{.passwordEncodePlaceholder}}">
+                        <input type="text" class="form-control" id="encryptPassword"
+                               placeholder="{{.passwordEncryptPlaceholder}}">
                     </div>
                     <div class="col-sm text-danger text-center font-weight-light d-none"
                          id="ieEncryptWarning">{{.ieEncryptWarning}}</div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="col-sm">
                     <button type="button" class="btn btn-danger btn-block btn-lg" id="encodeButton"
-                            onclick="encrypt.processEncode();">
+                            onclick="encrypt.processEncrypt();">
                         <span class="spinner-border spinner-border-sm d-none" id="encodeButtonSpinner"></span>
                         {{.secureButton}}
                     </button>
@@ -111,7 +111,7 @@
                             <span class="input-group-text">{{.password}}</span>
                         </div>
                         <input type="text" class="form-control" id="decryptPassword"
-                               placeholder="{{.passwordDecodePlaceholder}}">
+                               placeholder="{{.passwordDecryptPlaceholder}}">
                     </div>
                     <div class="col-sm text-danger text-center font-weight-light d-none"
                          id="ieDecryptWarning">{{.ieDecryptWarning}}</div>
@@ -120,7 +120,7 @@
             <div class="row">
                 <div class="col-sm mb-2" id="decodeButtonBlock">
                     <button type="button" class="btn btn-danger btn-block btn-lg"
-                            id="decodeButton"{{/* onclick="processDecode();"*/}}>
+                            id="decodeButton">
                         <span class="spinner-border spinner-border-sm d-none" id="decodeButtonSpinner"></span>
                         {{.readMessageButton}}
                     </button>
@@ -171,7 +171,7 @@
         salt: '',
         password: false,
         time: 0,
-        processEncode: function () {
+        processEncrypt: function () {
             if ($("#passwordBlock").hasClass("collapsing")) {
                 return;
             }
@@ -183,15 +183,15 @@
             $("#message").removeClass('is-invalid');
 
             if ($("#passwordBlock").hasClass("show")) {
-                const password = $('#password').val();
+                const password = $('#encryptPassword').val();
                 if (password.length > 0) {
                     encodeButtonAccessibility(false);
                     encrypt.password = true;
                     encrypt.salt = nacl.randomBytes(nacl.secretbox.keyLength); // the same as key, 32 bytes
                     calculateKeyDerived(password, encrypt.salt, scryptLogN, encrypt.scryptCallback);
-                    $('#password').removeClass('is-invalid');
+                    $('#encryptPassword').removeClass('is-invalid');
                 } else {
-                    $('#password').addClass('is-invalid');
+                    $('#encryptPassword').addClass('is-invalid');
                 }
                 return;
             } else {
@@ -499,7 +499,7 @@
 
         $("#message").focus();
         $('#link').val("");
-        $('#password').val("");
+        $('#encryptPassword').val("");
     }
 
     function showLink() {
