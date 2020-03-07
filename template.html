@@ -246,7 +246,11 @@
             } else {
                 index = 3;
             }
-            const url = document.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
+            if (!window.location.origin) { // IE fix
+                window.location.origin = window.location.protocol + "//" + window.location.hostname +
+                    (window.location.port == 443 ? "" : ":" + window.location.port);
+            }
+            const url = window.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
             $('#link').val(url);
             showLink();
         },
