@@ -11,7 +11,7 @@ var translationsSet = map[language.Tag][]translationPair{
 	language.English: {
 		{"title", "Private and secure notes - send your secrets safely."},
 		{"header", "Private secure notes"},
-		{"description", "Highly secure message encryption open source tool."},
+		{"description", "Highly secure message encryption and open source tool that auto-destruct."},
 		{"enterTextMessage", "Enter text message to be encrypted"},
 		{"secureButton", "Encrypt message"},
 		{"copyLink", "Copy link and send it to a friend. Message will be deleted after being read or after 4 weeks when not read."},
@@ -39,7 +39,7 @@ var translationsSet = map[language.Tag][]translationPair{
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
 		{"header", "Prywatne wiadomości"},
-		{"description", "Bezpieczne zakodowane wiadomości"},
+		{"description", "Bezpieczne szyfrowane wiadomości"},
 		{"enterTextMessage", "Wprowadź wiadomość"},
 		{"secureButton", "Szyfruj wiadomość"},
 		{"copyLink", "Skopiuj link i prześlij do przyjaciela. Wiadomość będzie skasowana natychmiast po odczytaniu lub po 4 tygodniach."},
