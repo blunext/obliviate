@@ -65,7 +65,7 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	logrus.Debugf("massage saved, key: %s", data.Key())
+	logrus.Debugf("massage saved, key: %v, t: %d, len: %d", data.Key(), data.Message.Time, len(data.Message.Txt))
 	return nil
 }
 
