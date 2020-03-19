@@ -24,7 +24,10 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"info", "This tool was built with care and respect to your privacy. " +
 			"Tool uses various method of encryption to ensure maximum privacy. To increase security feel free to use password. " +
 			"Tool is Open Source and code is publicly accessible. " +
-			"Feel free to look and see how it was made. More info you can find on "},
+			"Feel free to look and see how it was made. More info you can find on"},
+		{"info1", "If you want to contact us please send an"},
+		{"info2", "email"},
+		{"info3", "All translation initiatives are welcome."},
 		{"linkCorrupted", "Link is corrupted"},
 		{"generalError", "Something went wrong. Try again later."},
 		{"encryptNetworkError", "Something went wrong. Cannot save the message. Please try again."},
@@ -51,7 +54,10 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"infoHeader", "opis"},
 		{"info", "Narzędzie używa różnych metod szyfrowania, aby zapewnić maksymalne bezpieczeństwo. " +
 			"Bez posiadania linku nie ma możliwości odszyfrowania wiadomości. Użyj hasła aby dodatkowo zwiększyć bezpieczeństwo. " +
-			"Kod źródłowy narzędzia jest otwarty i możesz go obejrzeć w serwisie "},
+			"Kod źródłowy narzędzia jest otwarty i możesz go obejrzeć w serwisie"},
+		{"info1", "Jeśli chcesz się z nami skontaktować wyślij nam"},
+		{"info2", "wiadomość"},
+		{"info3", ""},
 		{"linkCorrupted", "Link uszkodzony"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
 		{"encryptNetworkError", "Coś poszło nie tak. Nie mogę zapisać wiadomości. Spróbuj ponownie."},
