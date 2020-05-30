@@ -57,7 +57,8 @@ func main() {
 	app := app.NewApp(db, &conf, keys)
 
 	r := chi.NewRouter()
-	r.Use(middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript").Handler())
+	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript")
+	r.Use(compressor.Handler)
 
 	r.Get("/", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
 	r.Post("/save", handler.Save(app))
