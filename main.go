@@ -44,7 +44,6 @@ func main() {
 		if err := profiler.Start(profiler.Config{
 			Service:        os.Getenv("OBLIVIATE_PROJECT_ID"),
 			ServiceVersion: "1.0.0",
-			DebugLogging:   true,
 		}); err != nil {
 			logrus.Warnf("ERROR starting profiler: %v", err)
 		}
