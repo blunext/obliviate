@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cloud.google.com/go/profiler"
 	"context"
 	"fmt"
 	"github.com/go-chi/chi"
@@ -40,6 +41,13 @@ func main() {
 
 	if conf.ProdEnv {
 		initLogrus(logrus.DebugLevel)
+		if err := profiler.Start(profiler.Config{
+			Service:        os.Getenv("OBLIVIATE_PROJECT_ID"),
+			ServiceVersion: "1.0.0",
+			DebugLogging:   true,
+		}); err != nil {
+			logrus.Warnf("ERROR starting profiler: %v", err)
+		}
 		db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
