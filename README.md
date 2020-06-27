@@ -23,3 +23,34 @@ To Do List:
 - [ ] different destruction times
 - [ ] more info, faq, etc.
  
+Try it locally:
+```
+go build
+./obliviate 
+```
+and go http://localhost:3000/
+
+For production use you need Google Cloud Run (https://cloud.google.com/run) set and ready and then you need:
+- Install GCP SDK (https://cloud.google.com/sdk/docs)
+- Firestore DB enabled for your GCP Project (https://cloud.google.com/firestore/docs)
+- Google HSM or KMS enabled (https://cloud.google.com/kms/docs)
+- Container Registry enabled (https://cloud.google.com/container-registry/docs)
+- optional GCP Profiler enabled (https://cloud.google.com/profiler)
+- all necessary permission for Firestore, Key and Registry service to use with Cloud Run Service
+- modify deploy.sh for your setup
+- run docker 
+- run ./deploy.sh
+- go to Cloud Run Console, create new service, choose deployed container and set environment variables: 
+    - ENV = "PROD"
+    - HSM_MASTER_KEY = Key version resource ID, see https://cloud.google.com/kms/docs/object-hierarchy#key_version
+    - OBLIVIATE_PROJECT_ID = GCP Project ID
+
+If you want to run it without Google Cloud on your private server you should:
+- implement your own DataBase interface methods and use it instead of firestore in main.go
+- implement your own EncryptionOnRest interface methods if you want to keep the highest security and use it in main.go. 
+If not, just mock it.
+- get rid of Google Profiler setup from main.go
+- set proper listening port in main.go
+- if you want to add more languages add them in entries in i18n package
+- build and deploy it accordingly to your web server environment demands 
+

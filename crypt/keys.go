@@ -19,7 +19,7 @@ type Keys struct {
 	PublicKeyEncoded string
 }
 
-func NewKeys(db store.Connection, conf *config.Configuration, algorithm rsa.RSA) (*Keys, error) {
+func NewKeys(db store.DataBase, conf *config.Configuration, algorithm rsa.EncryptionOnRest) (*Keys, error) {
 
 	k := Keys{}
 
@@ -30,7 +30,7 @@ func NewKeys(db store.Connection, conf *config.Configuration, algorithm rsa.RSA)
 
 	if encrypted != nil {
 		// decrypt Keys
-		decrypted, err := algorithm.DecryptRSA(conf, encrypted)
+		decrypted, err := algorithm.Decrypt(conf, encrypted)
 		if err != nil {
 			return nil, fmt.Errorf("error decryting keys: %v", err)
 		}
@@ -51,7 +51,7 @@ func NewKeys(db store.Connection, conf *config.Configuration, algorithm rsa.RSA)
 		both := append(k.PublicKey[:], k.PrivateKey[:]...)
 
 		// encrypt Keys
-		encrypted, err = algorithm.EncryptRSA(conf, both)
+		encrypted, err = algorithm.Encrypt(conf, both)
 		if err != nil {
 			return nil, fmt.Errorf("error encrypting keys: %v", err)
 		}

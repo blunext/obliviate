@@ -13,7 +13,7 @@ import (
 )
 
 var conf *config.Configuration
-var db store.Connection
+var db store.DataBase
 
 func init() {
 	formatter := new(logrus.TextFormatter)

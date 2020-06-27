@@ -14,9 +14,9 @@ import (
 	"obliviate/config"
 )
 
-type RSA interface {
-	EncryptRSA(*config.Configuration, []byte) ([]byte, error)
-	DecryptRSA(*config.Configuration, []byte) ([]byte, error)
+type EncryptionOnRest interface {
+	Encrypt(*config.Configuration, []byte) ([]byte, error)
+	Decrypt(*config.Configuration, []byte) ([]byte, error)
 }
 
 type Algorithm struct{}
@@ -27,7 +27,7 @@ func NewAlgorithm() Algorithm {
 
 // encryptRSA will encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256'
 // public key retrieved from Cloud KMS.
-func (Algorithm) EncryptRSA(conf *config.Configuration, plaintext []byte) ([]byte, error) {
+func (Algorithm) Encrypt(conf *config.Configuration, plaintext []byte) ([]byte, error) {
 	var err error
 	var client *cloudkms.KeyManagementClient
 
@@ -56,10 +56,10 @@ func (Algorithm) EncryptRSA(conf *config.Configuration, plaintext []byte) ([]byt
 
 	rsaKey, ok := abstractKey.(*rsa.PublicKey)
 	if !ok {
-		return nil, fmt.Errorf("key %v is not RSA", conf.MasterKey)
+		return nil, fmt.Errorf("key %v is not EncryptionOnRest", conf.MasterKey)
 	}
 
-	// Encrypt data using the RSA public key.
+	// Encrypt data using the EncryptionOnRest public key.
 	cipherText, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, rsaKey, plaintext, nil)
 	if err != nil {
 		return nil, fmt.Errorf("rsa.EncryptOAEP: %v", err)
@@ -70,7 +70,7 @@ func (Algorithm) EncryptRSA(conf *config.Configuration, plaintext []byte) ([]byt
 
 // decryptRSA will attempt to decrypt a given ciphertext with an
 // private key stored on Cloud KMS.
-func (Algorithm) DecryptRSA(conf *config.Configuration, ciphertext []byte) ([]byte, error) {
+func (Algorithm) Decrypt(conf *config.Configuration, ciphertext []byte) ([]byte, error) {
 	var err error
 	var client *cloudkms.KeyManagementClient
 

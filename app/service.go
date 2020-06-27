@@ -15,10 +15,10 @@ import (
 type App struct {
 	config *config.Configuration
 	keys   *crypt.Keys
-	db     store.Connection
+	db     store.DataBase
 }
 
-func NewApp(db store.Connection, config *config.Configuration, keys *crypt.Keys) *App {
+func NewApp(db store.DataBase, config *config.Configuration, keys *crypt.Keys) *App {
 	app := App{
 		config: config,
 		keys:   keys,

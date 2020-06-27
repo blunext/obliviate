@@ -29,7 +29,7 @@ type testParams struct {
 }
 
 var conf *config.Configuration
-var db store.Connection
+var db store.DataBase
 
 var params = []testParams{
 

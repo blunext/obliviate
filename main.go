@@ -36,8 +36,8 @@ func main() {
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
 
-	var algorithm rsa.RSA
-	var db store.Connection
+	var algorithm rsa.EncryptionOnRest
+	var db store.DataBase
 
 	if conf.ProdEnv {
 		initLogrus(logrus.DebugLevel)
@@ -54,6 +54,7 @@ func main() {
 		initLogrus(logrus.TraceLevel)
 		db = mock.StorageMock()
 		algorithm = rsa.NewMockAlgorithm()
+		logrus.Info("Mock DB and encryption started")
 	}
 
 	keys, err := crypt.NewKeys(db, &conf, algorithm)

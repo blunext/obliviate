@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-type Connection interface {
+type DataBase interface {
 	SaveMessage(ctx context.Context, data model.MessageModel) error
 	GetMessage(context.Context, string) (model.MessageType, error)
 	DeleteMessage(context.Context, string)
