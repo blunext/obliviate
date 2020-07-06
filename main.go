@@ -41,12 +41,6 @@ func main() {
 
 	if conf.ProdEnv {
 		initLogrus(logrus.DebugLevel)
-		if err := profiler.Start(profiler.Config{
-			Service:        os.Getenv("OBLIVIATE_PROJECT_ID"),
-			ServiceVersion: "1.0.0",
-		}); err != nil {
-			logrus.Warnf("ERROR starting profiler: %v", err)
-		}
 		db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
@@ -83,6 +77,15 @@ func main() {
 		port = "3000"
 	}
 
+	if conf.ProdEnv {
+		if err := profiler.Start(profiler.Config{
+			Service:        os.Getenv("OBLIVIATE_PROJECT_ID"),
+			ServiceVersion: "1.0.0",
+		}); err != nil {
+			logrus.Warnf("ERROR starting profiler: %v", err)
+		}
+	}
+	
 	logrus.Info("Server starts")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 	if err != nil {
