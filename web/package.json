@@ -15,8 +15,7 @@
     "react-scripts": "3.4.1",
     "scrypt-async": "^2.0.1",
     "tweetnacl": "^1.0.3",
-    "tweetnacl-util": "^0.15.1",
-    "typescript": "^3.9.7"
+    "tweetnacl-util": "^0.15.1"
   },
   "scripts": {
     "start": "PORT=2000 react-scripts start",
