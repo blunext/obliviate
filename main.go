@@ -62,15 +62,15 @@ func main() {
 	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript")
 	r.Use(compressor.Handler)
 
-	r.Get("/", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
+	r.Get("/variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
 	r.Post("/save", handler.Save(app))
 	r.Post("/read", handler.Read(app))
 	r.Delete("/expired", handler.Expired(app))
 	r.Delete("/delete", handler.Delete(app))
 
 	workDir, _ := os.Getwd()
-	filesDir := filepath.Join(workDir, "static")
-	FileServer(r, "/static", http.Dir(filesDir))
+	filesDir := filepath.Join(workDir, "web/build")
+	FileServer(r, "/", http.Dir(filesDir))
 
 	port := os.Getenv("PORT")
 	if port == "" {

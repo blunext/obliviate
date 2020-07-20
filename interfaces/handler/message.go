@@ -42,7 +42,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 
 	var t *template.Template
 	if config.ProdEnv {
-		t = template.Must(template.New("template.html").ParseFiles("template.html"))
+		t = template.Must(template.New("variables.json").ParseFiles("variables.json"))
 	}
 
 	translation := i18n.NewTranslation()
@@ -51,13 +51,13 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		logrus.Trace("ProcessTemplate Handler")
 
 		if !config.ProdEnv {
-			t, _ = template.New("template.html").ParseFiles("template.html")
+			t, _ = template.New("variables.json").ParseFiles("variables.json")
 		}
-
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Header().Set("Cache-Control", "no-cache, no-store")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		data := translation.GetTranslation(r.Header.Get("Accept-Language"))
 		data["PublicKey"] = publicKey
