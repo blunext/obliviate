@@ -27,7 +27,7 @@ RUN apk add --no-cache ca-certificates
 COPY --from=builder /app/server /server
 
 COPY --from=builder /app/variables.json /.
-COPY --from=builder /app/web/build /static/
+COPY --from=builder /app/web/build /web/build/
 
 # Run the web service on container startup.
 CMD ["/server"]
