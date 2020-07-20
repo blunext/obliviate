@@ -6,10 +6,43 @@ import './index.css';
 import './obliviate.js';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
-import {config} from './constants'
+import {libs} from './commons'
+import $ from "jquery";
+import nacl from "tweetnacl";
+import naclutil from "tweetnacl-util";
+import ClipboardJS from "clipboard";
+
+
+new ClipboardJS('.btn');
+let serverPublicKey = '';
+let keys = nacl.box.keyPair();
+
+let urlNonce = '';
+const queryIndexWithPassword = 4;
+
+const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+if (isMobile) {
+    $("#link").attr('rows', 2);
+}
+
+// if (window.location.hash) {
+//     decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+//     showDecodeButton();
+// } else {
+//     showEnterMessage();
+// }
+
+// // necessary for .off('click')
+// $("#decodeButton").click(function (e) {
+//     decrypt.loadCypher();
+// });
+
+if (libs.IE()) {
+    $("#ieEncryptWarning").removeClass('d-none');
+    $("#ieDecryptWarning").removeClass('d-none');
+}
 
 class Encrypt extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -24,20 +57,131 @@ class Encrypt extends React.Component {
             info1: this.props.var.info1,
             info2: this.props.var.info2,
             info3: this.props.var.info3,
+            //---
             message: '', messagePassword: '',
+            hasPassword: false,
+            secretKey: '',
+            salt: '',
+            time: 0,
         };
     }
 
     onChangeMessage = (event) => {
         this.setState({message: event.target.value});
     }
-
     onChangePassword = (event) => {
         this.setState({messagePassword: event.target.value});
     }
 
-    processEncrypt = (event) => {
-        alert("klik, " + this.state.message + " " + this.state.messagePassword)
+    processEncrypt = (e) => {
+        debugger;
+        if ($("#passwordBlock").hasClass("collapsing")) {
+            return;
+        }
+        // encrypt.message = $('#message').val();
+        if (this.state.message.length === 0) {
+            $("#message").addClass('is-invalid');
+            return;
+        }
+        $("#message").removeClass('is-invalid');
+
+        if ($("#passwordBlock").hasClass("show")) {
+            // const password = $('#encryptPassword').val();
+            if (this.state.password.length > 0) {
+                this.encodeButtonAccessibility(false);
+                this.scope.hasPassword = true;
+
+                this.setState({salt: nacl.randomBytes(nacl.secretbox.keyLength)});  // the same as key, 32 bytes
+                libs.calculateKeyDerived(this.state.password, this.state.salt, libs.scryptLogN, this.scryptCallback);
+                $('#encryptPassword').removeClass('is-invalid');
+            } else {
+                $('#encryptPassword').addClass('is-invalid');
+            }
+            return;
+        } else {
+            this.encodeButtonAccessibility(false);
+        }
+        this.setState({secretKey: nacl.randomBytes(nacl.secretbox.keyLength)})
+        this.continue();
+    }
+    scryptCallback = (key, time) => {
+        this.setState({secretKey: key});
+        this.setState({time: time});
+        this.continue();
+    }
+    continue = () => {
+        debugger;
+        // encrypt message with nacl secretbox
+        const messageUTF8 = nacl.util.decodeUTF8(this.state.message);
+        const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
+
+        const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, this.state.secretKey);
+
+        // nonce will be used as a link anchor
+        urlNonce = nacl.util.encodeBase64(messageNonce);
+
+        // store secret key in the message
+        const fullMessage = new Uint8Array(this.state.secretKey.length + encryptedMessage.length);
+        if (this.state.hasPassword) {
+            fullMessage.set(this.state.salt);
+        } else {
+            fullMessage.set(this.state.secretKey);
+        }
+        fullMessage.set(encryptedMessage, this.state.secretKey.length);
+
+        // encrypt message transmission with nacl box
+        const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength);
+        const transmission = nacl.box(fullMessage, transmissionNonce, serverPublicKey, keys.secretKey);
+
+        const obj = {};
+        obj.message = nacl.util.encodeBase64(transmission);
+        obj.nonce = nacl.util.encodeBase64(transmissionNonce);
+        obj.hash = nacl.util.encodeBase64(nacl.hash(messageNonce));
+        obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
+        if (this.state.hasPassword) {
+            obj.time = this.state.time;
+        }
+
+        libs.post('POST', obj, '/save', this.encodeSuccess, this.encodeError);
+    }
+    encodeButtonAccessibility = (state) => {
+        if (state) {
+            $("#encodeButton").removeClass('disabled');
+            $("#encodeButtonSpinner").addClass('d-none');
+        } else {
+            $("#encodeButton").addClass('disabled');
+            if (!libs.IE()) {
+                $("#encodeButtonSpinner").removeClass('d-none');
+            }
+        }
+    }
+    encodeSuccess = (result) => {
+        let index;
+        if (this.state.hasPassword) {
+            index = queryIndexWithPassword;
+        } else {
+            index = 3;
+        }
+        if (!window.location.origin) { // IE fix
+            window.location.origin = window.location.protocol + "//" + window.location.hostname +
+                (window.location.port === 443 ? "" : ":" + window.location.port);
+        }
+        const url = window.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
+        $('#link').val(url);
+        this.showLink();
+    }
+    encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
+        this.encodeButtonAccessibility(true);
+        alert('{{.encryptNetworkError}}');
+    }
+    function = () => {
+        $("#inputMessageBlock").addClass('d-none');
+        $("#linkBlock").removeClass('d-none');
+        $("#decodeBlock").addClass('d-none');
+        $("#presentationBlock").addClass('d-none');
+
+        $("#message").val("");
+        this.encodeButtonAccessibility(true);
     }
 
     render() {
@@ -86,81 +230,6 @@ class Encrypt extends React.Component {
                         </div>
                     </div>
                 </div>
-                {/*<div className="form-group d-none mt-3 mb-3" id="linkBlock">*/}
-                {/*    <label htmlFor="link" className="text-secondary">{copyLinkButtoncopyLink}</label>*/}
-                {/*    <textarea className="form-control mb-3" id="link" rows="1"></textarea>*/}
-                {/*    <div className="container">*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="col-sm mb-2">*/}
-                {/*                <button type="button" className="btn btn-warning btn-block btn-lg"*/}
-                {/*                        data-clipboard-action="copy"*/}
-                {/*                        data-clipboard-target="#link">{copyLinkButton}*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*            <div className="col-sm">*/}
-                {/*                <button type="button" className="btn btn-primary btn-block btn-lg"*/}
-                {/*                        onClick="again();">{newMessageButton}*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                {/*<div className="form-group d-none mt-3 mb-3" id="presentationBlock">*/}
-                {/*    <div className="container">*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="col-sm text-secondary">*/}
-                {/*                <p className="text-center">{decodedMessage}:</p>*/}
-                {/*                <div className="border-top my-3"></div>*/}
-                {/*                <p id="decodedMessage"></p>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="col-sm">*/}
-                {/*                <button type="button" className="btn btn-primary btn-block btn-lg"*/}
-                {/*                        onClick="again();">{newMessageButton}*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                {/*<div className="form-group d-none mt-3 mb-3" id="decodeBlock">*/}
-                {/*    <div className="container">*/}
-                {/*        <div className="row d-none" id="errorForDecodedMessage">*/}
-                {/*            <div className="col-sm">*/}
-                {/*                <p className="text-secondary">{messageRead}*/}
-                {/*                </p>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="input-group mb-3" id="decryptPasswordBlock">*/}
-                {/*                <div className="input-group">*/}
-                {/*                    <div className="input-group-prepend">*/}
-                {/*                        <span className="input-group-text">{password}</span>*/}
-                {/*                    </div>*/}
-                {/*                    <input type="text" className="form-control" id="decryptPassword"*/}
-                {/*                           placeholder="{passwordDecryptPlaceholder}"/>*/}
-                {/*                </div>*/}
-                {/*                <div className="col-sm text-danger text-center font-weight-light d-none"*/}
-                {/*                     id="ieDecryptWarning">{ieDecryptWarning}</div>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div className="row">*/}
-                {/*            <div className="col-sm mb-2" id="decodeButtonBlock">*/}
-                {/*                <button type="button" className="btn btn-danger btn-block btn-lg"*/}
-                {/*                        id="decodeButton">*/}
-                {/*                    <span className="spinner-border spinner-border-sm d-none"*/}
-                {/*                          id="decodeButtonSpinner"></span>*/}
-                {/*                    {readMessageButton}*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*            <div className="col-sm">*/}
-                {/*                <button type="button" className="btn btn-primary btn-block btn-lg"*/}
-                {/*                        onClick="again();">{newMessageButton}*/}
-                {/*                </button>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
             </div>
         );
     }
@@ -186,8 +255,11 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(config.API_URL)
+
+
+        axios.get(libs.API_URL)
             .then(res => {
+                serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
                 this.setState({
                     header: res.data.header,
                     enterTextMessage: res.data.enterTextMessage,
@@ -251,7 +323,6 @@ class Main extends React.Component {
         }
     }
 }
-
 
 ReactDOM.render(<Main/>, document.getElementById('root'));
 

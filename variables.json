@@ -1,13 +1,14 @@
 {
-"header":"{{.header}}",
-"enterTextMessage":"{{.enterTextMessage}}",
-"password":"{{.password}}",
-"passwordEncryptPlaceholder":"{{.passwordEncryptPlaceholder}}",
-"ieEncryptWarning":"{{.ieEncryptWarning}}",
-"secureButton":"{{.secureButton}}",
-"infoHeader":"{{.infoHeader}}",
-"info":"{{.info}}",
-"info1":"{{.info1}}",
-"info2":"{{.info2}}",
-"info3":"{{.info3}}"
+  "PublicKey": "{{.PublicKey}}",
+  "header": "{{.header}}",
+  "enterTextMessage": "{{.enterTextMessage}}",
+  "password": "{{.password}}",
+  "passwordEncryptPlaceholder": "{{.passwordEncryptPlaceholder}}",
+  "ieEncryptWarning": "{{.ieEncryptWarning}}",
+  "secureButton": "{{.secureButton}}",
+  "infoHeader": "{{.infoHeader}}",
+  "info": "{{.info}}",
+  "info1": "{{.info1}}",
+  "info2": "{{.info2}}",
+  "info3": "{{.info3}}"
 }

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import nacl from 'tweetnacl';
-import 'tweetnacl-util';
+// import 'tweetnacl-util';
 import scryptAsynch from 'scrypt-async';
 import ClipboardJS from 'clipboard';
 
@@ -229,10 +229,10 @@ const decrypt = {
 
 // -------
 
-function again() {
-    keys = nacl.box.keyPair();
-    showEnterMessage();
-}
+// function again() {
+//     keys = nacl.box.keyPair();
+//     showEnterMessage();
+// }
 
 function post(method, webObject, url, postSuccess, postError) {
     $.ajax({

@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"html/template"
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
 	"obliviate/i18n"
+	"text/template"
 )
 
 type SaveRequest struct {
@@ -53,7 +53,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		if !config.ProdEnv {
 			t, _ = template.New("variables.json").ParseFiles("variables.json")
 		}
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Cache-Control", "no-cache, no-store")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
