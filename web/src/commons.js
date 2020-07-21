@@ -7,17 +7,11 @@ const commons = {
     VARIABLES_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
     SAVE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/save' : '/save',
     scryptLogN: 14,
-    getTime: (function () {
-        if (typeof performance !== "undefined") {
-            return performance.now.bind(performance);
-        }
-        return Date.now.bind(Date);
-    })(),
     calculateKeyDerived: function (password, salt, logN, callback) {
         let postpone = this.IE() ? 0 : 750;
         window.setTimeout(function () {
             try {
-                const t1 = this.getTime();
+                const t1 = getTime();
                 scryptAsynch(password, salt, {
                         logN: logN,
                         r: 8,
@@ -27,7 +21,7 @@ const commons = {
                         encoding: 'binary' // hex, base64, binary
                     },
                     function (res) {
-                        const time = Math.round(this.getTime() - t1);
+                        const time = Math.round(getTime() - t1);
                         callback(res, time);
                     }
                 );
@@ -51,4 +45,12 @@ const commons = {
     }
 
 };
+
+var getTime = (function () {
+    if (typeof performance !== "undefined") {
+        return performance.now.bind(performance);
+    }
+    return Date.now.bind(Date);
+})();
+
 export const libs = commons;
