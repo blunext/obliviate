@@ -239,39 +239,40 @@ class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            header: '',
-            enterTextMessage: '',
-            password: '',
-            passwordEncryptPlaceholder: '',
-            ieEncryptWarning: '',
-            secureButton: '',
-            infoHeader: '',
-            info: '',
-            info1: '',
-            info2: '',
-            info3: '',
-            encryptNetworkError: '',
             ready: false,
         };
+        this.vars = {};
+        this.vars.header = '';
+        this.vars.enterTextMessage = '';
+        this.vars.password = '';
+        this.vars.passwordEncryptPlaceholder = '';
+        this.vars.ieEncryptWarning = '';
+        this.vars.secureButton = '';
+        this.vars.infoHeader = '';
+        this.vars.info = '';
+        this.vars.info1 = '';
+        this.vars.info2 = '';
+        this.vars.info3 = '';
+        this.vars.encryptNetworkError = '';
     }
 
     componentDidMount() {
         axios.get(libs.VARIABLES_URL)
             .then(res => {
                 serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
+                this.vars.header = res.data.header;
+                this.vars.enterTextMessage = res.data.enterTextMessage;
+                this.vars.password = res.data.password;
+                this.vars.passwordEncryptPlaceholder = res.data.passwordEncryptPlaceholder;
+                this.vars.ieEncryptWarning = res.data.ieEncryptWarning;
+                this.vars.secureButton = res.data.secureButton;
+                this.vars.infoHeader = res.data.infoHeader;
+                this.vars.info = res.data.info;
+                this.vars.info1 = res.data.info1;
+                this.vars.info2 = res.data.info2;
+                this.vars.info3 = res.data.info3;
+                this.vars.encryptNetworkError = res.data.encryptNetworkError;
                 this.setState({
-                    header: res.data.header,
-                    enterTextMessage: res.data.enterTextMessage,
-                    password: res.data.password,
-                    passwordEncryptPlaceholder: res.data.passwordEncryptPlaceholder,
-                    ieEncryptWarning: res.data.ieEncryptWarning,
-                    secureButton: res.data.secureButton,
-                    infoHeader: res.data.infoHeader,
-                    info: res.data.info,
-                    info1: res.data.info1,
-                    info2: res.data.info2,
-                    info3: res.data.info3,
-                    encryptNetworkError: res.data.encryptNetworkError,
                     ready: true,
                 });
             });
@@ -285,8 +286,8 @@ class Main extends React.Component {
         } else {
             return (
                 <div>
-                    <h4 className="text-secondary text-center mt-2">{this.state.header}</h4>
-                    <Encrypt var={this.state}/>
+                    <h4 className="text-secondary text-center mt-2">{this.vars.header}</h4>
+                    <Encrypt var={this.vars}/>
                     <div className="container mt-3">
                         <div className="row">
                             <div className="col-sm-2">
@@ -294,7 +295,7 @@ class Main extends React.Component {
                             <div className="col">
                                 <hr/>
                             </div>
-                            <div className="col-auto text-secondary"><small>{this.state.infoHeader}</small></div>
+                            <div className="col-auto text-secondary"><small>{this.vars.infoHeader}</small></div>
                             <div className="col">
                                 <hr/>
                             </div>
@@ -307,10 +308,10 @@ class Main extends React.Component {
                             <div className="col-sm-8">
                                 <p className="text-secondary">
                                     <small>
-                                        {this.state.info} <a href="https://github.com/blunext/obliviate" target="_blank"
-                                                             rel="noopener noreferrer">GitHub</a>.
-                                        {this.state.info1} <a href="mailto:info@securenote.io" target="_blank"
-                                                              rel="noopener noreferrer">{this.state.info2}</a>. {this.state.info3}
+                                        {this.vars.info} <a href="https://github.com/blunext/obliviate" target="_blank"
+                                                            rel="noopener noreferrer">GitHub</a>.
+                                        {this.vars.info1} <a href="mailto:info@securenote.io" target="_blank"
+                                                             rel="noopener noreferrer">{this.vars.info2}</a>. {this.vars.info3}
                                     </small>
                                 </p>
                             </div>
