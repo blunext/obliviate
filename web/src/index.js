@@ -45,20 +45,8 @@ class Encrypt extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            header: this.props.var.header,
-            enterTextMessage: this.props.var.enterTextMessage,
-            password: this.props.var.password,
-            passwordEncryptPlaceholder: this.props.var.passwordEncryptPlaceholder,
-            ieEncryptWarning: this.props.var.ieEncryptWarning,
-            secureButton: this.props.var.secureButton,
-            infoHeader: this.props.var.infoHeader,
-            info: this.props.var.info,
-            info1: this.props.var.info1,
-            info2: this.props.var.info2,
-            info3: this.props.var.info3,
-            encryptNetworkError: this.props.var.encryptNetworkError,
-            //---
-            message: '', messagePassword: '',
+            message: '',
+            messagePassword: '',
             messageOk: true,
             passwordOk: true,
             buttonEncode: true,
@@ -102,7 +90,7 @@ class Encrypt extends React.Component {
                 this.hasPassword = true;
 
                 this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
-                libs.calculateKeyDerived(this.state.password, this.salt, libs.scryptLogN, this.scryptCallback);
+                libs.calculateKeyDerived(this.state.messagePassword, this.salt, libs.scryptLogN, this.scryptCallback);
             } else {
                 this.setState({passwordOk: false});
             }
@@ -180,7 +168,7 @@ class Encrypt extends React.Component {
     }
     encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
         this.encodeButtonAccessibility(true);
-        alert(this.state.encryptNetworkError);
+        alert(this.props.var.encryptNetworkError);
     }
 
     showLink = () => {
@@ -197,34 +185,34 @@ class Encrypt extends React.Component {
         return (
             <div className="container border border-primary">
                 <div className="form-group mt-3 mb-3" id="inputMessageBlock">
-                    <label htmlFor="message" className="text-secondary">{this.state.enterTextMessage}</label>
+                    <label htmlFor="message" className="text-secondary">{this.props.var.enterTextMessage}</label>
                     <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
                               id="message"
                               rows="4" maxLength="262144"
-                              autoFocus defaultValue={this.state.message}
+                              autoFocus defaultValue={this.props.var.message}
                               onChange={this.onChangeMessage}/>
                     <div className="container">
                         <div className="row">
                             <div className="input-group mb-3 collapse" id="passwordBlock">
                                 <div className="input-group">
                                     <div className="input-group-prepend">
-                                        <span className="input-group-text">{this.state.password}</span>
+                                        <span className="input-group-text">{this.props.var.password}</span>
                                     </div>
                                     <input type="text"
                                            className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
                                            id="encryptPassword"
-                                           placeholder={this.state.passwordEncryptPlaceholder}
+                                           placeholder={this.props.var.passwordEncryptPlaceholder}
                                            onChange={this.onChangePassword}/>
                                 </div>
                                 <div className="col-sm text-danger text-center font-weight-light d-none"
-                                     id="ieEncryptWarning">{this.state.ieEncryptWarning}</div>
+                                     id="ieEncryptWarning">{this.props.var.ieEncryptWarning}</div>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-sm mb-2">
                                 <button type="button" className="btn btn-success btn-block btn-lg"
                                         data-toggle="collapse"
-                                        data-target="#passwordBlock">{this.state.password}
+                                        data-target="#passwordBlock">{this.props.var.password}
                                 </button>
                             </div>
                             <div className="col-sm">
@@ -236,7 +224,7 @@ class Encrypt extends React.Component {
                                 <span
                                     className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}
                                     id="encodeButtonSpinner"/>
-                                    {this.state.secureButton}
+                                    {this.props.var.secureButton}
                                 </button>
                             </div>
                         </div>
