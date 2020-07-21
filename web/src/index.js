@@ -60,10 +60,10 @@ class Encrypt extends React.Component {
             encryptNetworkError: this.props.var.encryptNetworkError,
             //---
             message: '', messagePassword: '',
-            // hasPassword: false,
-            // secretKey: '',
-            // salt: '',
-            // time: 0,
+            messageOk: true,
+            passwordOk: true,
+            buttonEncode: true,
+            encodeSpinner: false,
         };
         this.hasPassword = false;
         this.secretKey = '';
@@ -73,33 +73,39 @@ class Encrypt extends React.Component {
 
     onChangeMessage = (event) => {
         this.setState({message: event.target.value});
+        if (event.target.value.length === 0) {
+            this.setState({messageOk: false});
+        } else {
+            this.setState({messageOk: true});
+        }
     }
     onChangePassword = (event) => {
         this.setState({messagePassword: event.target.value});
+        if (event.target.value.length === 0) {
+            this.setState({passwordOk: false});
+        } else {
+            this.setState({passwordOk: true});
+        }
     }
 
     processEncrypt = (e) => {
         if ($("#passwordBlock").hasClass("collapsing")) {
             return;
         }
-        // encrypt.message = $('#message').val();
         if (this.state.message.length === 0) {
-            $("#message").addClass('is-invalid');
+            this.setState({messageOk: false});
             return;
         }
-        $("#message").removeClass('is-invalid');
 
         if ($("#passwordBlock").hasClass("show")) {
-            // const password = $('#encryptPassword').val();
-            if (this.state.password.length > 0) {
+            if (this.state.messagePassword.length > 0) {
                 this.encodeButtonAccessibility(false);
                 this.hasPassword = true;
 
                 this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
                 libs.calculateKeyDerived(this.state.password, this.salt, libs.scryptLogN, this.scryptCallback);
-                $('#encryptPassword').removeClass('is-invalid');
             } else {
-                $('#encryptPassword').addClass('is-invalid');
+                this.setState({passwordOk: false});
             }
             return;
         } else {
@@ -114,7 +120,6 @@ class Encrypt extends React.Component {
         this.continue();
     }
     continue = () => {
-        debugger;
         // encrypt message with nacl secretbox
         const messageUTF8 = naclutil.decodeUTF8(this.state.message);
         const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
@@ -150,12 +155,12 @@ class Encrypt extends React.Component {
     }
     encodeButtonAccessibility = (state) => {
         if (state) {
-            $("#encodeButton").removeClass('disabled');
-            $("#encodeButtonSpinner").addClass('d-none');
+            this.setState({buttonEncode: true})
+            this.setState({encodeSpinner: false})
         } else {
-            $("#encodeButton").addClass('disabled');
+            this.setState({buttonEncode: false})
             if (!libs.IE()) {
-                $("#encodeButtonSpinner").removeClass('d-none');
+                this.setState({encodeSpinner: false})
             }
         }
     }
@@ -191,14 +196,18 @@ class Encrypt extends React.Component {
 
     render() {
         return (
+
             <div className="container border border-primary">
+
                 <div className="form-group
 
                     {/*d-none */}
 
                     mt-3 mb-3" id="inputMessageBlock">
                     <label htmlFor="message" className="text-secondary">{this.state.enterTextMessage}</label>
-                    <textarea className="form-control mb-3" id="message" rows="4" maxLength="262144"
+                    <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
+                              id="message"
+                              rows="4" maxLength="262144"
                               autoFocus defaultValue={this.state.message}
                               onChange={this.onChangeMessage}/>
                     <div className="container">
@@ -208,7 +217,9 @@ class Encrypt extends React.Component {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text">{this.state.password}</span>
                                     </div>
-                                    <input type="text" className="form-control" id="encryptPassword"
+                                    <input type="text"
+                                           className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
+                                           id="encryptPassword"
                                            placeholder={this.state.passwordEncryptPlaceholder}
                                            onChange={this.onChangePassword}/>
                                 </div>
@@ -224,11 +235,14 @@ class Encrypt extends React.Component {
                                 </button>
                             </div>
                             <div className="col-sm">
-                                <button type="button" className="btn btn-danger btn-block btn-lg" id="encodeButton"
+                                <button type="button" className=
+                                    {this.state.buttonEncode ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}
+                                        id="encodeButton"
                                         value={this.state.messagePassword}
                                         onClick={this.processEncrypt}>
-                                <span className="spinner-border spinner-border-sm d-none"
-                                      id="encodeButtonSpinner"/>
+                                <span
+                                    className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}
+                                    id="encodeButtonSpinner"/>
                                     {this.state.secureButton}
                                 </button>
                             </div>
