@@ -12,7 +12,6 @@ import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
 import ClipboardJS from "clipboard";
 
-
 new ClipboardJS('.btn');
 let serverPublicKey = '';
 let keys = nacl.box.keyPair();
@@ -148,7 +147,7 @@ class Encrypt extends React.Component {
         obj.hash = naclutil.encodeBase64(nacl.hash(messageNonce));
         obj.publicKey = naclutil.encodeBase64(keys.publicKey);
         if (this.hasPassword) {
-            obj.time = this.state.time;
+            obj.time = this.time;
         }
 
         libs.post('POST', obj, libs.SAVE_URL, this.encodeSuccess, this.encodeError);
@@ -196,14 +195,8 @@ class Encrypt extends React.Component {
 
     render() {
         return (
-
             <div className="container border border-primary">
-
-                <div className="form-group
-
-                    {/*d-none */}
-
-                    mt-3 mb-3" id="inputMessageBlock">
+                <div className="form-group mt-3 mb-3" id="inputMessageBlock">
                     <label htmlFor="message" className="text-secondary">{this.state.enterTextMessage}</label>
                     <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
                               id="message"

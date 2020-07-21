@@ -1,4 +1,3 @@
-// Constants.js
 import scryptAsynch from "scrypt-async";
 import nacl from "tweetnacl";
 import $ from "jquery";
