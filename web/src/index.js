@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './obliviate.js';
@@ -235,93 +235,74 @@ class Encrypt extends React.Component {
     }
 }
 
-class Main extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ready: false,
-        };
-        this.vars = {};
-        this.vars.header = '';
-        this.vars.enterTextMessage = '';
-        this.vars.password = '';
-        this.vars.passwordEncryptPlaceholder = '';
-        this.vars.ieEncryptWarning = '';
-        this.vars.secureButton = '';
-        this.vars.infoHeader = '';
-        this.vars.info = '';
-        this.vars.info1 = '';
-        this.vars.info2 = '';
-        this.vars.info3 = '';
-        this.vars.encryptNetworkError = '';
-    }
+function Main() {
+    const [ready, setReady] = useState(false);
+    const vars = useRef({});
 
-    componentDidMount() {
+    useEffect(() => {
         axios.get(libs.VARIABLES_URL)
             .then(res => {
                 serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
-                this.vars.header = res.data.header;
-                this.vars.enterTextMessage = res.data.enterTextMessage;
-                this.vars.password = res.data.password;
-                this.vars.passwordEncryptPlaceholder = res.data.passwordEncryptPlaceholder;
-                this.vars.ieEncryptWarning = res.data.ieEncryptWarning;
-                this.vars.secureButton = res.data.secureButton;
-                this.vars.infoHeader = res.data.infoHeader;
-                this.vars.info = res.data.info;
-                this.vars.info1 = res.data.info1;
-                this.vars.info2 = res.data.info2;
-                this.vars.info3 = res.data.info3;
-                this.vars.encryptNetworkError = res.data.encryptNetworkError;
-                this.setState({
-                    ready: true,
-                });
+                vars.current.header = res.data.header;
+                vars.current.enterTextMessage = res.data.enterTextMessage;
+                vars.current.password = res.data.password;
+                vars.current.passwordEncryptPlaceholder = res.data.passwordEncryptPlaceholder;
+                vars.current.ieEncryptWarning = res.data.ieEncryptWarning;
+                vars.current.secureButton = res.data.secureButton;
+                vars.current.infoHeader = res.data.infoHeader;
+                vars.current.info = res.data.info;
+                vars.current.info1 = res.data.info1;
+                vars.current.info2 = res.data.info2;
+                vars.current.info3 = res.data.info3;
+                vars.current.encryptNetworkError = res.data.encryptNetworkError;
+                setReady(true);
             });
-    }
+    }, [])
 
-    render() {
-        if (!this.state.ready) {
-            return (
-                <div className="loader">Loading...</div>
-            )
-        } else {
-            return (
-                <div>
-                    <h4 className="text-secondary text-center mt-2">{this.vars.header}</h4>
-                    <Encrypt var={this.vars}/>
-                    <div className="container mt-3">
-                        <div className="row">
-                            <div className="col-sm-2">
-                            </div>
-                            <div className="col">
-                                <hr/>
-                            </div>
-                            <div className="col-auto text-secondary"><small>{this.vars.infoHeader}</small></div>
-                            <div className="col">
-                                <hr/>
-                            </div>
-                            <div className="col-sm-2">
-                            </div>
+
+    if (!ready) {
+        return (
+            <div className="loader">Loading...</div>
+        )
+    } else {
+        return (
+            <div>
+                <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
+                <Encrypt var={vars.current}/>
+                <div className="container mt-3">
+                    <div className="row">
+                        <div className="col-sm-2">
                         </div>
-                        <div className="row">
-                            <div className="col-sm-2">
-                            </div>
-                            <div className="col-sm-8">
-                                <p className="text-secondary">
-                                    <small>
-                                        {this.vars.info} <a href="https://github.com/blunext/obliviate" target="_blank"
-                                                            rel="noopener noreferrer">GitHub</a>.
-                                        {this.vars.info1} <a href="mailto:info@securenote.io" target="_blank"
-                                                             rel="noopener noreferrer">{this.vars.info2}</a>. {this.vars.info3}
-                                    </small>
-                                </p>
-                            </div>
-                            <div className="col-sm-2">
-                            </div>
+                        <div className="col">
+                            <hr/>
+                        </div>
+                        <div className="col-auto text-secondary"><small>{vars.current.infoHeader}</small></div>
+                        <div className="col">
+                            <hr/>
+                        </div>
+                        <div className="col-sm-2">
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm-2">
+                        </div>
+                        <div className="col-sm-8">
+                            <p className="text-secondary">
+                                <small>
+                                    {vars.current.info} <a href="https://github.com/blunext/obliviate"
+                                                           target="_blank"
+                                                           rel="noopener noreferrer">GitHub</a>.
+                                    {vars.current.info1} <a href="mailto:info@securenote.io" target="_blank"
+                                                            rel="noopener noreferrer">{vars.current.info2}</a>. {vars.current.info3}
+                                </small>
+                            </p>
+                        </div>
+                        <div className="col-sm-2">
                         </div>
                     </div>
                 </div>
-            )
-        }
+            </div>
+        )
     }
 }
 
