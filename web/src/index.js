@@ -57,13 +57,18 @@ class Encrypt extends React.Component {
             info1: this.props.var.info1,
             info2: this.props.var.info2,
             info3: this.props.var.info3,
+            encryptNetworkError: this.props.var.encryptNetworkError,
             //---
             message: '', messagePassword: '',
-            hasPassword: false,
-            secretKey: '',
-            salt: '',
-            time: 0,
+            // hasPassword: false,
+            // secretKey: '',
+            // salt: '',
+            // time: 0,
         };
+        this.hasPassword = false;
+        this.secretKey = '';
+        this.salt = '';
+        this.time = 0;
     }
 
     onChangeMessage = (event) => {
@@ -74,7 +79,6 @@ class Encrypt extends React.Component {
     }
 
     processEncrypt = (e) => {
-        debugger;
         if ($("#passwordBlock").hasClass("collapsing")) {
             return;
         }
@@ -89,10 +93,10 @@ class Encrypt extends React.Component {
             // const password = $('#encryptPassword').val();
             if (this.state.password.length > 0) {
                 this.encodeButtonAccessibility(false);
-                this.scope.hasPassword = true;
+                this.hasPassword = true;
 
-                this.setState({salt: nacl.randomBytes(nacl.secretbox.keyLength)});  // the same as key, 32 bytes
-                libs.calculateKeyDerived(this.state.password, this.state.salt, libs.scryptLogN, this.scryptCallback);
+                this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
+                libs.calculateKeyDerived(this.state.password, this.salt, libs.scryptLogN, this.scryptCallback);
                 $('#encryptPassword').removeClass('is-invalid');
             } else {
                 $('#encryptPassword').addClass('is-invalid');
@@ -101,48 +105,48 @@ class Encrypt extends React.Component {
         } else {
             this.encodeButtonAccessibility(false);
         }
-        this.setState({secretKey: nacl.randomBytes(nacl.secretbox.keyLength)})
+        this.secretKey = nacl.randomBytes(nacl.secretbox.keyLength);
         this.continue();
     }
     scryptCallback = (key, time) => {
-        this.setState({secretKey: key});
-        this.setState({time: time});
+        this.secretKey = key;
+        this.time = time;
         this.continue();
     }
     continue = () => {
         debugger;
         // encrypt message with nacl secretbox
-        const messageUTF8 = nacl.util.decodeUTF8(this.state.message);
+        const messageUTF8 = naclutil.decodeUTF8(this.state.message);
         const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength);
 
-        const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, this.state.secretKey);
+        const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, this.secretKey);
 
         // nonce will be used as a link anchor
-        urlNonce = nacl.util.encodeBase64(messageNonce);
+        urlNonce = naclutil.encodeBase64(messageNonce);
 
         // store secret key in the message
-        const fullMessage = new Uint8Array(this.state.secretKey.length + encryptedMessage.length);
-        if (this.state.hasPassword) {
-            fullMessage.set(this.state.salt);
+        const fullMessage = new Uint8Array(this.secretKey.length + encryptedMessage.length);
+        if (this.hasPassword) {
+            fullMessage.set(this.salt);
         } else {
-            fullMessage.set(this.state.secretKey);
+            fullMessage.set(this.secretKey);
         }
-        fullMessage.set(encryptedMessage, this.state.secretKey.length);
+        fullMessage.set(encryptedMessage, this.secretKey.length);
 
         // encrypt message transmission with nacl box
         const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength);
         const transmission = nacl.box(fullMessage, transmissionNonce, serverPublicKey, keys.secretKey);
 
         const obj = {};
-        obj.message = nacl.util.encodeBase64(transmission);
-        obj.nonce = nacl.util.encodeBase64(transmissionNonce);
-        obj.hash = nacl.util.encodeBase64(nacl.hash(messageNonce));
-        obj.publicKey = nacl.util.encodeBase64(keys.publicKey);
-        if (this.state.hasPassword) {
+        obj.message = naclutil.encodeBase64(transmission);
+        obj.nonce = naclutil.encodeBase64(transmissionNonce);
+        obj.hash = naclutil.encodeBase64(nacl.hash(messageNonce));
+        obj.publicKey = naclutil.encodeBase64(keys.publicKey);
+        if (this.hasPassword) {
             obj.time = this.state.time;
         }
 
-        libs.post('POST', obj, '/save', this.encodeSuccess, this.encodeError);
+        libs.post('POST', obj, libs.SAVE_URL, this.encodeSuccess, this.encodeError);
     }
     encodeButtonAccessibility = (state) => {
         if (state) {
@@ -157,7 +161,7 @@ class Encrypt extends React.Component {
     }
     encodeSuccess = (result) => {
         let index;
-        if (this.state.hasPassword) {
+        if (this.hasPassword) {
             index = queryIndexWithPassword;
         } else {
             index = 3;
@@ -172,9 +176,10 @@ class Encrypt extends React.Component {
     }
     encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
         this.encodeButtonAccessibility(true);
-        alert('{{.encryptNetworkError}}');
+        alert(this.state.encryptNetworkError);
     }
-    function = () => {
+
+    showLink = () => {
         $("#inputMessageBlock").addClass('d-none');
         $("#linkBlock").removeClass('d-none');
         $("#decodeBlock").addClass('d-none');
@@ -250,14 +255,13 @@ class Main extends React.Component {
             info1: '',
             info2: '',
             info3: '',
+            encryptNetworkError: '',
             ready: false,
         };
     }
 
     componentDidMount() {
-
-
-        axios.get(libs.API_URL)
+        axios.get(libs.VARIABLES_URL)
             .then(res => {
                 serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
                 this.setState({
@@ -272,6 +276,7 @@ class Main extends React.Component {
                     info1: res.data.info1,
                     info2: res.data.info2,
                     info3: res.data.info3,
+                    encryptNetworkError: res.data.encryptNetworkError,
                     ready: true,
                 });
             });

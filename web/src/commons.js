@@ -4,7 +4,8 @@ import nacl from "tweetnacl";
 import $ from "jquery";
 
 const commons = {
-    API_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
+    VARIABLES_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
+    SAVE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/save' : '/save',
     scryptLogN: 14,
     getTime: (function () {
         if (typeof performance !== "undefined") {
