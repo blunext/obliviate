@@ -10,7 +10,6 @@ import {libs} from './commons'
 import $ from "jquery";
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
-import ClipboardJS from "clipboard";
 
 // new ClipboardJS('.btn');
 
@@ -157,7 +156,8 @@ class Encrypt extends React.Component {
         }
         const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
         $('#link').val(url);
-        this.showLink();
+        this.props.receiveUrlCallback(url);
+        // this.showLink();
     }
     encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
         this.encodeButtonAccessibility(true);
@@ -165,13 +165,13 @@ class Encrypt extends React.Component {
     }
 
     showLink = () => {
-        $("#inputMessageBlock").addClass('d-none');
-        $("#linkBlock").removeClass('d-none');
-        $("#decodeBlock").addClass('d-none');
-        $("#presentationBlock").addClass('d-none');
-
-        $("#message").val("");
-        this.encodeButtonAccessibility(true);
+        // $("#inputMessageBlock").addClass('d-none');
+        // $("#linkBlock").removeClass('d-none');
+        // $("#decodeBlock").addClass('d-none');
+        // $("#presentationBlock").addClass('d-none');
+        //
+        // $("#message").val("");
+        // this.encodeButtonAccessibility(true);
     }
 
     render() {
@@ -231,6 +231,7 @@ class Encrypt extends React.Component {
 
 function Main() {
     const [ready, setReady] = useState(false);
+    const [link, setLink] = useState('');
     const vars = useRef({});
 
     useEffect(() => {
@@ -257,6 +258,9 @@ function Main() {
             });
     }, [])
 
+    function receiveUrl(url) {
+        setLink(url);
+    }
 
     if (!ready) {
         return (
@@ -266,7 +270,7 @@ function Main() {
         return (
             <div>
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
-                <Encrypt var={vars.current}/>
+                {link === '' ? <Encrypt var={vars.current} receiveUrlCallback={receiveUrl}/> : null}
                 <div className="container mt-3">
                     <div className="row">
                         <div className="col-sm-2">
