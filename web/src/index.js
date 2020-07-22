@@ -176,55 +176,53 @@ class Encrypt extends React.Component {
 
     render() {
         return (
-            <div className="container border border-primary">
-                <div className="form-group mt-3 mb-3" id="inputMessageBlock">
-                    <label htmlFor="message" className="text-secondary">{this.props.var.enterTextMessage}</label>
-                    <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
-                              id="message"
-                              rows="4" maxLength="262144"
-                              autoFocus defaultValue={this.props.var.message}
-                              onChange={this.onChangeMessage}/>
-                    <div className="container">
-                        <div className="row">
-                            <div className="input-group mb-3 collapse" id="passwordBlock">
-                                <div className="input-group">
-                                    <div className="input-group-prepend">
-                                        <span className="input-group-text">{this.props.var.password}</span>
-                                    </div>
-                                    <input type="text"
-                                           className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
-                                           id="encryptPassword"
-                                           placeholder={this.props.var.passwordEncryptPlaceholder}
-                                           onChange={this.onChangePassword}/>
+            <>
+                <label htmlFor="message" className="text-secondary">{this.props.var.enterTextMessage}</label>
+                <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
+                          id="message"
+                          rows="4" maxLength="262144"
+                          autoFocus defaultValue={this.props.var.message}
+                          onChange={this.onChangeMessage}/>
+                <div className="container">
+                    <div className="row">
+                        <div className="input-group mb-3 collapse" id="passwordBlock">
+                            <div className="input-group">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text">{this.props.var.password}</span>
                                 </div>
-                                <div
-                                    className={this.warningForIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
-                                    {this.props.var.ieEncryptWarning}</div>
+                                <input type="text"
+                                       className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
+                                       id="encryptPassword"
+                                       placeholder={this.props.var.passwordEncryptPlaceholder}
+                                       onChange={this.onChangePassword}/>
                             </div>
+                            <div
+                                className={this.warningForIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
+                                {this.props.var.ieEncryptWarning}</div>
                         </div>
-                        <div className="row">
-                            <div className="col-sm mb-2">
-                                <button type="button" className="btn btn-success btn-block btn-lg"
-                                        data-toggle="collapse"
-                                        data-target="#passwordBlock">{this.props.var.password}
-                                </button>
-                            </div>
-                            <div className="col-sm">
-                                <button type="button" className=
-                                    {this.state.buttonEncode ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}
-                                        id="encodeButton"
-                                        value={this.state.messagePassword}
-                                        onClick={this.processEncrypt}>
+                    </div>
+                    <div className="row">
+                        <div className="col-sm mb-2">
+                            <button type="button" className="btn btn-success btn-block btn-lg"
+                                    data-toggle="collapse"
+                                    data-target="#passwordBlock">{this.props.var.password}
+                            </button>
+                        </div>
+                        <div className="col-sm">
+                            <button type="button" className=
+                                {this.state.buttonEncode ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}
+                                    id="encodeButton"
+                                    value={this.state.messagePassword}
+                                    onClick={this.processEncrypt}>
                                 <span
                                     className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}
                                     id="encodeButtonSpinner"/>
-                                    {this.props.var.secureButton}
-                                </button>
-                            </div>
+                                {this.props.var.secureButton}
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 }
@@ -268,9 +266,13 @@ function Main() {
         )
     } else {
         return (
-            <div>
+            <>
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
-                {link === '' ? <Encrypt var={vars.current} receiveUrlCallback={receiveUrl}/> : null}
+                <div className="container border border-primary">
+                    <div className="form-group mt-3 mb-3" id="inputMessageBlock">
+                        {link === '' ? <Encrypt var={vars.current} receiveUrlCallback={receiveUrl}/> : null}
+                    </div>
+                </div>
                 <div className="container mt-3">
                     <div className="row">
                         <div className="col-sm-2">
@@ -303,7 +305,7 @@ function Main() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </>
         )
     }
 }
