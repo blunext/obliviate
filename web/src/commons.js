@@ -2,12 +2,18 @@ import scryptAsynch from "scrypt-async";
 import nacl from "tweetnacl";
 import $ from "jquery";
 
+
+// TODO: get rid of potpone
+
+
 const commons = {
     VARIABLES_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
     SAVE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/save' : '/save',
     scryptLogN: 14,
+    queryIndexWithPassword: 4,
     calculateKeyDerived: function (password, salt, logN, callback) {
-        let postpone = this.IE() ? 0 : 750;
+        // let postpone = this.IE() ? 0 : 750;
+        let postpone = 0;
         window.setTimeout(function () {
             try {
                 const t1 = getTime();
