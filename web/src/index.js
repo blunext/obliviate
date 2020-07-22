@@ -12,17 +12,12 @@ import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
 import ClipboardJS from "clipboard";
 
-new ClipboardJS('.btn');
-let serverPublicKey = '';
-let keys = nacl.box.keyPair();
+// new ClipboardJS('.btn');
 
-let urlNonce = '';
-const queryIndexWithPassword = 4;
-
-const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
-if (isMobile) {
-    $("#link").attr('rows', 2);
-}
+// const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+// if (isMobile) {
+//     $("#link").attr('rows', 2);
+// }
 
 // if (window.location.hash) {
 //     decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
@@ -36,11 +31,6 @@ if (isMobile) {
 //     decrypt.loadCypher();
 // });
 
-if (libs.IE()) {
-    $("#ieEncryptWarning").removeClass('d-none');
-    $("#ieDecryptWarning").removeClass('d-none');
-}
-
 class Encrypt extends React.Component {
     constructor(props) {
         super(props);
@@ -53,9 +43,12 @@ class Encrypt extends React.Component {
             encodeSpinner: false,
         };
         this.hasPassword = false;
-        this.secretKey = '';
+        this.secretKey = ''; //TODO: zmienic nazwę
         this.salt = '';
         this.time = 0;
+        this.warningForIE = libs.IE();
+        this.keys = nacl.box.keyPair();
+        this.urlNonce = '';
     }
 
     onChangeMessage = (event) => {
@@ -114,7 +107,7 @@ class Encrypt extends React.Component {
         const encryptedMessage = nacl.secretbox(messageUTF8, messageNonce, this.secretKey);
 
         // nonce will be used as a link anchor
-        urlNonce = naclutil.encodeBase64(messageNonce);
+        this.urlNonce = naclutil.encodeBase64(messageNonce);
 
         // store secret key in the message
         const fullMessage = new Uint8Array(this.secretKey.length + encryptedMessage.length);
@@ -127,13 +120,13 @@ class Encrypt extends React.Component {
 
         // encrypt message transmission with nacl box
         const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength);
-        const transmission = nacl.box(fullMessage, transmissionNonce, serverPublicKey, keys.secretKey);
+        const transmission = nacl.box(fullMessage, transmissionNonce, this.props.var.serverPublicKey, this.keys.secretKey);
 
         const obj = {};
         obj.message = naclutil.encodeBase64(transmission);
         obj.nonce = naclutil.encodeBase64(transmissionNonce);
         obj.hash = naclutil.encodeBase64(nacl.hash(messageNonce));
-        obj.publicKey = naclutil.encodeBase64(keys.publicKey);
+        obj.publicKey = naclutil.encodeBase64(this.keys.publicKey);
         if (this.hasPassword) {
             obj.time = this.time;
         }
@@ -154,7 +147,7 @@ class Encrypt extends React.Component {
     encodeSuccess = (result) => {
         let index;
         if (this.hasPassword) {
-            index = queryIndexWithPassword;
+            index = libs.queryIndexWithPassword;
         } else {
             index = 3;
         }
@@ -162,7 +155,7 @@ class Encrypt extends React.Component {
             window.location.origin = window.location.protocol + "//" + window.location.hostname +
                 (window.location.port === 443 ? "" : ":" + window.location.port);
         }
-        const url = window.location.origin + '/?' + urlNonce.substring(0, index) + "#" + urlNonce.substring(index, 32);
+        const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
         $('#link').val(url);
         this.showLink();
     }
@@ -204,8 +197,9 @@ class Encrypt extends React.Component {
                                            placeholder={this.props.var.passwordEncryptPlaceholder}
                                            onChange={this.onChangePassword}/>
                                 </div>
-                                <div className="col-sm text-danger text-center font-weight-light d-none"
-                                     id="ieEncryptWarning">{this.props.var.ieEncryptWarning}</div>
+                                <div
+                                    className={this.warningForIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
+                                    {this.props.var.ieEncryptWarning}</div>
                             </div>
                         </div>
                         <div className="row">
@@ -242,7 +236,7 @@ function Main() {
     useEffect(() => {
         axios.get(libs.VARIABLES_URL)
             .then(res => {
-                serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
+                vars.current.serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
                 vars.current.header = res.data.header;
                 vars.current.enterTextMessage = res.data.enterTextMessage;
                 vars.current.password = res.data.password;
@@ -256,6 +250,10 @@ function Main() {
                 vars.current.info3 = res.data.info3;
                 vars.current.encryptNetworkError = res.data.encryptNetworkError;
                 setReady(true);
+            })
+            .catch(err => {
+                // TODO: -----
+                console.log(err);
             });
     }, [])
 
