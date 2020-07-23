@@ -1,21 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {Suspense, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
 import {libs} from './commons'
 import naclutil from "tweetnacl-util";
-import Encrypt from "./encrypt";
-import ShowLink from "./showlink";
 
-// new ClipboardJS('.btn');
-
-// const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
-// if (isMobile) {
-//     $("#link").attr('rows', 2);
-// }
+const Encrypt = React.lazy(() => import('./encrypt'));
+// import ShowLink from "./showlink";
+const ShowLink = React.lazy(() => import('./showlink'));
 
 // if (window.location.hash) {
 //     decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
@@ -79,8 +74,13 @@ function Main() {
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
-                        {link === '' ? <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
-                        {link !== '' ? <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
+                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                            {link === '' ? <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
+                        </Suspense>
+                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                            {link !== '' ?
+                                <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
+                        </Suspense>
                     </div>
                 </div>
                 <div className="container mt-3">
