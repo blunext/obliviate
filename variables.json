@@ -14,5 +14,9 @@
   "encryptNetworkError": "{{.encryptNetworkError}}",
   "copyLink": "{{.copyLink}}",
   "copyLinkButton": "{{.copyLinkButton}}",
-  "newMessageButton": "{{.newMessageButton}}"
+  "newMessageButton": "{{.newMessageButton}}",
+  "messageRead": "{{.messageRead}}",
+  "passwordDecryptPlaceholder": "{{.passwordDecryptPlaceholder}}",
+  "ieDecryptWarning": "{{.ieDecryptWarning}}",
+  "readMessageButton": "{{.readMessageButton}}"
 }

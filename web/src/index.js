@@ -9,8 +9,8 @@ import {libs} from './commons'
 import naclutil from "tweetnacl-util";
 
 const Encrypt = React.lazy(() => import('./encrypt'));
-// import ShowLink from "./showlink";
 const ShowLink = React.lazy(() => import('./showlink'));
+const Decrypt = React.lazy(() => import('./decrypt'));
 
 // if (window.location.hash) {
 //     decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
@@ -25,29 +25,29 @@ const ShowLink = React.lazy(() => import('./showlink'));
 // });
 
 function Main() {
+    const parts = {ENCRYPT: 0, LINK: 1, DECRYPT: 2};
     const [ready, setReady] = useState(false);
     const [link, setLink] = useState('');
+    const [visible, setVisible] = useState(parts.ENCRYPT);
     const vars = useRef({});
 
+    console.log('I render 😁');
+
+    if (window.location.hash) {
+        // decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
+        // showDecodeButton();
+        // alert(1);
+    } else {
+        // alert(2)
+        // showEnterMessage();
+    }
+
     useEffect(() => {
+
         axios.get(libs.VARIABLES_URL)
             .then(res => {
+                vars.current = res.data;
                 vars.current.serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
-                vars.current.header = res.data.header;
-                vars.current.enterTextMessage = res.data.enterTextMessage;
-                vars.current.password = res.data.password;
-                vars.current.passwordEncryptPlaceholder = res.data.passwordEncryptPlaceholder;
-                vars.current.ieEncryptWarning = res.data.ieEncryptWarning;
-                vars.current.secureButton = res.data.secureButton;
-                vars.current.infoHeader = res.data.infoHeader;
-                vars.current.info = res.data.info;
-                vars.current.info1 = res.data.info1;
-                vars.current.info2 = res.data.info2;
-                vars.current.info3 = res.data.info3;
-                vars.current.encryptNetworkError = res.data.encryptNetworkError;
-                vars.current.copyLink = res.data.copyLink;
-                vars.current.copyLinkButton = res.data.copyLinkButton;
-                vars.current.newMessageButton = res.data.newMessageButton;
                 setReady(true);
             })
             .catch(err => {
@@ -58,10 +58,12 @@ function Main() {
 
     function linkCallback(url) {
         setLink(url);
+        setVisible(parts.LINK);
     }
 
     function againCallback() {
         setLink('');
+        setVisible(parts.ENCRYPT);
     }
 
     if (!ready) {
@@ -75,11 +77,15 @@ function Main() {
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
                         <Suspense fallback={<div className="loader">Loading...</div>}>
-                            {link === '' ? <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
+                            {visible === parts.ENCRYPT ?
+                                <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
                         </Suspense>
                         <Suspense fallback={<div className="loader">Loading...</div>}>
-                            {link !== '' ?
+                            {visible === parts.LINK ?
                                 <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
+                        </Suspense>
+                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                            <Decrypt var={vars.current} againCallback={againCallback}/>
                         </Suspense>
                     </div>
                 </div>
