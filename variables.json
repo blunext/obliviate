@@ -18,5 +18,7 @@
   "messageRead": "{{.messageRead}}",
   "passwordDecryptPlaceholder": "{{.passwordDecryptPlaceholder}}",
   "ieDecryptWarning": "{{.ieDecryptWarning}}",
-  "readMessageButton": "{{.readMessageButton}}"
+  "readMessageButton": "{{.readMessageButton}}",
+  "linkIsCorrupted": "{{.linkIsCorrupted}}",
+  "generalError": "{{.generalError}}"
 }

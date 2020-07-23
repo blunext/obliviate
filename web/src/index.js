@@ -12,18 +12,6 @@ const Encrypt = React.lazy(() => import('./encrypt'));
 const ShowLink = React.lazy(() => import('./showlink'));
 const Decrypt = React.lazy(() => import('./decrypt'));
 
-// if (window.location.hash) {
-//     decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
-//     showDecodeButton();
-// } else {
-//     showEnterMessage();
-// }
-
-// // necessary for .off('click')
-// $("#decodeButton").click(function (e) {
-//     decrypt.loadCypher();
-// });
-
 function Main() {
     const parts = {ENCRYPT: 0, LINK: 1, DECRYPT: 2};
     const [ready, setReady] = useState(false);
@@ -31,18 +19,12 @@ function Main() {
     const [visible, setVisible] = useState(parts.ENCRYPT);
     const vars = useRef({});
 
-    console.log('I render 😁');
-
-    if (window.location.hash) {
-        // decrypt.password = window.location.search.substring(1).length === queryIndexWithPassword;
-        // showDecodeButton();
-        // alert(1);
-    } else {
-        // alert(2)
-        // showEnterMessage();
-    }
+    console.log("Main start");
 
     useEffect(() => {
+        if (window.location.hash) {
+            setVisible(parts.DECRYPT);
+        }
 
         axios.get(libs.VARIABLES_URL)
             .then(res => {
@@ -85,7 +67,8 @@ function Main() {
                                 <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
                         </Suspense>
                         <Suspense fallback={<div className="loader">Loading...</div>}>
-                            <Decrypt var={vars.current} againCallback={againCallback}/>
+                            {visible === parts.DECRYPT ?
+                                <Decrypt var={vars.current} againCallback={againCallback}/> : null}
                         </Suspense>
                     </div>
                 </div>

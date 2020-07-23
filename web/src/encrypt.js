@@ -22,6 +22,8 @@ class Encrypt extends React.Component {
         this.warningForIE = libs.IE();
         this.keys = nacl.box.keyPair();
         this.urlNonce = '';
+
+        console.log("Encrypt start");
     }
 
     onChangeMessage = (event) => {

@@ -9,6 +9,8 @@ import $ from "jquery";
 const commons = {
     VARIABLES_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
     SAVE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/save' : '/save',
+    READ_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/read' : '/read',
+    DELETE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/delete' : '/delete',
     scryptLogN: 14,
     queryIndexWithPassword: 4,
     calculateKeyDerived: function (password, salt, logN, callback) {
@@ -47,9 +49,26 @@ const commons = {
             success: postSuccess,
             error: postError
         });
+    },
+    arraySlice: function (arr, x, y) {
+        if (this.IE()) {
+            return arr.slice(x, y);
+        }
+        // IE stuff
+        let ret = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (i >= x && i < y) {
+                ret.push(arr[i]);
+            }
+        }
+        return new Uint8Array(ret);
+    },
+    replaceAll: function (str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace);
     }
 
 };
+
 
 var getTime = (function () {
     if (typeof performance !== "undefined") {

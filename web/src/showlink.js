@@ -4,8 +4,8 @@ import ClipboardJS from 'clipboard';
 
 function ShowLink(props) {
     const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
-
     new ClipboardJS('.btn');
+    console.log("ShowLink start");
 
     return (
         <>
