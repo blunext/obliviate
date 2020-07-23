@@ -7,7 +7,7 @@ function ShowLink(props) {
     return (
         <>
             <label htmlFor="link" className="text-secondary">{props.var.copyLink}</label>
-            <textarea className="form-control mb-3" id="link" rows="1"/>
+            <textarea className="form-control mb-3" id="link" rows="1" value={props.link} readOnly/>
             <div className="container">
                 <div className="row">
                     <div className="col-sm mb-2">
@@ -18,7 +18,7 @@ function ShowLink(props) {
                     </div>
                     <div className="col-sm">
                         <button type="button" className="btn btn-primary btn-block btn-lg"
-                                onClick="again();">{props.var.newMessageButton}
+                                onClick={props.againCallback}>{props.var.newMessageButton}
                         </button>
                     </div>
                 </div>

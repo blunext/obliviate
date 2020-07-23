@@ -61,8 +61,12 @@ function Main() {
             });
     }, [])
 
-    function receiveUrl(url) {
+    function linkCallback(url) {
         setLink(url);
+    }
+
+    function againCallback() {
+        setLink('');
     }
 
     if (!ready) {
@@ -75,8 +79,8 @@ function Main() {
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
-                        {link === '' ? <Encrypt var={vars.current} receiveUrlCallback={receiveUrl}/> : null}
-                        {link !== '' ? <ShowLink var={vars.current}/> : null}
+                        {link === '' ? <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
+                        {link !== '' ? <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
                     </div>
                 </div>
                 <div className="container mt-3">

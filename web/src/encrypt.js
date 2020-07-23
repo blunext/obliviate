@@ -129,23 +129,11 @@ class Encrypt extends React.Component {
                 (window.location.port === 443 ? "" : ":" + window.location.port);
         }
         const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
-        // $('#link').val(url);
-        this.props.receiveUrlCallback(url);
-        // this.showLink();
+        this.props.linkCallback(url);
     }
     encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
         this.encodeButtonAccessibility(true);
         alert(this.props.var.encryptNetworkError);
-    }
-
-    showLink = () => {
-        // $("#inputMessageBlock").addClass('d-none');
-        // $("#linkBlock").removeClass('d-none');
-        // $("#decodeBlock").addClass('d-none');
-        // $("#presentationBlock").addClass('d-none');
-        //
-        // $("#message").val("");
-        // this.encodeButtonAccessibility(true);
     }
 
     render() {
