@@ -20,5 +20,6 @@
   "ieDecryptWarning": "{{.ieDecryptWarning}}",
   "readMessageButton": "{{.readMessageButton}}",
   "linkIsCorrupted": "{{.linkIsCorrupted}}",
-  "generalError": "{{.generalError}}"
+  "generalError": "{{.generalError}}",
+  "decryptNetworkError": "{{.decryptNetworkError}}"
 }

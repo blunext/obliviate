@@ -48,6 +48,9 @@ function Main() {
         setVisible(parts.ENCRYPT);
     }
 
+    function messageCallback(message) {
+        alert(message);
+    }
     if (!ready) {
         return (
             <div className="loader">Loading...</div>
@@ -68,7 +71,7 @@ function Main() {
                         </Suspense>
                         <Suspense fallback={<div className="loader">Loading...</div>}>
                             {visible === parts.DECRYPT ?
-                                <Decrypt var={vars.current} againCallback={againCallback}/> : null}
+                                <Decrypt var={vars.current} messageCallback={messageCallback} againCallback={againCallback}/> : null}
                         </Suspense>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from 'react';
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
 import {libs} from "./commons";
@@ -9,28 +9,48 @@ function Decrypt(props) {
     console.log("Decrypt start");
 
     const hasPassword = window.location.search.substring(1).length === libs.queryIndexWithPassword;
-    let urlNonce = '';
-    let hash = '';
     const keys = nacl.box.keyPair(); // -----> in deep
     let salt = '';
     let secretKey = '';
     let encodedMessage = '';
+//    let loadCypherAction = true;
+    let _urlNonce = ''; //couse setUrlNonce is async and we need it
+    const [urlNonce, setUrlNonce] = useState('');
+    const [hash, setHash] = useState([]);
+    const [decodeButton, setDecodeButton] = useState(true);
+    const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
+    const [loadCypherAction, setLoadCypherAction] = useState(true);
+
+    function decrypt() {
+        if (loadCypherAction) {
+            loadCypher();
+        } else {
+            decryptMessage();
+        }
+    }
+
 
 
     function loadCypher() {
+        debugger;
+        console.log("loadCypher");
         decodeButtonAccessibility(false);
-
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
         try {
-            urlNonce = naclutil.decodeBase64(nonce);
+            _urlNonce = naclutil.decodeBase64(nonce);
         } catch (ex) {
             decodeButtonAccessibility(true);
             alert(props.var.linkIsCorrupted);
             return;
         }
-        hash = naclutil.encodeBase64(nacl.hash(urlNonce));
+
+        const _hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
+        setHash(_hash);
+        setUrlNonce(_urlNonce);
+
         const obj = {};
-        obj.hash = hash;
+        obj.hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
+        ;
         obj.publicKey = naclutil.encodeBase64(keys.publicKey);
         if (hasPassword) {
             obj.password = true;
@@ -40,6 +60,7 @@ function Decrypt(props) {
     }
 
     function decryptTransmission(result) {
+        debugger;
         // decode transmission with box
         const messageWithNonceAsUint8Array = naclutil.decodeBase64(result.message);
         const noncePart = libs.arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
@@ -62,6 +83,7 @@ function Decrypt(props) {
     }
 
     function decryptMessage() {
+        debugger;
         $("#decryptPassword").removeClass('is-invalid');
         decodeButtonAccessibility(false);
         if (hasPassword) {
@@ -71,7 +93,8 @@ function Decrypt(props) {
             } else {
                 $("#decryptPassword").addClass('is-invalid');
                 decodeButtonAccessibility(true);
-                changeAction();
+                setLoadCypherAction(false);
+                // loadCypherAction = false;
             }
             return;
         }
@@ -84,11 +107,13 @@ function Decrypt(props) {
     }
 
     function continueXXXXXXXX() {
+        debugger;
         const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
                 $("#decryptPassword").addClass('is-invalid');
-                changeAction();
+                // loadCypherAction = false;
+                setLoadCypherAction(false);
                 decodeButtonAccessibility(true);
                 return;
             }
@@ -99,14 +124,16 @@ function Decrypt(props) {
 
         const message = naclutil.encodeUTF8(messageBytes);
 
-        alert(message);
+        props.messageCallback(message);
+
+        // alert(message);
         // const escape = document.createElement('textarea');
         // escape.textContent = message;
         // escape.innerHTML;
 
-        const str = libs.replaceAll(escape.innerHTML, '\n', '<br/>');
-        $('#decodedMessage').html(str);
-        showDecodedMessage();
+        // const str = libs.replaceAll(escape.innerHTML, '\n', '<br/>');
+        // $('#decodedMessage').html(str);
+        // showDecodedMessage();
 
         if (hasPassword) {
             const obj = {};
@@ -117,6 +144,7 @@ function Decrypt(props) {
     }
 
     function loadError(XMLHttpRequest, textStatus, errorThrown) {
+        debugger;
         if (XMLHttpRequest.status === 404) {
             $("#decodeButtonBlock").addClass('d-none');
             $("#decryptPasswordBlock").addClass('d-none');
@@ -124,12 +152,11 @@ function Decrypt(props) {
             decodeButtonAccessibility(true);
         } else {
             decodeButtonAccessibility(true);
-            alert('{{.decryptNetworkError}}')
+            alert(props.var.decryptNetworkError);
         }
     }
 
-    function deleteSuccess() {
-        // do nothing
+    function deleteSuccess() { // do nothing
     }
 
     function deleteError(obj) {
@@ -141,26 +168,31 @@ function Decrypt(props) {
         }
     }
 
-    function deleteErrorTryAgain(XMLHttpRequest, textStatus, errorThrown) {// do nothing
+    function deleteErrorTryAgain(XMLHttpRequest, textStatus, errorThrown) {  // do nothing
     }
 
-    function changeAction() {
-        $("#decodeButton").off('click');
-        $("#decodeButton").click(function (e) {
-            decryptMessage();
-        });
-    }
+
+    // function changeAction() {
+    //     $("#decodeButton").off('click');
+    //     $("#decodeButton").click(function (e) {
+    //         decryptMessage();
+    //     });
+    // }
 
 
     function decodeButtonAccessibility(state) {
         if (state) {
+            setDecodeButton(true);
+            setDecodeButtonSpinner(false);
             // $("#decodeButton").removeClass('disabled');
             // $("#decodeButtonSpinner").addClass('d-none');
         } else {
+            setDecodeButton(false);
             // $("#decodeButton").addClass('disabled');
-            // if (!IE()) {
-            //     $("#decodeButtonSpinner").removeClass('d-none');
-            // }
+            if (!libs.IE()) {
+                setDecodeButtonSpinner(true);
+                // $("#decodeButtonSpinner").removeClass('d-none');
+            }
         }
     }
 
@@ -173,6 +205,10 @@ function Decrypt(props) {
         decodeButtonAccessibility(true);
     }
 
+    useEffect(() => {
+        console.log('Component did mount (it runs only once)');
+        return () => console.log('Component will unmount');
+    }, []);
 
     return (
         <>
@@ -198,9 +234,10 @@ function Decrypt(props) {
                 </div>
                 <div className="row">
                     <div className="col-sm mb-2" id="decodeButtonBlock">
-                        <button type="button" className="btn btn-danger btn-block btn-lg"
-                                id="decodeButton" onClick={loadCypher}>
-                            <span className="spinner-border spinner-border-sm d-none" id="decodeButtonSpinner"/>
+                        <button type="button" id="decodeButton" onClick={decrypt}
+                                className={decodeButton ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}>
+                            <span id="decodeButtonSpinner"
+                                  className={decodeButtonSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
                             {props.var.readMessageButton}
                         </button>
                     </div>

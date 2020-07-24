@@ -44,6 +44,8 @@ class Encrypt extends React.Component {
     }
 
     processEncrypt = (e) => {
+        console.log("processEncrypt");
+
         if ($("#passwordBlock").hasClass("collapsing")) {
             return;
         }
