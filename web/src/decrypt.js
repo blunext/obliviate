@@ -14,8 +14,7 @@ function Decrypt(props) {
     let secretKey = '';
     let encodedMessage = '';
 //    let loadCypherAction = true;
-    let _urlNonce = ''; //couse setUrlNonce is async and we need it
-    const [urlNonce, setUrlNonce] = useState('');
+    let urlNonce = '';
     const [hash, setHash] = useState([]);
     const [decodeButton, setDecodeButton] = useState(true);
     const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
@@ -29,34 +28,41 @@ function Decrypt(props) {
         }
     }
 
-
-
     function loadCypher() {
         debugger;
         console.log("loadCypher");
         decodeButtonAccessibility(false);
-        const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
+        let urlNonce = '';
         try {
-            _urlNonce = naclutil.decodeBase64(nonce);
+            urlNonce = getUrlNonce();
         } catch (ex) {
             decodeButtonAccessibility(true);
             alert(props.var.linkIsCorrupted);
             return;
         }
 
-        const _hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
+        const _hash = naclutil.encodeBase64(nacl.hash(urlNonce));
         setHash(_hash);
-        setUrlNonce(_urlNonce);
 
         const obj = {};
-        obj.hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
-        ;
+        obj.hash = naclutil.encodeBase64(nacl.hash(urlNonce));
+
         obj.publicKey = naclutil.encodeBase64(keys.publicKey);
         if (hasPassword) {
             obj.password = true;
         }
 
         libs.post('POST', obj, libs.READ_URL, decryptTransmission, loadError);
+    }
+
+    function getUrlNonce() {
+        debugger;
+        const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
+        try {
+            return naclutil.decodeBase64(nonce)
+        } catch (ex) {
+            throw ex;
+        }
     }
 
     function decryptTransmission(result) {
@@ -108,7 +114,7 @@ function Decrypt(props) {
 
     function continueXXXXXXXX() {
         debugger;
-        const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, secretKey);
+        const messageBytes = nacl.secretbox.open(encodedMessage, getUrlNonce(), secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
                 $("#decryptPassword").addClass('is-invalid');
