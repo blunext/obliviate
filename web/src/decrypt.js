@@ -14,11 +14,13 @@ function Decrypt(props) {
     let secretKey = '';
     let encodedMessage = '';
 //    let loadCypherAction = true;
-    let urlNonce = '';
+    const [urlNonce, setUrlNonce] = useState('');
     const [hash, setHash] = useState([]);
     const [decodeButton, setDecodeButton] = useState(true);
     const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
     const [loadCypherAction, setLoadCypherAction] = useState(true);
+
+
 
     function decrypt() {
         if (loadCypherAction) {
@@ -28,65 +30,59 @@ function Decrypt(props) {
         }
     }
 
+
     function loadCypher() {
         debugger;
         console.log("loadCypher");
         decodeButtonAccessibility(false);
-        let urlNonce = '';
+        const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
+        let _urlNonce = '';
         try {
-            urlNonce = getUrlNonce();
+            _urlNonce = naclutil.decodeBase64(nonce);
         } catch (ex) {
             decodeButtonAccessibility(true);
             alert(props.var.linkIsCorrupted);
             return;
         }
 
-        const _hash = naclutil.encodeBase64(nacl.hash(urlNonce));
+        const _hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
         setHash(_hash);
+        setUrlNonce(_urlNonce);
 
         const obj = {};
-        obj.hash = naclutil.encodeBase64(nacl.hash(urlNonce));
-
+        obj.hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
+        ;
         obj.publicKey = naclutil.encodeBase64(keys.publicKey);
         if (hasPassword) {
             obj.password = true;
         }
 
         libs.post('POST', obj, libs.READ_URL, decryptTransmission, loadError);
-    }
 
-    function getUrlNonce() {
-        debugger;
-        const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
-        try {
-            return naclutil.decodeBase64(nonce)
-        } catch (ex) {
-            throw ex;
+        function decryptTransmission(result) {
+            debugger;
+            // decode transmission with box
+            const messageWithNonceAsUint8Array = naclutil.decodeBase64(result.message);
+            const noncePart = libs.arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
+            const messagePart = libs.arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
+
+            const decrypted = nacl.box.open(messagePart, noncePart, props.var.serverPublicKey, keys.secretKey);
+            if (!decrypted) {
+                $('#decodedMessage').html("{{.generalError}}");
+                showDecodedMessage();
+                return
+            }
+            // decode message with secretbox
+            if (hasPassword) {
+                salt = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+            } else {
+                secretKey = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+            }
+            encodedMessage = libs.arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
+            decryptMessage();
         }
     }
 
-    function decryptTransmission(result) {
-        debugger;
-        // decode transmission with box
-        const messageWithNonceAsUint8Array = naclutil.decodeBase64(result.message);
-        const noncePart = libs.arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
-        const messagePart = libs.arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
-
-        const decrypted = nacl.box.open(messagePart, noncePart, props.var.serverPublicKey, keys.secretKey);
-        if (!decrypted) {
-            $('#decodedMessage').html("{{.generalError}}");
-            showDecodedMessage();
-            return
-        }
-        // decode message with secretbox
-        if (hasPassword) {
-            salt = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
-        } else {
-            secretKey = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
-        }
-        encodedMessage = libs.arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
-        decryptMessage();
-    }
 
     function decryptMessage() {
         debugger;
@@ -105,16 +101,16 @@ function Decrypt(props) {
             return;
         }
         continueXXXXXXXX();
-    }
 
-    function scryptCallback(key, time) { // do nothing with time while decrypt
-        secretKey = key;
-        continueXXXXXXXX();
+        function scryptCallback(key, time) { // do nothing with time while decrypt
+            secretKey = key;
+            continueXXXXXXXX();
+        }
     }
 
     function continueXXXXXXXX() {
         debugger;
-        const messageBytes = nacl.secretbox.open(encodedMessage, getUrlNonce(), secretKey);
+        const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
                 $("#decryptPassword").addClass('is-invalid');
