@@ -10,17 +10,16 @@ function Decrypt(props) {
 
     const hasPassword = window.location.search.substring(1).length === libs.queryIndexWithPassword;
     const keys = nacl.box.keyPair(); // -----> in deep
-    let salt = '';
-    let secretKey = '';
-    let encodedMessage = '';
-//    let loadCypherAction = true;
-    const [urlNonce, setUrlNonce] = useState('');
-    const [hash, setHash] = useState([]);
+
     const [decodeButton, setDecodeButton] = useState(true);
     const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
     const [loadCypherAction, setLoadCypherAction] = useState(true);
-
-
+    const [urlCryptoData, setUrlCryptoData] = useState({urlNonce: '', hash: []});
+    const [salt, setSalt] = useState('');
+    const [secretKey, setSecretKey] = useState('');
+    const [cypherLoaded, setCypherLoaded] = useState(false);
+    const [cypherReady, setCypherReady] = useState(false);
+    const [encodedMessage, setEncodedMessage] = useState(false);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -30,28 +29,25 @@ function Decrypt(props) {
         }
     }
 
-
     function loadCypher() {
         debugger;
         console.log("loadCypher");
         decodeButtonAccessibility(false);
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
-        let _urlNonce = '';
+        let urlNonce = '';
         try {
-            _urlNonce = naclutil.decodeBase64(nonce);
+            urlNonce = naclutil.decodeBase64(nonce);
         } catch (ex) {
             decodeButtonAccessibility(true);
             alert(props.var.linkIsCorrupted);
             return;
         }
 
-        const _hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
-        setHash(_hash);
-        setUrlNonce(_urlNonce);
+        const hash = naclutil.encodeBase64(nacl.hash(urlNonce));
+        setUrlCryptoData({urlNonce: urlNonce, hash: hash});
 
         const obj = {};
-        obj.hash = naclutil.encodeBase64(nacl.hash(_urlNonce));
-        ;
+        obj.hash = naclutil.encodeBase64(nacl.hash(urlNonce));
         obj.publicKey = naclutil.encodeBase64(keys.publicKey);
         if (hasPassword) {
             obj.password = true;
@@ -74,15 +70,29 @@ function Decrypt(props) {
             }
             // decode message with secretbox
             if (hasPassword) {
-                salt = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+                setSalt(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
             } else {
-                secretKey = libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength);
+                setSecretKey(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
             }
-            encodedMessage = libs.arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length);
-            decryptMessage();
+            setEncodedMessage(libs.arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length));
+
+            setCypherLoaded(true);
         }
     }
 
+    useEffect(() => {
+        debugger;
+        if (cypherLoaded) {
+            decryptMessage();
+        }
+    }, [cypherLoaded])
+
+    useEffect(() => {
+        debugger;
+        if (cypherReady) {
+            continueXXXXXXXX();
+        }
+    }, [cypherReady])
 
     function decryptMessage() {
         debugger;
@@ -100,17 +110,18 @@ function Decrypt(props) {
             }
             return;
         }
-        continueXXXXXXXX();
+        setCypherReady(true);
 
         function scryptCallback(key, time) { // do nothing with time while decrypt
-            secretKey = key;
-            continueXXXXXXXX();
+            // secretKey = key; ----------------------_>
+            setSecretKey(key);
+            setCypherReady(true);
         }
     }
 
     function continueXXXXXXXX() {
         debugger;
-        const messageBytes = nacl.secretbox.open(encodedMessage, urlNonce, secretKey);
+        const messageBytes = nacl.secretbox.open(encodedMessage, urlCryptoData.urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
                 $("#decryptPassword").addClass('is-invalid');
@@ -139,7 +150,7 @@ function Decrypt(props) {
 
         if (hasPassword) {
             const obj = {};
-            obj.hash = hash;
+            obj.hash = urlCryptoData.hash;
             libs.post('DELETE', obj, libs.DELETE_URL, deleteSuccess, deleteError(obj));
         }
 
