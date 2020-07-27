@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
 import {libs} from "./commons";
-import $ from "jquery";
 
 function Decrypt(props) {
 
@@ -21,6 +20,7 @@ function Decrypt(props) {
     const [encodedMessage, setEncodedMessage] = useState(false);
     const [messagePassword, setMessagePassword] = useState('');
     const [messagePasswordOk, setMessagePasswordOk] = useState(true);
+    const [messageReadInfo, setMessageReadInfo] = useState(false);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -119,7 +119,6 @@ function Decrypt(props) {
         const messageBytes = nacl.secretbox.open(encodedMessage, urlCryptoData.urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
-                $("#decryptPassword").addClass('is-invalid');
                 setLoadCypherAction(false);
                 decodeButtonAccessibility(true);
                 return;
@@ -142,13 +141,14 @@ function Decrypt(props) {
     }
 
     function loadError(XMLHttpRequest, textStatus, errorThrown) {
+        decodeButtonAccessibility(true);
         if (XMLHttpRequest.status === 404) {
-            $("#decodeButtonBlock").addClass('d-none');
-            $("#decryptPasswordBlock").addClass('d-none');
-            $("#errorForDecodedMessage").removeClass('d-none');
-            decodeButtonAccessibility(true);
+            setMessageReadInfo(true);
+            setMessagePasswordOk(false); //hide pass
+            // $("#decodeButtonBlock").addClass('d-none');
+            // $("#decryptPasswordBlock").addClass('d-none');
+            // $("#errorForDecodedMessage").removeClass('d-none');
         } else {
-            decodeButtonAccessibility(true);
             alert(props.var.decryptNetworkError);
         }
     }
@@ -190,15 +190,16 @@ function Decrypt(props) {
     return (
         <>
             <div className="container">
-                <div className="row d-none" id="errorForDecodedMessage">
+                <div className={messageReadInfo ? "row" : "row d-none"} id="errorForDecodedMessage">
                     <div className="col-sm">
                         <p className="text-secondary">{props.var.messageRead}
                         </p>
                     </div>
                 </div>
                 <div className="row">
-                    <div className={hasPassword ? "input-group mb-3" : "input-group mb-3 d-none"}
-                         id="decryptPasswordBlock">
+                    <div
+                        className={messageReadInfo ? "d-none" : (hasPassword ? "input-group mb-3" : "input-group mb-3 d-none")}
+                        id="decryptPasswordBlock">
                         <div className="input-group">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">{props.var.password}</span>
@@ -216,7 +217,7 @@ function Decrypt(props) {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-sm mb-2" id="decodeButtonBlock">
+                    <div className={messageReadInfo ? "col-sm mb-2 d-none" : "col-sm mb-2"} id="decodeButtonBlock">
                         <button type="button" id="decodeButton" onClick={decrypt}
                                 className={decodeButton ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}>
                             <span id="decodeButtonSpinner"
