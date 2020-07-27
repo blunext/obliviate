@@ -21,5 +21,6 @@
   "readMessageButton": "{{.readMessageButton}}",
   "linkIsCorrupted": "{{.linkIsCorrupted}}",
   "generalError": "{{.generalError}}",
-  "decryptNetworkError": "{{.decryptNetworkError}}"
+  "decryptNetworkError": "{{.decryptNetworkError}}",
+  "decodedMessage": "{{.decodedMessage}}"
 }

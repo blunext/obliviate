@@ -11,13 +11,16 @@ import naclutil from "tweetnacl-util";
 const Encrypt = React.lazy(() => import('./encrypt'));
 const ShowLink = React.lazy(() => import('./showlink'));
 const Decrypt = React.lazy(() => import('./decrypt'));
+const Show = React.lazy(() => import('./show'));
 
 function Main() {
-    const parts = {ENCRYPT: 0, LINK: 1, DECRYPT: 2};
+    const vars = useRef({});
+
+    const parts = {ENCRYPT: 0, LINK: 1, DECRYPT: 2, SHOW: 3};
     const [ready, setReady] = useState(false);
     const [link, setLink] = useState('');
     const [visible, setVisible] = useState(parts.ENCRYPT);
-    const vars = useRef({});
+    const [message, setMessage] = useState('');
 
     console.log("Main start");
 
@@ -49,8 +52,10 @@ function Main() {
     }
 
     function messageCallback(message) {
-        alert(message);
+        setMessage(message);
+        setVisible(parts.SHOW);
     }
+
     if (!ready) {
         return (
             <div className="loader">Loading...</div>
@@ -61,6 +66,7 @@ function Main() {
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
+
                         <Suspense fallback={<div className="loader">Loading...</div>}>
                             {visible === parts.ENCRYPT ?
                                 <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
@@ -71,7 +77,12 @@ function Main() {
                         </Suspense>
                         <Suspense fallback={<div className="loader">Loading...</div>}>
                             {visible === parts.DECRYPT ?
-                                <Decrypt var={vars.current} messageCallback={messageCallback} againCallback={againCallback}/> : null}
+                                <Decrypt var={vars.current} messageCallback={messageCallback}
+                                         againCallback={againCallback}/> : null}
+                        </Suspense>
+                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                            {visible === parts.SHOW ?
+                                <Show var={vars.current} message={message} againCallback={againCallback}/> : null}
                         </Suspense>
                     </div>
                 </div>

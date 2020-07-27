@@ -30,7 +30,6 @@ function Decrypt(props) {
     }
 
     function loadCypher() {
-        debugger;
         console.log("loadCypher");
         decodeButtonAccessibility(false);
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
@@ -56,7 +55,6 @@ function Decrypt(props) {
         libs.post('POST', obj, libs.READ_URL, decryptTransmission, loadError);
 
         function decryptTransmission(result) {
-            debugger;
             // decode transmission with box
             const messageWithNonceAsUint8Array = naclutil.decodeBase64(result.message);
             const noncePart = libs.arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
@@ -81,21 +79,18 @@ function Decrypt(props) {
     }
 
     useEffect(() => {
-        debugger;
         if (cypherLoaded) {
             decryptMessage();
         }
     }, [cypherLoaded])
 
     useEffect(() => {
-        debugger;
         if (cypherReady) {
-            continueXXXXXXXX();
+            decryptCypher();
         }
     }, [cypherReady])
 
     function decryptMessage() {
-        debugger;
         $("#decryptPassword").removeClass('is-invalid');
         decodeButtonAccessibility(false);
         if (hasPassword) {
@@ -119,8 +114,7 @@ function Decrypt(props) {
         }
     }
 
-    function continueXXXXXXXX() {
-        debugger;
+    function decryptCypher() {
         const messageBytes = nacl.secretbox.open(encodedMessage, urlCryptoData.urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
@@ -139,15 +133,6 @@ function Decrypt(props) {
 
         props.messageCallback(message);
 
-        // alert(message);
-        // const escape = document.createElement('textarea');
-        // escape.textContent = message;
-        // escape.innerHTML;
-
-        // const str = libs.replaceAll(escape.innerHTML, '\n', '<br/>');
-        // $('#decodedMessage').html(str);
-        // showDecodedMessage();
-
         if (hasPassword) {
             const obj = {};
             obj.hash = urlCryptoData.hash;
@@ -157,7 +142,6 @@ function Decrypt(props) {
     }
 
     function loadError(XMLHttpRequest, textStatus, errorThrown) {
-        debugger;
         if (XMLHttpRequest.status === 404) {
             $("#decodeButtonBlock").addClass('d-none');
             $("#decryptPasswordBlock").addClass('d-none');
@@ -184,37 +168,19 @@ function Decrypt(props) {
     function deleteErrorTryAgain(XMLHttpRequest, textStatus, errorThrown) {  // do nothing
     }
 
-
-    // function changeAction() {
-    //     $("#decodeButton").off('click');
-    //     $("#decodeButton").click(function (e) {
-    //         decryptMessage();
-    //     });
-    // }
-
-
     function decodeButtonAccessibility(state) {
         if (state) {
             setDecodeButton(true);
             setDecodeButtonSpinner(false);
-            // $("#decodeButton").removeClass('disabled');
-            // $("#decodeButtonSpinner").addClass('d-none');
         } else {
             setDecodeButton(false);
-            // $("#decodeButton").addClass('disabled');
             if (!libs.IE()) {
                 setDecodeButtonSpinner(true);
-                // $("#decodeButtonSpinner").removeClass('d-none');
             }
         }
     }
 
     function showDecodedMessage() {
-        // $("#inputMessageBlock").addClass('d-none');
-        // $("#linkBlock").addClass('d-none');
-        // $("#decodeBlock").addClass('d-none');
-        // $("#presentationBlock").removeClass('d-none');
-
         decodeButtonAccessibility(true);
     }
 
