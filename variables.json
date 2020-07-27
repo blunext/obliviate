@@ -22,5 +22,7 @@
   "linkIsCorrupted": "{{.linkIsCorrupted}}",
   "generalError": "{{.generalError}}",
   "decryptNetworkError": "{{.decryptNetworkError}}",
-  "decodedMessage": "{{.decodedMessage}}"
+  "decodedMessage": "{{.decodedMessage}}",
+  "title": "{{.title}}",
+  "description": "{{.description}}"
 }

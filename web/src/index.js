@@ -29,6 +29,7 @@ function Main() {
     console.log("Main start");
 
     useEffect(() => {
+
         if (window.location.hash) {
             setVisible(parts.DECRYPT);
         }
@@ -37,12 +38,18 @@ function Main() {
             .then(res => {
                 vars.current = res.data;
                 vars.current.serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);
+
+                document.title = vars.current.title;
+                document.description = vars.current.description;
+
                 setReady(true);
             })
             .catch(err => {
                 // TODO: -----
                 console.log(err);
             });
+
+
     }, [])
 
     function linkCallback(url) {

@@ -9,9 +9,9 @@ type translationPair struct {
 
 var translationsSet = map[language.Tag][]translationPair{
 	language.English: {
-		{"title", "Private and secure notes - send your secrets safely."},
+		{"title", "Private and secure notes - send your secrets safely"},
 		{"header", "Private secure notes"},
-		{"description", "Highly secure message encryption and open source tool that auto-destruct."},
+		{"description", "Highly secure message encryption and open source tool that auto-destruct"},
 		{"enterTextMessage", "Enter text message to encrypt"},
 		{"secureButton", "Encrypt message"},
 		{"copyLink", "Copy link and send it to a friend. Message will be deleted after being read or after 4 weeks when not read."},
