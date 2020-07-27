@@ -203,7 +203,8 @@ function Decrypt(props) {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="input-group mb-3" id="decryptPasswordBlock">
+                    <div className={hasPassword ? "input-group mb-3" : "input-group mb-3 d-none"}
+                         id="decryptPasswordBlock">
                         <div className="input-group">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">{props.var.password}</span>
