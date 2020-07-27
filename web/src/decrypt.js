@@ -145,9 +145,6 @@ function Decrypt(props) {
         if (XMLHttpRequest.status === 404) {
             setMessageReadInfo(true);
             setMessagePasswordOk(false); //hide pass
-            // $("#decodeButtonBlock").addClass('d-none');
-            // $("#decryptPasswordBlock").addClass('d-none');
-            // $("#errorForDecodedMessage").removeClass('d-none');
         } else {
             alert(props.var.decryptNetworkError);
         }
