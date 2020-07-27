@@ -9,7 +9,6 @@ function Decrypt(props) {
     console.log("Decrypt start");
 
     const hasPassword = window.location.search.substring(1).length === libs.queryIndexWithPassword;
-    const keys = nacl.box.keyPair(); // -----> in deep
 
     const [decodeButton, setDecodeButton] = useState(true);
     const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
@@ -20,6 +19,8 @@ function Decrypt(props) {
     const [cypherLoaded, setCypherLoaded] = useState(false);
     const [cypherReady, setCypherReady] = useState(false);
     const [encodedMessage, setEncodedMessage] = useState(false);
+    const [messagePassword, setMessagePassword] = useState('');
+    const [messagePasswordOk, setMessagePasswordOk] = useState(true);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -31,8 +32,12 @@ function Decrypt(props) {
 
     function loadCypher() {
         console.log("loadCypher");
+
         decodeButtonAccessibility(false);
+
+        const keys = nacl.box.keyPair();
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1);
+
         let urlNonce = '';
         try {
             urlNonce = naclutil.decodeBase64(nonce);
@@ -91,30 +96,30 @@ function Decrypt(props) {
     }, [cypherReady])
 
     function decryptMessage() {
-        $("#decryptPassword").removeClass('is-invalid');
+        debugger;
+        // $("#decryptPassword").removeClass('is-invalid');
         decodeButtonAccessibility(false);
         if (hasPassword) {
-            const password = $('#decryptPassword').val();
-            if (password.length > 0) {
-                libs.calculateKeyDerived(password, salt, libs.scryptLogN, scryptCallback);
+            // const password = $('#decryptPassword').val();
+            if (messagePassword.length > 0) {
+                libs.calculateKeyDerived(messagePassword, salt, libs.scryptLogN, scryptCallback);
             } else {
-                $("#decryptPassword").addClass('is-invalid');
+                setMessagePasswordOk(false);
                 decodeButtonAccessibility(true);
                 setLoadCypherAction(false);
-                // loadCypherAction = false;
             }
             return;
         }
         setCypherReady(true);
 
         function scryptCallback(key, time) { // do nothing with time while decrypt
-            // secretKey = key; ----------------------_>
             setSecretKey(key);
             setCypherReady(true);
         }
     }
 
     function decryptCypher() {
+        debugger;
         const messageBytes = nacl.secretbox.open(encodedMessage, urlCryptoData.urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
@@ -184,10 +189,15 @@ function Decrypt(props) {
         decodeButtonAccessibility(true);
     }
 
-    useEffect(() => {
-        console.log('Component did mount (it runs only once)');
-        return () => console.log('Component will unmount');
-    }, []);
+    function updatePassword(event) {
+        setMessagePassword(event.target.value);
+        if (event.target.value.length === 0) {
+            setMessagePasswordOk(false);
+        } else {
+            setMessagePasswordOk(true);
+        }
+    }
+
 
     return (
         <>
@@ -204,8 +214,13 @@ function Decrypt(props) {
                             <div className="input-group-prepend">
                                 <span className="input-group-text">{props.var.password}</span>
                             </div>
-                            <input type="text" className="form-control" id="decryptPassword"
-                                   placeholder={props.var.passwordDecryptPlaceholder}/>
+                            <input type="text"
+                                   className={messagePasswordOk ? "form-control" : "form-control is-invalid"}
+                                   id="decryptPassword"
+                                   placeholder={props.var.passwordDecryptPlaceholder}
+                                   onChange={updatePassword}
+
+                            />
                         </div>
                         <div className="col-sm text-danger text-center font-weight-light d-none"
                              id="ieDecryptWarning">{props.var.ieDecryptWarning}</div>
