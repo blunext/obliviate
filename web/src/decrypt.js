@@ -96,7 +96,6 @@ function Decrypt(props) {
     }, [cypherReady])
 
     function decryptMessage() {
-        debugger;
         decodeButtonAccessibility(false);
         if (hasPassword) {
             if (messagePassword.length > 0) {
@@ -111,14 +110,12 @@ function Decrypt(props) {
         setCypherReady(cypherReady + 1);
 
         function scryptCallback(key, time) { // do nothing with time while decrypt
-            debugger;
             setSecretKey(key);
             setCypherReady(cypherReady + 1);
         }
     }
 
     function decryptCypher() {
-        debugger;
         const messageBytes = nacl.secretbox.open(encodedMessage, urlCryptoData.urlNonce, secretKey);
         if (messageBytes == null) {
             if (hasPassword) {
@@ -179,10 +176,6 @@ function Decrypt(props) {
             }
         }
     }
-
-    // function showDecodedMessage() {
-    //     decodeButtonAccessibility(true);
-    // }
 
     function updatePassword(event) {
         setMessagePassword(event.target.value);
