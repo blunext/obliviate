@@ -67,8 +67,8 @@ function Decrypt(props) {
 
             const decrypted = nacl.box.open(messagePart, noncePart, props.var.serverPublicKey, keys.secretKey);
             if (!decrypted) {
-                $('#decodedMessage').html("{{.generalError}}");
-                showDecodedMessage();
+                decodeButtonAccessibility(true);
+                alert(props.var.generalError);
                 return
             }
             // decode message with secretbox
@@ -97,10 +97,8 @@ function Decrypt(props) {
 
     function decryptMessage() {
         debugger;
-        // $("#decryptPassword").removeClass('is-invalid');
         decodeButtonAccessibility(false);
         if (hasPassword) {
-            // const password = $('#decryptPassword').val();
             if (messagePassword.length > 0) {
                 libs.calculateKeyDerived(messagePassword, salt, libs.scryptLogN, scryptCallback);
             } else {
@@ -124,13 +122,12 @@ function Decrypt(props) {
         if (messageBytes == null) {
             if (hasPassword) {
                 $("#decryptPassword").addClass('is-invalid');
-                // loadCypherAction = false;
                 setLoadCypherAction(false);
                 decodeButtonAccessibility(true);
                 return;
             }
-            $('#decodedMessage').html(props.var.generalError);
-            showDecodedMessage(); // TODO: remove "Decoded message:" header
+            decodeButtonAccessibility(true);
+            alert(props.var.generalError);
             return;
         }
 
@@ -141,7 +138,7 @@ function Decrypt(props) {
         if (hasPassword) {
             const obj = {};
             obj.hash = urlCryptoData.hash;
-            libs.post('DELETE', obj, libs.DELETE_URL, deleteSuccess, deleteError(obj));
+            libs.post('DELETE', obj, libs.DELETE_URL, doNothing, deleteError(obj));
         }
 
     }
@@ -158,19 +155,16 @@ function Decrypt(props) {
         }
     }
 
-    function deleteSuccess() { // do nothing
+    function doNothing() { // do nothing
     }
 
     function deleteError(obj) {
         return function (XMLHttpRequest, textStatus, errorThrown) {
             // try to delete again
             window.setTimeout(function () {
-                libs.post('DELETE', obj, '/delete?again', deleteSuccess, deleteErrorTryAgain);
+                libs.post('DELETE', obj, '/delete?again', doNothing, doNothing);
             }, 1000);
         }
-    }
-
-    function deleteErrorTryAgain(XMLHttpRequest, textStatus, errorThrown) {  // do nothing
     }
 
     function decodeButtonAccessibility(state) {
@@ -185,9 +179,9 @@ function Decrypt(props) {
         }
     }
 
-    function showDecodedMessage() {
-        decodeButtonAccessibility(true);
-    }
+    // function showDecodedMessage() {
+    //     decodeButtonAccessibility(true);
+    // }
 
     function updatePassword(event) {
         setMessagePassword(event.target.value);
