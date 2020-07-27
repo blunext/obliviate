@@ -7,11 +7,15 @@ import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
 import {libs} from './commons'
 import naclutil from "tweetnacl-util";
+import Encrypt from "./encrypt";
+import ShowLink from "./showlink";
+import Decrypt from "./decrypt";
+import Show from "./show";
 
-const Encrypt = React.lazy(() => import('./encrypt'));
-const ShowLink = React.lazy(() => import('./showlink'));
-const Decrypt = React.lazy(() => import('./decrypt'));
-const Show = React.lazy(() => import('./show'));
+// const Encrypt = React.lazy(() => import('./encrypt'));
+// const ShowLink = React.lazy(() => import('./showlink'));
+// const Decrypt = React.lazy(() => import('./decrypt'));
+// const Show = React.lazy(() => import('./show'));
 
 function Main() {
     const vars = useRef({});
@@ -67,23 +71,23 @@ function Main() {
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
 
-                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                             {visible === parts.ENCRYPT ?
                                 <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
-                        </Suspense>
-                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                        {/*</Suspense>*/}
+                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                             {visible === parts.LINK ?
                                 <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
-                        </Suspense>
-                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                        {/*</Suspense>*/}
+                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                             {visible === parts.DECRYPT ?
                                 <Decrypt var={vars.current} messageCallback={messageCallback}
                                          againCallback={againCallback}/> : null}
-                        </Suspense>
-                        <Suspense fallback={<div className="loader">Loading...</div>}>
+                        {/*</Suspense>*/}
+                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                             {visible === parts.SHOW ?
                                 <Show var={vars.current} message={message} againCallback={againCallback}/> : null}
-                        </Suspense>
+                        {/*</Suspense>*/}
                     </div>
                 </div>
                 <div className="container mt-3">
