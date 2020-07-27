@@ -14,28 +14,24 @@ const commons = {
     scryptLogN: 14,
     queryIndexWithPassword: 4,
     calculateKeyDerived: function (password, salt, logN, callback) {
-        // let postpone = this.IE() ? 0 : 750;
-        let postpone = 0;
-        window.setTimeout(function () {
-            try {
-                const t1 = getTime();
-                scryptAsynch(password, salt, {
-                        logN: logN,
-                        r: 8,
-                        p: 1,
-                        dkLen: nacl.secretbox.keyLength, // 32
-                        interruptStep: 0,
-                        encoding: 'binary' // hex, base64, binary
-                    },
-                    function (res) {
-                        const time = Math.round(getTime() - t1);
-                        callback(res, time);
-                    }
-                );
-            } catch (ex) {
-                alert(ex.message); //TODO: process the exception
-            }
-        }, postpone); // it freezes the UI so postpone invocation
+        try {
+            const t1 = getTime();
+            scryptAsynch(password, salt, {
+                    logN: logN,
+                    r: 8,
+                    p: 1,
+                    dkLen: nacl.secretbox.keyLength, // 32
+                    interruptStep: 0,
+                    encoding: 'binary' // hex, base64, binary
+                },
+                function (res) {
+                    const time = Math.round(getTime() - t1);
+                    callback(res, time);
+                }
+            );
+        } catch (ex) {
+            alert(ex.message); //TODO: process the exception
+        }
     },
     IE: function () {
         return window.document.documentMode;
