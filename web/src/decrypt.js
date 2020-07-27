@@ -17,7 +17,7 @@ function Decrypt(props) {
     const [salt, setSalt] = useState('');
     const [secretKey, setSecretKey] = useState('');
     const [cypherLoaded, setCypherLoaded] = useState(false);
-    const [cypherReady, setCypherReady] = useState(false);
+    const [cypherReady, setCypherReady] = useState(0);
     const [encodedMessage, setEncodedMessage] = useState(false);
     const [messagePassword, setMessagePassword] = useState('');
     const [messagePasswordOk, setMessagePasswordOk] = useState(true);
@@ -90,7 +90,7 @@ function Decrypt(props) {
     }, [cypherLoaded])
 
     useEffect(() => {
-        if (cypherReady) {
+        if (cypherReady > 0) {
             decryptCypher();
         }
     }, [cypherReady])
@@ -108,11 +108,12 @@ function Decrypt(props) {
             }
             return;
         }
-        setCypherReady(true);
+        setCypherReady(cypherReady + 1);
 
         function scryptCallback(key, time) { // do nothing with time while decrypt
+            debugger;
             setSecretKey(key);
-            setCypherReady(true);
+            setCypherReady(cypherReady + 1);
         }
     }
 
