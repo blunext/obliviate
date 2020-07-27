@@ -58,9 +58,6 @@ const commons = {
             }
         }
         return new Uint8Array(ret);
-    },
-    replaceAll: function (str, find, replace) {
-        return str.replace(new RegExp(find, 'g'), replace);
     }
 
 };

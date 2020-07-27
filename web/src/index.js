@@ -2,7 +2,7 @@ import 'react-app-polyfill/ie11';
 import 'react-app-polyfill/stable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import React, {Suspense, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
@@ -81,21 +81,21 @@ function Main() {
                     <div className="form-group mt-3 mb-3" id="inputMessageBlock">
 
                         {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
-                            {visible === parts.ENCRYPT ?
-                                <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
+                        {visible === parts.ENCRYPT ?
+                            <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
                         {/*</Suspense>*/}
                         {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
-                            {visible === parts.LINK ?
-                                <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
+                        {visible === parts.LINK ?
+                            <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
                         {/*</Suspense>*/}
                         {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
-                            {visible === parts.DECRYPT ?
-                                <Decrypt var={vars.current} messageCallback={messageCallback}
-                                         againCallback={againCallback}/> : null}
+                        {visible === parts.DECRYPT ?
+                            <Decrypt var={vars.current} messageCallback={messageCallback}
+                                     againCallback={againCallback}/> : null}
                         {/*</Suspense>*/}
                         {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
-                            {visible === parts.SHOW ?
-                                <Show var={vars.current} message={message} againCallback={againCallback}/> : null}
+                        {visible === parts.SHOW ?
+                            <Show var={vars.current} message={message} againCallback={againCallback}/> : null}
                         {/*</Suspense>*/}
                     </div>
                 </div>
