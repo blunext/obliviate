@@ -120,6 +120,7 @@ function Decrypt(props) {
         if (messageBytes == null) {
             if (hasPassword) {
                 setLoadCypherAction(false);
+                setMessagePasswordOk(false);
                 decodeButtonAccessibility(true);
                 return;
             }
