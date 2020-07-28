@@ -188,7 +188,7 @@ function Decrypt(props) {
     return (
         <>
             <div className="container">
-                <div className={messageReadInfo ? "row" : "row d-none"} id="errorForDecodedMessage">
+                <div className={messageReadInfo ? "row" : "row d-none"}>
                     <div className="col-sm">
                         <p className="text-secondary">{props.var.messageRead}
                         </p>
@@ -196,30 +196,28 @@ function Decrypt(props) {
                 </div>
                 <div className="row">
                     <div
-                        className={messageReadInfo ? "d-none" : (hasPassword ? "input-group mb-3" : "input-group mb-3 d-none")}
-                        id="decryptPasswordBlock">
+                        className={messageReadInfo ? "d-none" : (hasPassword ? "input-group mb-3" : "input-group mb-3 d-none")}>
                         <div className="input-group">
                             <div className="input-group-prepend">
                                 <span className="input-group-text">{props.var.password}</span>
                             </div>
                             <input type="text"
                                    className={messagePasswordOk ? "form-control" : "form-control is-invalid"}
-                                   id="decryptPassword"
                                    placeholder={props.var.passwordDecryptPlaceholder}
                                    onChange={updatePassword}
 
                             />
                         </div>
-                        <div className="col-sm text-danger text-center font-weight-light d-none"
-                             id="ieDecryptWarning">{props.var.ieDecryptWarning}</div>
+                        <div
+                            className="col-sm text-danger text-center font-weight-light d-none">{props.var.ieDecryptWarning}</div>
                     </div>
                 </div>
                 <div className="row">
-                    <div className={messageReadInfo ? "col-sm mb-2 d-none" : "col-sm mb-2"} id="decodeButtonBlock">
-                        <button type="button" id="decodeButton" onClick={decrypt}
+                    <div className={messageReadInfo ? "col-sm mb-2 d-none" : "col-sm mb-2"}>
+                        <button type="button" onClick={decrypt}
                                 className={decodeButton ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}>
-                            <span id="decodeButtonSpinner"
-                                  className={decodeButtonSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
+                            <span
+                                className={decodeButtonSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
                             {props.var.readMessageButton}
                         </button>
                     </div>

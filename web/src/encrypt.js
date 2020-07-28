@@ -145,7 +145,6 @@ class Encrypt extends React.Component {
             <>
                 <label htmlFor="message" className="text-secondary">{this.props.var.enterTextMessage}</label>
                 <textarea className={this.state.messageOk ? "form-control mb-3" : "form-control mb-3 is-invalid"}
-                          id="message"
                           rows="4" maxLength="262144"
                           autoFocus defaultValue={this.props.var.message}
                           onChange={this.onChangeMessage}/>
@@ -158,7 +157,6 @@ class Encrypt extends React.Component {
                                 </div>
                                 <input type="text"
                                        className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
-                                       id="encryptPassword"
                                        placeholder={this.props.var.passwordEncryptPlaceholder}
                                        onChange={this.onChangePassword}/>
                             </div>
@@ -177,12 +175,10 @@ class Encrypt extends React.Component {
                         <div className="col-sm">
                             <button type="button" className=
                                 {this.state.buttonEncode ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}
-                                    id="encodeButton"
                                     value={this.state.messagePassword}
                                     onClick={this.processEncrypt}>
                                 <span
-                                    className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}
-                                    id="encodeButtonSpinner"/>
+                                    className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
                                 {this.props.var.secureButton}
                             </button>
                         </div>

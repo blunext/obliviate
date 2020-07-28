@@ -78,8 +78,7 @@ function Main() {
             <>
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
                 <div className="container border border-primary">
-                    <div className="form-group mt-3 mb-3" id="inputMessageBlock">
-
+                    <div className="form-group mt-3 mb-3">
                         {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                         {visible === parts.ENCRYPT ?
                             <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}

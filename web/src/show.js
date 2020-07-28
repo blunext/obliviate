@@ -10,7 +10,7 @@ function Show(props) {
                     <div className="col-sm text-secondary">
                         <p className="text-center">{props.var.decodedMessage}:</p>
                         <div className="border-top my-3"/>
-                        <p id="decodedMessage" className="br-line">{props.message}</p>
+                        <p className="br-line">{props.message}</p>
                     </div>
                 </div>
                 <div className="row">
