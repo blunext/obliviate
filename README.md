@@ -19,12 +19,11 @@ To Do List:
 - [x] move param link into anchor part
 - [x] test the handlers
 - [x] password, extra layer of security
-- [ ] key encryption key rotation
-- [ ] different destruction times
-- [ ] more info, faq, etc.
  
 Try it locally:
 ```
+npm install --prefix web
+npm run build --prefix web
 go build
 ./obliviate 
 ```
