@@ -59,7 +59,7 @@ func main() {
 	app := app.NewApp(db, &conf, keys)
 
 	r := chi.NewRouter()
-	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript")
+	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript", "text/css", "image/x-icon", "text/plain", "application/json")
 	r.Use(compressor.Handler)
 
 	r.Get("/variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
@@ -85,7 +85,7 @@ func main() {
 			logrus.Warnf("ERROR starting profiler: %v", err)
 		}
 	}
-	
+
 	logrus.Info("Server starts")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 	if err != nil {
