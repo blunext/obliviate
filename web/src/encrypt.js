@@ -60,7 +60,7 @@ class Encrypt extends React.Component {
                 this.hasPassword = true;
 
                 this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
-                libs.calculateKeyDerived(this.state.messagePassword, this.salt, libs.scryptLogN, this.scryptCallback);
+                libs.calculateKeyDerived(this.state.messagePassword, this.salt, libs.costFactor, this.scryptCallback);
             } else {
                 this.setState({passwordOk: false});
             }
@@ -106,6 +106,7 @@ class Encrypt extends React.Component {
         obj.publicKey = naclutil.encodeBase64(this.keys.publicKey);
         if (this.hasPassword) {
             obj.time = this.time;
+            obj.costFactor = libs.costFactor;
         }
 
         libs.post('POST', obj, libs.SAVE_URL, this.encodeSuccess, this.encodeError);

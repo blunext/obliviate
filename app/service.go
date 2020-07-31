@@ -27,10 +27,10 @@ func NewApp(db store.DataBase, config *config.Configuration, keys *crypt.Keys) *
 	return &app
 }
 
-func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce []byte, hash string, publicKey []byte, t int) error {
+func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce []byte, hash string, publicKey []byte, t int, costFactor int) error {
 
 	hashEncoded := url.PathEscape(hash)
-	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey, t)
+	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey, t, costFactor)
 
 	err := s.db.SaveMessage(ctx, data)
 	if err != nil {
@@ -39,16 +39,16 @@ func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce
 	return nil
 }
 
-func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, password bool) ([]byte, error) {
+func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, password bool) ([]byte, int, error) {
 
 	hashEncoded := url.PathEscape(hash)
 
 	data, err := s.db.GetMessage(ctx, hashEncoded)
 	if err != nil {
-		return nil, fmt.Errorf("errod in GetMessage, err: %v", err)
+		return nil, 0, fmt.Errorf("errod in GetMessage, err: %v", err)
 	}
 	if data.Txt == nil {
-		return nil, nil
+		return nil, 0, nil
 	}
 	var senderPublicKey [32]byte
 	copy(senderPublicKey[:], data.PublicKey)
@@ -58,7 +58,7 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, pa
 
 	decrypted, err := s.keys.BoxOpen(data.Txt, &senderPublicKey, &senderNonce)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open box, err: %v", err)
+		return nil, 0, fmt.Errorf("cannot open box, err: %v", err)
 	}
 
 	var recipientPublicKey [32]byte
@@ -66,7 +66,7 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, pa
 
 	encrypted, err := s.keys.BoxSeal(decrypted, &recipientPublicKey)
 	if err != nil {
-		return nil, fmt.Errorf("cannot seal message, err: %v", err)
+		return nil, 0, fmt.Errorf("cannot seal message, err: %v", err)
 	}
 
 	if !password {
@@ -81,7 +81,7 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, pa
 		}
 	}
 
-	return encrypted, nil
+	return encrypted, data.CostFactor, nil
 }
 
 func (s *App) ProcessDelete(ctx context.Context, hash string) {

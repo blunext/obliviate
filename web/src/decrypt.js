@@ -21,6 +21,7 @@ function Decrypt(props) {
     const [messagePassword, setMessagePassword] = useState('');
     const [messagePasswordOk, setMessagePasswordOk] = useState(true);
     const [messageReadInfo, setMessageReadInfo] = useState(false);
+    const [costFactor, setCostFactor] = useState(libs.costFactorDefault);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -74,6 +75,9 @@ function Decrypt(props) {
             // decode message with secretbox
             if (hasPassword) {
                 setSalt(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
+                if (result.costFactor !== undefined) { // for backward compatibility
+                    setCostFactor(result.costFactor);
+                }
             } else {
                 setSecretKey(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
             }
@@ -99,7 +103,7 @@ function Decrypt(props) {
         decodeButtonAccessibility(false);
         if (hasPassword) {
             if (messagePassword.length > 0) {
-                libs.calculateKeyDerived(messagePassword, salt, libs.scryptLogN, scryptCallback);
+                libs.calculateKeyDerived(messagePassword, salt, costFactor, scryptCallback);
             } else {
                 setMessagePasswordOk(false);
                 decodeButtonAccessibility(true);

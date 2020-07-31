@@ -17,6 +17,7 @@ type SaveRequest struct {
 	Hash              string `json:"hash"`
 	PublicKey         []byte `json:"publicKey"`
 	Time              int    `json:"time"`
+	CostFactor        int    `json:"costFactor"`
 }
 
 type ReadRequest struct {
@@ -30,7 +31,8 @@ type DeleteRequest struct {
 }
 
 type ReadResponse struct {
-	Message []byte `json:"message"`
+	Message    []byte `json:"message"`
+	CostFactor int    `json:"costFactor,omitempty"`
 }
 
 const (
@@ -104,7 +106,7 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey, data.Time)
+		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey, data.Time, data.CostFactor)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
 			return
@@ -145,7 +147,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		encrypted, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey, data.Password)
+		encrypted, costFactor, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey, data.Password)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
 			return
@@ -156,7 +158,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		message := ReadResponse{Message: encrypted}
+		message := ReadResponse{Message: encrypted, CostFactor: costFactor}
 
 		setStatusAndHeader(w, http.StatusOK)
 		w.Write(jsonFromStruct(message))

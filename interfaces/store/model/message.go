@@ -5,11 +5,12 @@ import (
 )
 
 type MessageType struct {
-	Txt       []byte    `firestore:"txt"`
-	ValidTo   time.Time `firestore:"valid"`
-	Nonce     []byte    `firestore:"nonce"`
-	PublicKey []byte    `firestore:"publicKey"`
-	Time      int       `firestore:"time"`
+	Txt        []byte    `firestore:"txt"`
+	ValidTo    time.Time `firestore:"valid"`
+	Nonce      []byte    `firestore:"nonce"`
+	PublicKey  []byte    `firestore:"publicKey"`
+	Time       int       `firestore:"time,omitempty"`
+	CostFactor int       `firestore:"costFactor,omitempty"`
 }
 
 type MessageModel struct {
@@ -17,16 +18,23 @@ type MessageModel struct {
 	Message MessageType
 }
 
-func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte, time int) MessageModel {
+func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte, time int, costFactor int) MessageModel {
 	m := MessageModel{
 		key: key,
 		Message: MessageType{
-			Txt:       txt,
-			ValidTo:   valid,
-			Nonce:     nonce,
-			PublicKey: publicKey,
-			Time:      time,
+			Txt:        txt,
+			ValidTo:    valid,
+			Nonce:      nonce,
+			PublicKey:  publicKey,
+			Time:       time,
+			CostFactor: costFactor,
 		},
+	}
+	if time != 0 {
+		m.Message.Time = time
+	}
+	if costFactor != 0 {
+		m.Message.CostFactor = costFactor
 	}
 	return m
 }
