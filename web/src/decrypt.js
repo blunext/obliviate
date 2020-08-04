@@ -63,8 +63,8 @@ function Decrypt(props) {
         function decryptTransmission(result) {
             // decode transmission with box
             const messageWithNonceAsUint8Array = naclutil.decodeBase64(result.message);
-            const noncePart = libs.arraySlice(messageWithNonceAsUint8Array, 0, nacl.box.nonceLength);
-            const messagePart = libs.arraySlice(messageWithNonceAsUint8Array, nacl.box.nonceLength, result.message.length);
+            const noncePart = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength);
+            const messagePart = messageWithNonceAsUint8Array.slice(nacl.box.nonceLength, result.message.length);
 
             const decrypted = nacl.box.open(messagePart, noncePart, props.var.serverPublicKey, keys.secretKey);
             if (!decrypted) {
@@ -74,14 +74,14 @@ function Decrypt(props) {
             }
             // decode message with secretbox
             if (hasPassword) {
-                setSalt(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
+                setSalt(decrypted.slice(0, nacl.secretbox.keyLength));
                 if (result.costFactor !== undefined) { // for backward compatibility
                     setCostFactor(result.costFactor);
                 }
             } else {
-                setSecretKey(libs.arraySlice(decrypted, 0, nacl.secretbox.keyLength));
+                setSecretKey(decrypted.slice(0, nacl.secretbox.keyLength));
             }
-            setEncodedMessage(libs.arraySlice(decrypted, nacl.secretbox.keyLength, decrypted.length));
+            setEncodedMessage(decrypted.slice(nacl.secretbox.keyLength, decrypted.length));
 
             setCypherLoaded(true);
         }

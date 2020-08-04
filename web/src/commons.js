@@ -47,20 +47,6 @@ const commons = {
             error: postError
         });
     },
-    arraySlice: function (arr, x, y) {
-        if (this.IE()) {
-            return arr.slice(x, y);
-        }
-        // IE stuff
-        let ret = [];
-        for (let i = 0; i < arr.length; i++) {
-            if (i >= x && i < y) {
-                ret.push(arr[i]);
-            }
-        }
-        return new Uint8Array(ret);
-    }
-
 };
 
 
