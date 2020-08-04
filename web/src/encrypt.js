@@ -1,8 +1,9 @@
 import React from "react";
-import {libs} from "./commons";
+import {calculateKeyDerived, commons, post} from "./commons";
 import nacl from "tweetnacl";
 import $ from "jquery";
 import naclutil from "tweetnacl-util";
+import {isIE} from "react-device-detect";
 
 class Encrypt extends React.Component {
     constructor(props) {
@@ -19,7 +20,6 @@ class Encrypt extends React.Component {
         this.secretKey = ''; //TODO: zmienic nazwę
         this.salt = '';
         this.time = 0;
-        this.warningForIE = libs.IE();
         this.keys = nacl.box.keyPair();
         this.urlNonce = '';
 
@@ -60,7 +60,7 @@ class Encrypt extends React.Component {
                 this.hasPassword = true;
 
                 this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
-                libs.calculateKeyDerived(this.state.messagePassword, this.salt, libs.costFactor, this.scryptCallback);
+                calculateKeyDerived(this.state.messagePassword, this.salt, commons.costFactor, this.scryptCallback);
             } else {
                 this.setState({passwordOk: false});
             }
@@ -106,10 +106,10 @@ class Encrypt extends React.Component {
         obj.publicKey = naclutil.encodeBase64(this.keys.publicKey);
         if (this.hasPassword) {
             obj.time = this.time;
-            obj.costFactor = libs.costFactor;
+            obj.costFactor = commons.costFactor;
         }
 
-        libs.post('POST', obj, libs.SAVE_URL, this.encodeSuccess, this.encodeError);
+        post('POST', obj, commons.SAVE_URL, this.encodeSuccess, this.encodeError);
     }
     encodeButtonAccessibility = (state) => {
         if (state) {
@@ -117,7 +117,7 @@ class Encrypt extends React.Component {
             this.setState({encodeSpinner: false})
         } else {
             this.setState({buttonEncode: false})
-            if (!libs.IE()) {
+            if (!isIE) {
                 this.setState({encodeSpinner: false})
             }
         }
@@ -125,7 +125,7 @@ class Encrypt extends React.Component {
     encodeSuccess = (result) => {
         let index;
         if (this.hasPassword) {
-            index = libs.queryIndexWithPassword;
+            index = commons.queryIndexWithPassword;
         } else {
             index = 3;
         }
@@ -162,7 +162,7 @@ class Encrypt extends React.Component {
                                        onChange={this.onChangePassword}/>
                             </div>
                             <div
-                                className={this.warningForIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
+                                className={isIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
                                 {this.props.var.ieEncryptWarning}</div>
                         </div>
                     </div>

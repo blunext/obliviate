@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
-import {libs} from "./commons";
+import {commons, calculateKeyDerived, post} from "./commons";
+import {isIE} from "react-device-detect";
 
 function Decrypt(props) {
 
     console.log("Decrypt start");
 
-    const hasPassword = window.location.search.substring(1).length === libs.queryIndexWithPassword;
+    const hasPassword = window.location.search.substring(1).length === commons.queryIndexWithPassword;
 
     const [decodeButton, setDecodeButton] = useState(true);
     const [decodeButtonSpinner, setDecodeButtonSpinner] = useState(false);
@@ -21,7 +22,7 @@ function Decrypt(props) {
     const [messagePassword, setMessagePassword] = useState('');
     const [messagePasswordOk, setMessagePasswordOk] = useState(true);
     const [messageReadInfo, setMessageReadInfo] = useState(false);
-    const [costFactor, setCostFactor] = useState(libs.costFactorDefault);
+    const [costFactor, setCostFactor] = useState(commons.costFactorDefault);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -58,7 +59,7 @@ function Decrypt(props) {
             obj.password = true;
         }
 
-        libs.post('POST', obj, libs.READ_URL, decryptTransmission, loadError);
+        post('POST', obj, commons.READ_URL, decryptTransmission, loadError);
 
         function decryptTransmission(result) {
             // decode transmission with box
@@ -103,7 +104,7 @@ function Decrypt(props) {
         decodeButtonAccessibility(false);
         if (hasPassword) {
             if (messagePassword.length > 0) {
-                libs.calculateKeyDerived(messagePassword, salt, costFactor, scryptCallback);
+                calculateKeyDerived(messagePassword, salt, costFactor, scryptCallback);
             } else {
                 setMessagePasswordOk(false);
                 decodeButtonAccessibility(true);
@@ -140,7 +141,7 @@ function Decrypt(props) {
         if (hasPassword) {
             const obj = {};
             obj.hash = urlCryptoData.hash;
-            libs.post('DELETE', obj, libs.DELETE_URL, doNothing, deleteError(obj));
+            post('DELETE', obj, commons.DELETE_URL, doNothing, deleteError(obj));
         }
 
     }
@@ -162,7 +163,7 @@ function Decrypt(props) {
         return function (XMLHttpRequest, textStatus, errorThrown) {
             // try to delete again
             window.setTimeout(function () {
-                libs.post('DELETE', obj, '/delete?again', doNothing, doNothing);
+                post('DELETE', obj, '/delete?again', doNothing, doNothing);
             }, 1000);
         }
     }
@@ -173,7 +174,7 @@ function Decrypt(props) {
             setDecodeButtonSpinner(false);
         } else {
             setDecodeButton(false);
-            if (!libs.IE()) {
+            if (!isIE) {
                 setDecodeButtonSpinner(true);
             }
         }

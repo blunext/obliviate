@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import axios from 'axios';
-import {libs} from './commons'
+import {commons} from './commons'
 import naclutil from "tweetnacl-util";
 import Encrypt from "./encrypt";
 import ShowLink from "./showlink";
@@ -36,7 +36,7 @@ function Main() {
             setVisible(parts.DECRYPT);
         }
 
-        axios.get(libs.VARIABLES_URL)
+        axios.get(commons.VARIABLES_URL)
             .then(res => {
                 vars.current = res.data;
                 vars.current.serverPublicKey = naclutil.decodeBase64(res.data.PublicKey);

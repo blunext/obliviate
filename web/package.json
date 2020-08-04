@@ -12,6 +12,7 @@
     "jquery": "^3.5.1",
     "react": "^16.13.1",
     "react-app-polyfill": "^1.0.6",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "scrypt-async": "^2.0.1",

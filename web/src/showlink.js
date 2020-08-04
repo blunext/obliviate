@@ -1,16 +1,15 @@
 import React from "react";
 import ClipboardJS from 'clipboard';
-
+import {isMobileOnly} from "react-device-detect";
 
 function ShowLink(props) {
-    const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
     new ClipboardJS('.btn');
     console.log("ShowLink start");
 
     return (
         <>
             <label htmlFor="link" className="text-secondary">{props.var.copyLink}</label>
-            <textarea className="form-control mb-3" id="link" rows={isMobile ? 2 : 1} value={props.link} readOnly/>
+            <textarea className="form-control mb-3" id="link" rows={isMobileOnly ? 2 : 1} value={props.link} readOnly/>
             <div className="container">
                 <div className="row">
                     <div className="col-sm mb-2">
