@@ -46,7 +46,6 @@ class Encrypt extends React.Component {
     }
 
     processEncrypt = (e) => {
-        debugger;
         console.log("processEncrypt");
 
         if (this.state.message.length === 0) {
@@ -106,7 +105,6 @@ class Encrypt extends React.Component {
             obj.time = this.time;
             obj.costFactor = commons.costFactor;
         }
-
         post('POST', obj, commons.SAVE_URL, this.encodeSuccess, this.encodeError);
     }
     encodeButtonAccessibility = (state) => {
@@ -134,7 +132,7 @@ class Encrypt extends React.Component {
         const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
         this.props.linkCallback(url);
     }
-    encodeError = (XMLHttpRequest, textStatus, errorThrown) => {
+    encodeError = (err) => {
         this.encodeButtonAccessibility(true);
         alert(this.props.var.encryptNetworkError);
     }

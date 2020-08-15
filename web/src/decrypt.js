@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
-import {commons, calculateKeyDerived, post} from "./commons";
+import {calculateKeyDerived, commons, post} from "./commons";
 import {isIE} from "react-device-detect";
 
 function Decrypt(props) {
@@ -146,9 +146,9 @@ function Decrypt(props) {
 
     }
 
-    function loadError(XMLHttpRequest, textStatus, errorThrown) {
+    function loadError(err) {
         decodeButtonAccessibility(true);
-        if (XMLHttpRequest.status === 404) {
+        if (err.response !== undefined && err.response.status === 404) {
             setMessageReadInfo(true);
             setMessagePasswordOk(false); //hide pass
         } else {

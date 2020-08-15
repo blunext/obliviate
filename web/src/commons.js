@@ -1,6 +1,6 @@
 import scryptAsynch from "scrypt-async";
 import nacl from "tweetnacl";
-import $ from "jquery";
+import axios from "axios";
 
 export const commons = {
     VARIABLES_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/variables' : '/variables',
@@ -34,14 +34,20 @@ export const calculateKeyDerived = function (password, salt, logN, callback) {
 }
 
 export const post = function (method, webObject, url, postSuccess, postError) {
-    $.ajax({
+    debugger;
+    axios({
+        method: method,
         url: url,
-        type: method,
-        dataType: "json",
         data: JSON.stringify(webObject),
-        success: postSuccess,
-        error: postError
+    }).then(res => {
+        debugger;
+        postSuccess(res.data);
+    }).catch(err => {
+        debugger;
+        postError(err);
     });
+
+
 }
 
 var getTime = (function () {
