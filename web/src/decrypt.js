@@ -136,7 +136,7 @@ function Decrypt(props) {
 
         const message = naclutil.encodeUTF8(messageBytes);
 
-        props.messageCallback(message);
+        props.messageCallback(message, messagePassword);
 
         if (hasPassword) {
             const obj = {};

@@ -22,6 +22,7 @@ function Main() {
     const [link, setLink] = useState('');
     const [visible, setVisible] = useState(parts.ENCRYPT);
     const [message, setMessage] = useState('');
+    const [password, setPassword] = useState('');
 
     console.log("Main start");
 
@@ -59,8 +60,9 @@ function Main() {
         setVisible(parts.ENCRYPT);
     }
 
-    function messageCallback(message) {
+    function messageCallback(message, password) {
         setMessage(message);
+        setPassword(password);
         setVisible(parts.SHOW);
     }
 
@@ -75,7 +77,7 @@ function Main() {
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3">
                         {visible === parts.ENCRYPT ?
-                            <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
+                            <Encrypt var={vars.current} linkCallback={linkCallback} password={password}/> : null}
                         {visible === parts.LINK ?
                             <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
                         {visible === parts.DECRYPT ?

@@ -1,7 +1,6 @@
 import React from "react";
 import {calculateKeyDerived, commons, post} from "./commons";
 import nacl from "tweetnacl";
-import $ from "jquery";
 import naclutil from "tweetnacl-util";
 import {isIE} from "react-device-detect";
 
@@ -10,13 +9,13 @@ class Encrypt extends React.Component {
         super(props);
         this.state = {
             message: '',
-            messagePassword: '',
+            messagePassword: props.password,
             messageOk: true,
             passwordOk: true,
             buttonEncode: true,
             encodeSpinner: false,
+            hasPassword: props.password !== ''
         };
-        this.hasPassword = false;
         this.secretKey = ''; //TODO: zmienic nazwę
         this.salt = '';
         this.time = 0;
@@ -42,23 +41,22 @@ class Encrypt extends React.Component {
             this.setState({passwordOk: true});
         }
     }
+    onPasswordToggle = (event) => {
+        this.setState({hasPassword: !this.state.hasPassword})
+    }
 
     processEncrypt = (e) => {
+        debugger;
         console.log("processEncrypt");
 
-        if ($("#passwordBlock").hasClass("collapsing")) {
-            return;
-        }
         if (this.state.message.length === 0) {
             this.setState({messageOk: false});
             return;
         }
 
-        if ($("#passwordBlock").hasClass("show")) {
+        if (this.state.hasPassword) {
             if (this.state.messagePassword.length > 0) {
                 this.encodeButtonAccessibility(false);
-                this.hasPassword = true;
-
                 this.salt = nacl.randomBytes(nacl.secretbox.keyLength);  // the same as key, 32 bytes
                 calculateKeyDerived(this.state.messagePassword, this.salt, commons.costFactor, this.scryptCallback);
             } else {
@@ -88,7 +86,7 @@ class Encrypt extends React.Component {
 
         // store secret key in the message
         const fullMessage = new Uint8Array(this.secretKey.length + encryptedMessage.length);
-        if (this.hasPassword) {
+        if (this.state.hasPassword) {
             fullMessage.set(this.salt);
         } else {
             fullMessage.set(this.secretKey);
@@ -104,7 +102,7 @@ class Encrypt extends React.Component {
         obj.nonce = naclutil.encodeBase64(transmissionNonce);
         obj.hash = naclutil.encodeBase64(nacl.hash(messageNonce));
         obj.publicKey = naclutil.encodeBase64(this.keys.publicKey);
-        if (this.hasPassword) {
+        if (this.state.hasPassword) {
             obj.time = this.time;
             obj.costFactor = commons.costFactor;
         }
@@ -124,7 +122,7 @@ class Encrypt extends React.Component {
     }
     encodeSuccess = (result) => {
         let index;
-        if (this.hasPassword) {
+        if (this.state.hasPassword) {
             index = commons.queryIndexWithPassword;
         } else {
             index = 3;
@@ -151,7 +149,7 @@ class Encrypt extends React.Component {
                           onChange={this.onChangeMessage}/>
                 <div className="container">
                     <div className="row">
-                        <div className="input-group mb-3 collapse" id="passwordBlock">
+                        <div className={this.state.hasPassword ? "input-group mb-3" : "input-group mb-3 collapse"}>
                             <div className="input-group">
                                 <div className="input-group-prepend">
                                     <span className="input-group-text">{this.props.var.password}</span>
@@ -159,7 +157,8 @@ class Encrypt extends React.Component {
                                 <input type="text"
                                        className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
                                        placeholder={this.props.var.passwordEncryptPlaceholder}
-                                       onChange={this.onChangePassword}/>
+                                       onChange={this.onChangePassword}
+                                       value={this.state.messagePassword}/>
                             </div>
                             <div
                                 className={isIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
@@ -169,14 +168,12 @@ class Encrypt extends React.Component {
                     <div className="row">
                         <div className="col-sm mb-2">
                             <button type="button" className="btn btn-success btn-block btn-lg"
-                                    data-toggle="collapse"
-                                    data-target="#passwordBlock">{this.props.var.password}
+                                    onClick={this.onPasswordToggle}>{this.props.var.password}
                             </button>
                         </div>
                         <div className="col-sm">
                             <button type="button" className=
                                 {this.state.buttonEncode ? "btn btn-danger btn-block btn-lg" : "btn btn-danger btn-block btn-lg disabled"}
-                                    value={this.state.messagePassword}
                                     onClick={this.processEncrypt}>
                                 <span
                                     className={this.state.encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
