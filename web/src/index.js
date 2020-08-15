@@ -14,11 +14,6 @@ import ShowLink from "./showlink";
 import Decrypt from "./decrypt";
 import Show from "./show";
 
-// const Encrypt = React.lazy(() => import('./encrypt'));
-// const ShowLink = React.lazy(() => import('./showlink'));
-// const Decrypt = React.lazy(() => import('./decrypt'));
-// const Show = React.lazy(() => import('./show'));
-
 function Main() {
     const vars = useRef({});
 
@@ -79,23 +74,15 @@ function Main() {
                 <h4 className="text-secondary text-center mt-2">{vars.current.header}</h4>
                 <div className="container border border-primary">
                     <div className="form-group mt-3 mb-3">
-                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                         {visible === parts.ENCRYPT ?
                             <Encrypt var={vars.current} linkCallback={linkCallback}/> : null}
-                        {/*</Suspense>*/}
-                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                         {visible === parts.LINK ?
                             <ShowLink var={vars.current} link={link} againCallback={againCallback}/> : null}
-                        {/*</Suspense>*/}
-                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                         {visible === parts.DECRYPT ?
                             <Decrypt var={vars.current} messageCallback={messageCallback}
                                      againCallback={againCallback}/> : null}
-                        {/*</Suspense>*/}
-                        {/*<Suspense fallback={<div className="loader">Loading...</div>}>*/}
                         {visible === parts.SHOW ?
                             <Show var={vars.current} message={message} againCallback={againCallback}/> : null}
-                        {/*</Suspense>*/}
                     </div>
                 </div>
                 <div className="container mt-3">
