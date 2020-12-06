@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 	"github.com/sirupsen/logrus"
-	model "obliviate/interfaces/store/model"
+	model "obliviate/repository/model"
 	"time"
 )
 

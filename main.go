@@ -12,9 +12,9 @@ import (
 	"obliviate/config"
 	"obliviate/crypt"
 	"obliviate/crypt/rsa"
-	"obliviate/interfaces/handler"
-	"obliviate/interfaces/store"
-	"obliviate/interfaces/store/mock"
+	"obliviate/handler"
+	"obliviate/repository"
+	"obliviate/repository/mock"
 	"os"
 	"path/filepath"
 	"strings"
@@ -37,11 +37,11 @@ func main() {
 	}
 
 	var algorithm rsa.EncryptionOnRest
-	var db store.DataBase
+	var db repository.DataBase
 
 	if conf.ProdEnv {
 		initLogrus(logrus.DebugLevel)
-		db = store.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
+		db = repository.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {

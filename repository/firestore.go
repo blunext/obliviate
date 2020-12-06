@@ -1,4 +1,4 @@
-package store
+package repository
 
 import (
 	"cloud.google.com/go/firestore"
@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/option"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"obliviate/interfaces/store/model"
+	"obliviate/repository/model"
 	"time"
 )
 

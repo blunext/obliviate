@@ -10,7 +10,7 @@ import (
 	"io"
 	"obliviate/config"
 	"obliviate/crypt/rsa"
-	"obliviate/interfaces/store"
+	"obliviate/repository"
 )
 
 type Keys struct {
@@ -19,7 +19,7 @@ type Keys struct {
 	PublicKeyEncoded string
 }
 
-func NewKeys(db store.DataBase, conf *config.Configuration, algorithm rsa.EncryptionOnRest) (*Keys, error) {
+func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.EncryptionOnRest) (*Keys, error) {
 
 	k := Keys{}
 
@@ -56,7 +56,7 @@ func NewKeys(db store.DataBase, conf *config.Configuration, algorithm rsa.Encryp
 			return nil, fmt.Errorf("error encrypting keys: %v", err)
 		}
 
-		// store crypted Keys
+		// repository crypted Keys
 		err = db.SaveEncryptedKeys(context.Background(), encrypted)
 		if err != nil {
 			return nil, fmt.Errorf("error storing keys into DB: %v", err)

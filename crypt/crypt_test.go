@@ -5,15 +5,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"obliviate/config"
 	"obliviate/crypt/rsa"
-	"obliviate/interfaces/store"
-	"obliviate/interfaces/store/mock"
+	"obliviate/repository"
+	"obliviate/repository/mock"
 	"os"
 	"testing"
 	"time"
 )
 
 var conf *config.Configuration
-var db store.DataBase
+var db repository.DataBase
 
 func init() {
 	formatter := new(logrus.TextFormatter)
@@ -32,7 +32,7 @@ func init() {
 		KmsCredentialFile:       os.Getenv("KMS_CREDENTIAL_FILE"),
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
-	//conf.Db = store.Connect(context.Background(), "test")
+	//conf.Db = repository.Connect(context.Background(), "test")
 	db = mock.StorageMock()
 }
 

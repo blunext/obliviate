@@ -16,8 +16,8 @@ import (
 	"obliviate/config"
 	"obliviate/crypt"
 	"obliviate/crypt/rsa"
-	"obliviate/interfaces/store"
-	"obliviate/interfaces/store/mock"
+	"obliviate/repository"
+	"obliviate/repository/mock"
 	"os"
 	"testing"
 	"time"
@@ -29,7 +29,7 @@ type testParams struct {
 }
 
 var conf *config.Configuration
-var db store.DataBase
+var db repository.DataBase
 
 var params = []testParams{
 
@@ -63,7 +63,7 @@ func init() {
 		KmsCredentialFile:       os.Getenv("KMS_CREDENTIAL_FILE"),
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
-	//db = store.NewConnection(context.Background(), "local", conf.FirestoreCredentialFile, os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
+	//db = repository.NewConnection(context.Background(), "local", conf.FirestoreCredentialFile, os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 	db = mock.StorageMock()
 
 }

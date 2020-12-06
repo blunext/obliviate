@@ -7,18 +7,18 @@ import (
 	"net/url"
 	"obliviate/config"
 	"obliviate/crypt"
-	"obliviate/interfaces/store"
-	"obliviate/interfaces/store/model"
+	"obliviate/repository"
+	"obliviate/repository/model"
 	"time"
 )
 
 type App struct {
 	config *config.Configuration
 	keys   *crypt.Keys
-	db     store.DataBase
+	db     repository.DataBase
 }
 
-func NewApp(db store.DataBase, config *config.Configuration, keys *crypt.Keys) *App {
+func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Keys) *App {
 	app := App{
 		config: config,
 		keys:   keys,
