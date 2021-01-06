@@ -1,6 +1,6 @@
 
 
-FROM node:14.6.0-alpine3.12 AS nodeBuilder
+FROM node:15.5.1-alpine3.12 AS nodeBuilder
 WORKDIR /app
 COPY ./web ./
 ENV PATH /app/node_modules/.bin:$PATH
