@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"obliviate/config"
 	"obliviate/crypt"
+	"obliviate/handler/webModels"
 	"obliviate/repository"
 	"obliviate/repository/model"
 	"time"
@@ -27,21 +28,22 @@ func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Ke
 	return &app
 }
 
-func (s *App) ProcessSave(ctx context.Context, message []byte, transmissionNonce []byte, hash string, publicKey []byte, t int, costFactor int) error {
+func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) error {
 
-	hashEncoded := url.PathEscape(hash)
-	data := model.NewMessage(hashEncoded, message, time.Now().Add(s.config.DefaultDurationTime), transmissionNonce, publicKey, t, costFactor)
+	hashEncoded := url.PathEscape(request.Hash)
+	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.config.DefaultDurationTime),
+		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor)
 
-	err := s.db.SaveMessage(ctx, data)
+	err := s.db.SaveMessage(ctx, messageDataModel)
 	if err != nil {
 		return fmt.Errorf("cannot save message, err: %v", err)
 	}
 	return nil
 }
 
-func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, password bool) ([]byte, int, error) {
+func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([]byte, int, error) {
 
-	hashEncoded := url.PathEscape(hash)
+	hashEncoded := url.PathEscape(request.Hash)
 
 	data, err := s.db.GetMessage(ctx, hashEncoded)
 	if err != nil {
@@ -62,14 +64,14 @@ func (s *App) ProcessRead(ctx context.Context, hash string, publicKey []byte, pa
 	}
 
 	var recipientPublicKey [32]byte
-	copy(recipientPublicKey[:], publicKey)
+	copy(recipientPublicKey[:], request.PublicKey)
 
 	encrypted, err := s.keys.BoxSeal(decrypted, &recipientPublicKey)
 	if err != nil {
 		return nil, 0, fmt.Errorf("cannot seal message, err: %v", err)
 	}
 
-	if !password {
+	if !request.Password {
 		// delete only when password is not required
 		if s.config.ProdEnv {
 			go func() {

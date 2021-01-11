@@ -16,6 +16,7 @@ import (
 	"obliviate/config"
 	"obliviate/crypt"
 	"obliviate/crypt/rsa"
+	"obliviate/handler/webModels"
 	"obliviate/repository"
 	"obliviate/repository/mock"
 	"os"
@@ -89,7 +90,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 		transmissionNonce, _ := keys.GenerateNonce()
 		encryptedTransmission := box.Seal(transmissionNonce[:], messageWithSecret, &transmissionNonce, browserPublicKey, keys.PrivateKey)
 
-		saveRequest := SaveRequest{
+		saveRequest := webModels.SaveRequest{
 			Message:           encryptedTransmission[24:], // take it without nonce, will be base64ed on marshal
 			TransmissionNonce: transmissionNonce[:],
 			Hash:              makeHash(messageNonce),
@@ -103,7 +104,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 
 		browserPublicKey, browserPrivateKey, _ := box.GenerateKey(rand.Reader) // new keys
 
-		readRequest := ReadRequest{
+		readRequest := webModels.ReadRequest{
 			Hash:      makeHash(messageNonce),
 			PublicKey: browserPublicKey[:],
 		}
@@ -115,7 +116,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 			continue
 		}
 
-		data := ReadResponse{}
+		data := webModels.ReadResponse{}
 		err := json.Unmarshal([]byte(readResponse), &data)
 		assert.NoError(t, err, "error unmarshal read response")
 		if err != nil {

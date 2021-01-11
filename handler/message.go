@@ -7,33 +7,10 @@ import (
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
+	"obliviate/handler/webModels"
 	"obliviate/i18n"
 	"text/template"
 )
-
-type SaveRequest struct {
-	Message           []byte `json:"message"`
-	TransmissionNonce []byte `json:"nonce"`
-	Hash              string `json:"hash"`
-	PublicKey         []byte `json:"publicKey"`
-	Time              int    `json:"time"`
-	CostFactor        int    `json:"costFactor"`
-}
-
-type ReadRequest struct {
-	Hash      string `json:"hash"`
-	PublicKey []byte `json:"publicKey"`
-	Password  bool   `json:"password"`
-}
-
-type DeleteRequest struct {
-	Hash string `json:"hash"`
-}
-
-type ReadResponse struct {
-	Message    []byte `json:"message"`
-	CostFactor int    `json:"costFactor,omitempty"`
-}
 
 const (
 	jsonErrMsg = "input json error"
@@ -78,7 +55,7 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		data := SaveRequest{}
+		data := webModels.SaveRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
@@ -106,7 +83,7 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		err = app.ProcessSave(r.Context(), data.Message, data.TransmissionNonce, data.Hash, data.PublicKey, data.Time, data.CostFactor)
+		err = app.ProcessSave(r.Context(), data)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
 			return
@@ -128,7 +105,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		data := ReadRequest{}
+		data := webModels.ReadRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
@@ -147,7 +124,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		encrypted, costFactor, err := app.ProcessRead(r.Context(), data.Hash, data.PublicKey, data.Password)
+		encrypted, costFactor, err := app.ProcessRead(r.Context(), data)
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
 			return
@@ -158,7 +135,7 @@ func Read(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		message := ReadResponse{Message: encrypted, CostFactor: costFactor}
+		message := webModels.ReadResponse{Message: encrypted, CostFactor: costFactor}
 
 		setStatusAndHeader(w, http.StatusOK)
 		w.Write(jsonFromStruct(message))
@@ -177,7 +154,7 @@ func Delete(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		data := DeleteRequest{}
+		data := webModels.DeleteRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
