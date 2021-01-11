@@ -55,3 +55,6 @@ func (d *db) SaveEncryptedKeys(ctx context.Context, encrypted []byte) error {
 func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
 	return d.encrypted, nil
 }
+
+func (d *db) IncreaseCounter(ctx context.Context) {
+}

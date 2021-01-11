@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+const counterShards = 5
+
 type DataBase interface {
 	SaveMessage(ctx context.Context, data model.MessageModel) error
 	GetMessage(context.Context, string) (model.MessageType, error)
@@ -21,18 +23,22 @@ type DataBase interface {
 	DeleteBeforeNow(context.Context) error
 	SaveEncryptedKeys(context.Context, []byte) error
 	GetEncryptedKeys(context.Context) ([]byte, error)
+	IncreaseCounter(context.Context)
+}
+
+type collection struct {
+	coll    string
+	keyColl string
+	keyDoc  string
 }
 
 type db struct {
-	client      *firestore.Client
-	messageColl string
-	keyColl     string
-	keyDoc      string
+	client            *firestore.Client
+	messageCollection collection
+	counter           Counter
 }
 
-func NewConnection(ctx context.Context, messageColl string, firestoreCredentialFile string, projectID string, prodEnv bool) *db {
-
-	d := db{messageColl: messageColl, keyColl: "commons", keyDoc: "keys"}
+func NewConnection(ctx context.Context, firestoreCredentialFile string, projectID string, prodEnv bool) *db {
 
 	var err error
 	var app *firebase.App
@@ -52,16 +58,24 @@ func NewConnection(ctx context.Context, messageColl string, firestoreCredentialF
 	if err != nil {
 		logrus.Errorf("Cannot create new client while connecting to firestore: %v", err)
 	}
-	d.client = client
 
-	//defer client.Close()
+	d := db{
+		messageCollection: collection{coll: "messages", keyColl: "commons", keyDoc: "keys"},
+		counter:           Counter{counterShards, "stats", client},
+		client:            client,
+	}
 	logrus.Info("Firestore connected")
+
+	if !d.counter.counterExists(ctx) {
+		d.counter.initCounter(ctx)
+		logrus.Info("Counter initialized")
+	}
 
 	return &d
 }
 
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
-	_, err := d.client.Collection(d.messageColl).Doc(data.Key()).Set(ctx, data.Message)
+	_, err := d.client.Collection(d.messageCollection.coll).Doc(data.Key()).Set(ctx, data.Message)
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
@@ -73,7 +87,7 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 
 	data := model.MessageModel{}
 
-	doc, err := d.client.Collection(d.messageColl).Doc(key).Get(ctx)
+	doc, err := d.client.Collection(d.messageCollection.coll).Doc(key).Get(ctx)
 	if err != nil {
 		if status.Code(err) != codes.NotFound {
 			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
@@ -96,7 +110,7 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 }
 
 func (d *db) DeleteMessage(ctx context.Context, key string) {
-	_, err := d.client.Collection(d.messageColl).Doc(key).Delete(ctx)
+	_, err := d.client.Collection(d.messageCollection.coll).Doc(key).Delete(ctx)
 	if err != nil {
 		logrus.Errorf("cannot remove doc, key: %v\n", key)
 	}
@@ -104,7 +118,7 @@ func (d *db) DeleteMessage(ctx context.Context, key string) {
 
 func (d *db) DeleteBeforeNow(ctx context.Context) error {
 
-	iter := d.client.Collection(d.messageColl).Where("valid", "<", time.Now()).Documents(ctx)
+	iter := d.client.Collection(d.messageCollection.coll).Where("valid", "<", time.Now()).Documents(ctx)
 	numDeleted := 0
 	batch := d.client.Batch()
 	for {
@@ -132,7 +146,7 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 
 func (d *db) SaveEncryptedKeys(ctx context.Context, encrypted []byte) error {
 	keys := model.Key{Key: encrypted}
-	_, err := d.client.Collection(d.keyColl).Doc(d.keyDoc).Set(ctx, keys)
+	_, err := d.client.Collection(d.messageCollection.coll).Doc(d.messageCollection.keyDoc).Set(ctx, keys)
 	if err != nil {
 		return fmt.Errorf("error while saving encrypted keys: %s, err: %v", keys.Key, err)
 	}
@@ -141,7 +155,7 @@ func (d *db) SaveEncryptedKeys(ctx context.Context, encrypted []byte) error {
 }
 
 func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
-	doc, err := d.client.Collection(d.keyColl).Doc(d.keyDoc).Get(ctx)
+	doc, err := d.client.Collection(d.messageCollection.coll).Doc(d.messageCollection.keyDoc).Get(ctx)
 	if err != nil {
 		if status.Code(err) != codes.NotFound {
 			return nil, fmt.Errorf("error while getting encrypted keys: %v", err)
@@ -154,4 +168,11 @@ func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
 	}
 	logrus.Debug("encrypted keys fetched from db")
 	return key.Key, nil
+}
+
+func (d *db) IncreaseCounter(ctx context.Context) {
+	_, err := d.counter.incrementCounter(ctx)
+	if err != nil {
+		logrus.Warningf("Increase counter error: %v", err)
+	}
 }

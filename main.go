@@ -22,8 +22,7 @@ import (
 )
 
 const (
-	messageCollectionName = "messages"
-	messageDurationTime   = time.Hour * 24 * 7 * 4
+	messageDurationTime = time.Hour * 24 * 7 * 4
 )
 
 func main() {
@@ -41,7 +40,7 @@ func main() {
 
 	if conf.ProdEnv {
 		initLogrus(logrus.DebugLevel)
-		db = repository.NewConnection(context.Background(), messageCollectionName, conf.FirestoreCredentialFile,
+		db = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {

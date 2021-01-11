@@ -38,6 +38,12 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) er
 	if err != nil {
 		return fmt.Errorf("cannot save message, err: %v", err)
 	}
+
+	go func() {
+		ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
+		s.db.IncreaseCounter(ct)
+	}()
+
 	return nil
 }
 
