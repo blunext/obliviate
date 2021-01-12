@@ -71,6 +71,9 @@ func NewConnection(ctx context.Context, firestoreCredentialFile string, projectI
 		logrus.Info("Counter initialized")
 	}
 
+	i, _ := d.counter.getCount(ctx)
+	logrus.Infof("Couter = %d", i)
+
 	return &d
 }
 
