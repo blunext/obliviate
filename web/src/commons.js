@@ -34,16 +34,13 @@ export const calculateKeyDerived = function (password, salt, logN, callback) {
 }
 
 export const post = function (method, webObject, url, postSuccess, postError) {
-    debugger;
     axios({
         method: method,
         url: url,
         data: JSON.stringify(webObject),
     }).then(res => {
-        debugger;
         postSuccess(res.data);
     }).catch(err => {
-        debugger;
         postError(err);
     });
 
