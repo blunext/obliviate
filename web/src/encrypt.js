@@ -127,7 +127,7 @@ class Encrypt extends React.Component {
         }
         if (!window.location.origin) { // IE fix
             window.location.origin = window.location.protocol + "//" + window.location.hostname +
-                (window.location.port === 443 ? "" : ":" + window.location.port);
+                (window.location.port === '443' ? "" : ":" + window.location.port);
         }
         const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
         this.props.linkCallback(url);
