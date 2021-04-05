@@ -3,10 +3,12 @@ package main
 import (
 	"cloud.google.com/go/profiler"
 	"context"
+	"embed"
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/sirupsen/logrus"
+	"io/fs"
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
@@ -16,14 +18,15 @@ import (
 	"obliviate/repository"
 	"obliviate/repository/mock"
 	"os"
-	"path/filepath"
-	"strings"
 	"time"
 )
 
 const (
 	messageDurationTime = time.Hour * 24 * 7 * 4
 )
+
+//go:embed web/build
+var static embed.FS
 
 func main() {
 
@@ -67,9 +70,7 @@ func main() {
 	r.Delete("/expired", handler.Expired(app))
 	r.Delete("/delete", handler.Delete(app))
 
-	workDir, _ := os.Getwd()
-	filesDir := filepath.Join(workDir, "web/build")
-	FileServer(r, "/", http.Dir(filesDir))
+	FileServer(r, "/*", static, false)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -111,20 +112,27 @@ func initLogrus(level logrus.Level) {
 	logrus.SetLevel(level)
 }
 
-func FileServer(r chi.Router, path string, root http.FileSystem) {
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit URL parameters.")
-	}
-
-	fs := http.StripPrefix(path, http.FileServer(root))
-
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
+func FileServer(r chi.Router, path string, files fs.FS, useLiveFS bool) {
+	fs := http.FileServer(getStaticsFS(files, useLiveFS))
 
 	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeHTTP(w, r)
 	})
+}
+
+func getStaticsFS(static fs.FS, useLiveFS bool) http.FileSystem {
+	path := "web/build"
+
+	if useLiveFS {
+		logrus.Println("using live os files mode")
+		return http.FS(os.DirFS(path))
+	}
+
+	logrus.Println("using embed files mode")
+	fsys, err := fs.Sub(static, path)
+	if err != nil {
+		logrus.Panicln(err)
+	}
+
+	return http.FS(fsys)
 }
