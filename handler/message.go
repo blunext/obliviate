@@ -21,7 +21,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 
 	var t *template.Template
 	if config.ProdEnv {
-		t = template.Must(template.New("variables.json").ParseFiles("variables.json"))
+		t = template.Must(template.New("variables.json").ParseFS(config.EmbededStaticFiles, "variables.json"))
 	}
 
 	translation := i18n.NewTranslation()
@@ -30,7 +30,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		logrus.Trace("ProcessTemplate Handler")
 
 		if !config.ProdEnv {
-			t, _ = template.New("variables.json").ParseFiles("variables.json")
+			t, _ = template.New("variables.json").ParseFS(config.EmbededStaticFiles, "variables.json")
 		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Cache-Control", "no-cache, no-store")

@@ -8,7 +8,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/sirupsen/logrus"
-	"io/fs"
 	"net/http"
 	"obliviate/app"
 	"obliviate/config"
@@ -25,6 +24,7 @@ const (
 	messageDurationTime = time.Hour * 24 * 7 * 4
 )
 
+//go:embed variables.json
 //go:embed web/build
 var static embed.FS
 
@@ -36,6 +36,8 @@ func main() {
 		MasterKey:               os.Getenv("HSM_MASTER_KEY"),
 		KmsCredentialFile:       os.Getenv("KMS_CREDENTIAL_FILE"),
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
+		StaticFilesLocation:     "web/build",
+		EmbededStaticFiles:      static,
 	}
 
 	var algorithm rsa.EncryptionOnRest
@@ -64,13 +66,12 @@ func main() {
 	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript", "text/css", "image/x-icon", "text/plain", "application/json")
 	r.Use(compressor.Handler)
 
+	r.Get("/*", handler.StaticFiles(&conf, true))
 	r.Get("/variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
 	r.Post("/save", handler.Save(app))
 	r.Post("/read", handler.Read(app))
 	r.Delete("/expired", handler.Expired(app))
 	r.Delete("/delete", handler.Delete(app))
-
-	FileServer(r, "/*", static, false)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -110,29 +111,4 @@ func initLogrus(level logrus.Level) {
 		})
 	}
 	logrus.SetLevel(level)
-}
-
-func FileServer(r chi.Router, path string, files fs.FS, useLiveFS bool) {
-	fs := http.FileServer(getStaticsFS(files, useLiveFS))
-
-	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
-		fs.ServeHTTP(w, r)
-	})
-}
-
-func getStaticsFS(static fs.FS, useLiveFS bool) http.FileSystem {
-	path := "web/build"
-
-	if useLiveFS {
-		logrus.Println("using live os files mode")
-		return http.FS(os.DirFS(path))
-	}
-
-	logrus.Println("using embed files mode")
-	fsys, err := fs.Sub(static, path)
-	if err != nil {
-		logrus.Panicln(err)
-	}
-
-	return http.FS(fsys)
 }
