@@ -7,16 +7,15 @@ ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install
 RUN npm run build
 
-FROM golang:1.15 as goBuilder
+FROM golang:1.16 as goBuilder
 WORKDIR /app
 COPY go.* ./
 RUN go mod download
 COPY . ./
+COPY --from=nodeBuilder /app/build /app/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -ldflags "-s -w" -v -o server
 
 FROM alpine:3
 RUN apk add --no-cache ca-certificates
 COPY --from=goBuilder /app/server /server
-COPY --from=goBuilder /app/variables.json /.
-COPY --from=nodeBuilder /app/build /web/build/
 CMD ["/server"]
