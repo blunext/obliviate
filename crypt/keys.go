@@ -40,7 +40,7 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 		copy(k.PublicKey[:], decrypted[:32])
 		copy(k.PrivateKey[:], decrypted[32:])
 
-		logrus.Trace("encryption keys fetched and decrypted by master key")
+		logrus.Info("encryption keys fetched and decrypted by master key")
 
 	} else {
 		// generate Keys
@@ -62,7 +62,7 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 			return nil, fmt.Errorf("error storing keys into DB: %v", err)
 		}
 
-		logrus.Trace("encryption keys generate, encrypted by master key, stored in DB")
+		logrus.Info("encryption keys generated, encrypted by master key, stored in DB")
 	}
 
 	k.PublicKeyEncoded = base64.StdEncoding.EncodeToString(k.PublicKey[:])

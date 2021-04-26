@@ -9,9 +9,9 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
+	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
 	golang.org/x/text v0.3.6
-	google.golang.org/api v0.43.0
-	google.golang.org/genproto v0.0.0-20210402141018-6c239bbf2bb1
-	google.golang.org/grpc v1.36.1
+	google.golang.org/api v0.45.0
+	google.golang.org/genproto v0.0.0-20210426193834-eac7f76ac494
+	google.golang.org/grpc v1.37.0
 )

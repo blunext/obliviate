@@ -149,16 +149,16 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 
 func (d *db) SaveEncryptedKeys(ctx context.Context, encrypted []byte) error {
 	keys := model.Key{Key: encrypted}
-	_, err := d.client.Collection(d.messageCollection.coll).Doc(d.messageCollection.keyDoc).Set(ctx, keys)
+	_, err := d.client.Collection(d.messageCollection.keyColl).Doc(d.messageCollection.keyDoc).Set(ctx, keys)
 	if err != nil {
 		return fmt.Errorf("error while saving encrypted keys: %s, err: %v", keys.Key, err)
 	}
-	logrus.Debug("encrypted keys saved")
+	logrus.Info("encrypted keys saved")
 	return nil
 }
 
 func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
-	doc, err := d.client.Collection(d.messageCollection.coll).Doc(d.messageCollection.keyDoc).Get(ctx)
+	doc, err := d.client.Collection(d.messageCollection.keyColl).Doc(d.messageCollection.keyDoc).Get(ctx)
 	if err != nil {
 		if status.Code(err) != codes.NotFound {
 			return nil, fmt.Errorf("error while getting encrypted keys: %v", err)
@@ -169,7 +169,7 @@ func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
 	if err := doc.DataTo(&key); err != nil {
 		return nil, fmt.Errorf("error mapping data into key struct : %v\n", err)
 	}
-	logrus.Debug("encrypted keys fetched from db")
+	logrus.Info("encrypted keys fetched from db")
 	return key.Key, nil
 }
 
