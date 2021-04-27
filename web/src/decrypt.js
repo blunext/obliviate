@@ -6,7 +6,7 @@ import {isIE} from "react-device-detect";
 
 function Decrypt(props) {
 
-    console.log("Decrypt start");
+    // console.log("Decrypt start");
 
     const hasPassword = window.location.search.substring(1).length === commons.queryIndexWithPassword;
 
@@ -33,7 +33,7 @@ function Decrypt(props) {
     }
 
     function loadCypher() {
-        console.log("loadCypher");
+        // console.log("loadCypher");
 
         decodeButtonAccessibility(false);
 

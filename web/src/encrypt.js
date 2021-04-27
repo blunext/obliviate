@@ -22,7 +22,7 @@ class Encrypt extends React.Component {
         this.keys = nacl.box.keyPair();
         this.urlNonce = '';
 
-        console.log("Encrypt start");
+        // console.log("Encrypt start");
     }
 
     onChangeMessage = (event) => {
@@ -46,7 +46,7 @@ class Encrypt extends React.Component {
     }
 
     processEncrypt = (e) => {
-        console.log("processEncrypt");
+        // console.log("processEncrypt");
 
         if (this.state.message.length === 0) {
             this.setState({messageOk: false});

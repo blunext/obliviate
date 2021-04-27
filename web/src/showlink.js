@@ -4,7 +4,7 @@ import {isMobileOnly} from "react-device-detect";
 
 function ShowLink(props) {
     new ClipboardJS('.btn');
-    console.log("ShowLink start");
+    // console.log("ShowLink start");
 
     return (
         <>

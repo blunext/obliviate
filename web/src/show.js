@@ -1,7 +1,7 @@
 import React from 'react';
 
 function Show(props) {
-    console.log("Show start");
+    // console.log("Show start");
 
     return (
         <>

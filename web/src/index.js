@@ -24,7 +24,7 @@ function Main() {
     const [message, setMessage] = useState('');
     const [password, setPassword] = useState('');
 
-    console.log("Main start");
+    // console.log("Main start");
 
     useEffect(() => {
 
