@@ -16,7 +16,7 @@ class Encrypt extends React.Component {
             encodeSpinner: false,
             hasPassword: props.password !== ''
         };
-        this.secretKey = ''; //TODO: zmienic nazwę
+        this.secretKey = ''; //TODO: change name
         this.salt = '';
         this.time = 0;
         this.keys = nacl.box.keyPair();
