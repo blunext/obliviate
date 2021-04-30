@@ -19,7 +19,7 @@ type Keys struct {
 	PublicKeyEncoded string
 }
 
-func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.EncryptionOnRest) (*Keys, error) {
+func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.EncryptionOnRest, expectKeys bool) (*Keys, error) {
 
 	k := Keys{}
 
@@ -43,6 +43,10 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 		logrus.Info("encryption keys fetched and decrypted by master key")
 
 	} else {
+		if expectKeys { // prevent to rewrite the keys
+			logrus.Fatalf("Keys expected")
+		}
+
 		// generate Keys
 		k.PublicKey, k.PrivateKey, err = box.GenerateKey(rand.Reader)
 		if err != nil {

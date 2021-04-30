@@ -55,7 +55,7 @@ func main() {
 		logrus.Info("Mock DB and encryption started")
 	}
 
-	keys, err := crypt.NewKeys(db, &conf, algorithm)
+	keys, err := crypt.NewKeys(db, &conf, algorithm, true)
 	if err != nil {
 		logrus.Panicf("error getting keys, err: %v", err)
 	}
