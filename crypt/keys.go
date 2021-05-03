@@ -43,7 +43,7 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 		logrus.Info("encryption keys fetched and decrypted by master key")
 
 	} else {
-		if expectKeys { // prevent to rewrite the keys
+		if conf.ProdEnv && expectKeys { // prevent to rewrite the keys
 			logrus.Fatalf("Keys expected")
 		}
 
