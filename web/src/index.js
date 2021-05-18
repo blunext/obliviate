@@ -31,7 +31,7 @@ function Main() {
         if (window.location.hash) {
             setVisible(parts.DECRYPT);
         }
-
+        // get variables
         axios.get(commons.VARIABLES_URL)
             .then(res => {
                 vars.current = res.data;
@@ -43,8 +43,8 @@ function Main() {
                 setReady(true);
             })
             .catch(err => {
-                // TODO: -----
                 console.log(err);
+                alert("Something went wrong. Try again.")
             });
 
 
@@ -68,7 +68,7 @@ function Main() {
 
     if (!ready) {
         return (
-            <div className="loader">Loading....</div>
+            <div className="loader">Loading...</div>
         )
     } else {
         return (
