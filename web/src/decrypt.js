@@ -210,7 +210,6 @@ function Decrypt(props) {
                                    className={messagePasswordOk ? "form-control" : "form-control is-invalid"}
                                    placeholder={props.var.passwordDecryptPlaceholder}
                                    onChange={updatePassword}
-
                             />
                         </div>
                         <div

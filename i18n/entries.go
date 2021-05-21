@@ -11,7 +11,7 @@ var translationsSet = map[language.Tag][]translationPair{
 	language.English: {
 		{"title", "Private and secure notes - send your secrets safely"},
 		{"header", "Private secure notes"},
-		{"description", "Highly secure message encryption and open source tool that auto-destruct"},
+		{"description", "Highly secure message encryption tool that auto-destruct"},
 		{"enterTextMessage", "Enter text message to encrypt"},
 		{"secureButton", "Encrypt message"},
 		{"copyLink", "Copy link and send it to a friend. Message will be deleted after being read or after 4 weeks when not read."},
@@ -22,8 +22,8 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"readMessageButton", "Read message"},
 		{"infoHeader", "info about"},
 		{"info", "This tool was built with care and respect to your privacy. " +
-			"Tool uses various method of encryption to ensure maximum privacy. To increase security feel free to use password. " +
-			"Tool is Open Source and code is publicly accessible. You can see how it works on"},
+			"To increase security please use use a password. " +
+			"Tool is Open Source and code is publicly accessible. You can check it out on "},
 		{"info1", "If you want to contact us please send an"},
 		{"info2", "email"},
 		{"info3", "All translation initiatives are welcome."},
@@ -35,8 +35,8 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Optional password to increase security"},
 		{"passwordDecryptPlaceholder", "enter password"},
 		{"linkIsCorrupted", "Link is corrupted"},
-		{"ieEncryptWarning", "Internet Explorer detected. Encryption may take a few seconds. Please be patient."},
-		{"ieDecryptWarning", "Internet Explorer detected. Decryption may take a few seconds. Please be patient."},
+		{"ieEncryptWarning", "Internet Explorer detected. Encryption may take a little longer. Please be patient."},
+		{"ieDecryptWarning", "Internet Explorer detected. Decryption may take a little longer. Please be patient."},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -65,7 +65,7 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Możesz użyć hasła aby zwiększyć bezpieczeństwo"},
 		{"passwordDecryptPlaceholder", "wprowadź hasło"},
 		{"linkIsCorrupted", "Link jest uszkodzony"},
-		{"ieEncryptWarning", "Używasz Internet Explorera. Szyfrowanie może potrwać parę sekund. Proszę o cierpliwość."},
-		{"ieDecryptWarning", "Używasz Internet Explorera. Odszyfrowanie może potrwać parę sekund. Proszę o cierpliwość."},
+		{"ieEncryptWarning", "Używasz Internet Explorera. Szyfrowanie może potrwać trochę dłużej. Proszę o cierpliwość."},
+		{"ieDecryptWarning", "Używasz Internet Explorera. Odszyfrowanie może potrwać trochę dłużej. Proszę o cierpliwość."},
 	},
 }
