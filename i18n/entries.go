@@ -27,7 +27,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"info1", "If you want to contact us please send an"},
 		{"info2", "email"},
 		{"info3", "All translation initiatives are welcome."},
-		{"linkCorrupted", "Link is corrupted"},
 		{"generalError", "Something went wrong. Try again later."},
 		{"encryptNetworkError", "Something went wrong. Cannot save the message. Please try again."},
 		{"decryptNetworkError", "Something went wrong. Cannot load the message. Please try again."},
@@ -37,10 +36,11 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"linkIsCorrupted", "Link is corrupted"},
 		{"ieEncryptWarning", "Internet Explorer detected. Encryption may take a little longer. Please be patient."},
 		{"ieDecryptWarning", "Internet Explorer detected. Decryption may take a little longer. Please be patient."},
-	}, language.Norwegian: {
+	},
+	language.Norwegian: {
 		{"title", "Private og sikre notater - send hemmelighetene dine trygt"},
 		{"header", "Private, sikre notater"},
-		{"description", "Sikker meldingkrypteringsverktøy som selvdestruere"},
+		{"description", "Sikkert meldingkrypteringsverktøy som selvdestruerer"},
 		{"enterTextMessage", "Tast inn melding for kryptering"},
 		{"secureButton", "Krypter melding"},
 		{"copyLink", "Kopier lenke og send til en venn. Meldingen vil bli slettet etter å ha blitt lest eller etter 4 uker uten å ha blitt åpnet"},
@@ -50,13 +50,12 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"messageRead", "Melding har allerede blitt lest, slettet eller lenke er korrumpert"},
 		{"readMessageButton", "Les melding"},
 		{"infoHeader", "Info om"},
-		{"info", "Dette verktøyet er lagd med hensyn og respekt med tanke på ditt personvern. " +
+		{"info", "Dette verktøyet er laget med hensyn og respekt med tanke på ditt personvern. " +
 			"For bedre sikkerhet, vennligst bruk et passord. Verktøyet er open-source og lesbar for offentligheten. " +
-			"Koden er tilgjengelig på  "},
-		{"info1", "Om du har lyst til å kontakt med oss, vennligst send oss en "},
+			"Koden er tilgjengelig på "},
+		{"info1", "Om du ønsker å ta kontakt, vennligst send oss "},
 		{"info2", "e-post"},
 		{"info3", ""},
-		{"linkCorrupted", "Lenken er korrumpert"},
 		{"generalError", "Noe gikk galt. Vennligst prøv igjen senere"},
 		{"encryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lagret. Vennligst prøv igjen."},
 		{"decryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lastet inn. Vennligst prøv igjen."},
@@ -86,7 +85,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"info1", "Jeśli chcesz się z nami skontaktować wyślij nam"},
 		{"info2", "wiadomość"},
 		{"info3", ""},
-		{"linkCorrupted", "Link uszkodzony"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie za jakiś czas."},
 		{"encryptNetworkError", "Coś poszło nie tak. Nie mogę zapisać wiadomości. Spróbuj ponownie."},
 		{"decryptNetworkError", "Coś poszło nie tak. Nie mogę odczytać wiadomości. Spróbuj ponownie."},
