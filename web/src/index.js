@@ -109,9 +109,10 @@ function Main() {
                                 <small>
                                     {vars.current.info} <a href="https://github.com/blunext/obliviate"
                                                            target="_blank"
-                                                           rel="noopener noreferrer">GitHub</a>.
-                                    {vars.current.info1} <a href="mailto:info@securenote.io" target="_blank"
-                                                            rel="noopener noreferrer">{vars.current.info2}</a>. {vars.current.info3}
+                                                           rel="noopener noreferrer">GitHub</a>
+                                    . {vars.current.info1} <a href="mailto:info@securenote.io" target="_blank"
+                                                            rel="noopener noreferrer">{vars.current.info2}</a>
+                                    . {vars.current.info3}
                                 </small>
                             </p>
                         </div>
