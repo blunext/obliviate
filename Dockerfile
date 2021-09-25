@@ -7,7 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install
 RUN npm run build
 
-FROM golang:1.16 as goBuilder
+FROM golang:latest as goBuilder
 WORKDIR /app
 COPY go.* ./
 RUN go mod download
