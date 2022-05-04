@@ -111,8 +111,8 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"info", "Esta herramienta fue construida con cuidado y respeto a su privacidad. " +
 			"To increase security please use use a password. " +
 			"La herramienta es de código abierto y el código es de acceso público. Puede comprobarlo en "},
-		{"info1", "If you want to contact us please send an"},
-		{"info2", "email"},
+		{"info1", "Si desea ponerse en contacto con nosotros, envíe un "},
+		{"info2", "correo electrónico"},
 		{"info3", ""},
 		{"generalError", "Algo ha ido mal. Vuelve a intentarlo más tarde."},
 		{"encryptNetworkError", "Algo ha ido mal. No se puede guardar el mensaje. Por favor, inténtalo de nuevo."},
