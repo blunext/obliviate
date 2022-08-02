@@ -3,14 +3,16 @@ package app
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/url"
+	"time"
+
+	"github.com/sirupsen/logrus"
+
 	"obliviate/config"
 	"obliviate/crypt"
 	"obliviate/handler/webModels"
 	"obliviate/repository"
 	"obliviate/repository/model"
-	"time"
 )
 
 type App struct {
@@ -28,11 +30,11 @@ func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Ke
 	return &app
 }
 
-func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) error {
+func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest, country string) error {
 
 	hashEncoded := url.PathEscape(request.Hash)
 	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.config.DefaultDurationTime),
-		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor)
+		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor, country)
 
 	err := s.db.SaveMessage(ctx, messageDataModel)
 	if err != nil {

@@ -49,7 +49,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 func Save(app *app.App) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		logrus.Tracef("Save, country: %s", r.Header.Get("CF-IPCountry"))
+		logrus.Tracef("Save handler...")
 
 		defer r.Body.Close()
 		if r.Body == nil {
@@ -85,7 +85,7 @@ func Save(app *app.App) http.HandlerFunc {
 			return
 		}
 
-		err = app.ProcessSave(r.Context(), data)
+		err = app.ProcessSave(r.Context(), data, r.Header.Get("CF-IPCountry"))
 		if err != nil {
 			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
 			return

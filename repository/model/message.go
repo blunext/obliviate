@@ -11,6 +11,7 @@ type MessageType struct {
 	PublicKey  []byte    `firestore:"publicKey"`
 	Time       int       `firestore:"time,omitempty"`
 	CostFactor int       `firestore:"costFactor,omitempty"`
+	Country    string    `firestore:"country,omitempty"`
 }
 
 type MessageModel struct {
@@ -18,7 +19,7 @@ type MessageModel struct {
 	Message MessageType
 }
 
-func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte, time int, costFactor int) MessageModel {
+func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey []byte, time int, costFactor int, country string) MessageModel {
 	m := MessageModel{
 		key: key,
 		Message: MessageType{
@@ -28,6 +29,7 @@ func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey
 			PublicKey:  publicKey,
 			Time:       time,
 			CostFactor: costFactor,
+			Country:    country,
 		},
 	}
 	if time != 0 {

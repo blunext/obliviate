@@ -1,17 +1,19 @@
 package repository
 
 import (
-	"cloud.google.com/go/firestore"
 	"context"
-	firebase "firebase.google.com/go"
 	"fmt"
+	"time"
+
+	"cloud.google.com/go/firestore"
+	firebase "firebase.google.com/go"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
 	"obliviate/repository/model"
-	"time"
 )
 
 const counterShards = 5
@@ -82,7 +84,7 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	logrus.Debugf("massage saved, key: %v, t: %d, len: %d", data.Key(), data.Message.Time, len(data.Message.Txt))
+	logrus.Debugf("massage saved, key: %v, t: %d, len: %d, c: %s", data.Key(), data.Message.Time, len(data.Message.Txt), data.Message.Country)
 	return nil
 }
 
