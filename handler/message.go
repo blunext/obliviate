@@ -3,13 +3,15 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"net/http"
+	"text/template"
+
+	"github.com/sirupsen/logrus"
+
 	"obliviate/app"
 	"obliviate/config"
 	"obliviate/handler/webModels"
 	"obliviate/i18n"
-	"text/template"
 )
 
 const (
@@ -47,7 +49,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 func Save(app *app.App) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		logrus.Trace("Save Handler")
+		logrus.Tracef("Save, country: %s", r.Header.Get("CF-IPCountry"))
 
 		defer r.Body.Close()
 		if r.Body == nil {
