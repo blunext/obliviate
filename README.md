@@ -14,17 +14,10 @@ RSA encryption/decryption keys use hardware security module (HSM).
 
 Service runs in Google Cloud RUN infrastructure and is available on https://securenote.io/.
 
-To Do List:
-- [x] internalization support
-- [x] move param link into anchor part
-- [x] test the handlers
-- [x] password, extra layer of security
-
 Try it locally:
 ```
 npm install --prefix web
 npm run build --prefix web
-go build
-./obliviate
-```
+go run .
+
 and go http://localhost:3000/
