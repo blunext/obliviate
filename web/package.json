@@ -14,7 +14,7 @@
     "react-app-polyfill": "^1.0.6",
     "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.4",
+    "react-scripts": "^5.0.1",
     "scrypt-async": "^2.0.1",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1"
