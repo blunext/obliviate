@@ -2,9 +2,11 @@ package mock
 
 import (
 	"context"
-	"github.com/sirupsen/logrus"
-	model "obliviate/repository/model"
 	"time"
+
+	"github.com/sirupsen/logrus"
+
+	model "obliviate/repository/model"
 )
 
 type db struct {

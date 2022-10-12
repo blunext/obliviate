@@ -2,8 +2,9 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 func setStatusAndHeader(w http.ResponseWriter, status int) {

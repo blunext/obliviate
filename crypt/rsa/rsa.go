@@ -1,7 +1,6 @@
 package rsa
 
 import (
-	cloudkms "cloud.google.com/go/kms/apiv1"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
@@ -9,8 +8,11 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+
+	cloudkms "cloud.google.com/go/kms/apiv1"
 	"google.golang.org/api/option"
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
+
 	"obliviate/config"
 )
 
@@ -25,7 +27,7 @@ func NewAlgorithm() Algorithm {
 	return Algorithm{}
 }
 
-// encryptRSA will encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256'
+// Encrypt will encrypt data locally using an 'RSA_DECRYPT_OAEP_2048_SHA256'
 // public key retrieved from Cloud KMS.
 func (Algorithm) Encrypt(conf *config.Configuration, plaintext []byte) ([]byte, error) {
 	var err error
@@ -68,7 +70,7 @@ func (Algorithm) Encrypt(conf *config.Configuration, plaintext []byte) ([]byte, 
 	return cipherText, nil
 }
 
-// decryptRSA will attempt to decrypt a given ciphertext with an
+// Decrypt will attempt to decrypt a given ciphertext with an
 // private key stored on Cloud KMS.
 func (Algorithm) Decrypt(conf *config.Configuration, ciphertext []byte) ([]byte, error) {
 	var err error

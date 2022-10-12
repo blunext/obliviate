@@ -6,12 +6,17 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/crypto/nacl/secretbox"
-	"net/http"
-	"net/http/httptest"
+
 	"obliviate/app"
 	"obliviate/config"
 	"obliviate/crypt"
@@ -19,9 +24,6 @@ import (
 	"obliviate/handler/webModels"
 	"obliviate/repository"
 	"obliviate/repository/mock"
-	"os"
-	"testing"
-	"time"
 )
 
 type testParams struct {
@@ -53,7 +55,7 @@ func init() {
 	formatter.FullTimestamp = true
 	formatter.ForceColors = true
 	logrus.SetFormatter(formatter)
-	//logrus.SetReportCaller(true)
+	// logrus.SetReportCaller(true)
 	logrus.SetOutput(os.Stdout)
 	logrus.SetLevel(logrus.FatalLevel)
 
@@ -64,15 +66,15 @@ func init() {
 		KmsCredentialFile:       os.Getenv("KMS_CREDENTIAL_FILE"),
 		FirestoreCredentialFile: os.Getenv("FIRESTORE_CREDENTIAL_FILE"),
 	}
-	//db = repository.NewConnection(context.Background(), "local", conf.FirestoreCredentialFile, os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
+	// db = repository.NewConnection(context.Background(), "local", conf.FirestoreCredentialFile, os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 	db = mock.StorageMock()
 
 }
 
 func TestEncodeDecodeMessage(t *testing.T) {
 	rsa := rsa.NewMockAlgorithm()
-	//rsa := rsa.NewAlgorithm()
-	keys, err := crypt.NewKeys(db, conf, rsa)
+	// rsa := rsa.NewAlgorithm()
+	keys, err := crypt.NewKeys(db, conf, rsa, true)
 	if err != nil {
 		logrus.Panicf("cannot create key pair, err: %v", err)
 	}

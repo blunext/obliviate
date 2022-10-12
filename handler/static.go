@@ -1,11 +1,13 @@
 package handler
 
 import (
-	"github.com/sirupsen/logrus"
 	"io/fs"
 	"net/http"
-	"obliviate/config"
 	"os"
+
+	"github.com/sirupsen/logrus"
+
+	"obliviate/config"
 )
 
 func StaticFiles(config *config.Configuration, useEmbedFS bool) http.HandlerFunc {

@@ -5,9 +5,11 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"io"
+
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/nacl/box"
-	"io"
+
 	"obliviate/config"
 	"obliviate/crypt/rsa"
 	"obliviate/repository"

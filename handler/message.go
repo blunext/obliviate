@@ -59,40 +59,28 @@ func Save(app *app.App) http.HandlerFunc {
 
 		data := webModels.SaveRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
-		if err != nil {
+		switch {
+		case err != nil:
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
-			return
-		}
-		if len(data.Message) == 0 || len(data.Message) > 256*1024*4 {
+		case len(data.Message) == 0 || len(data.Message) > 256*1024*4:
 			finishRequestWithErr(w, fmt.Sprintf("Message len is wrong = %d", len(data.Message)), http.StatusBadRequest)
-			return
-		}
-		if len(data.TransmissionNonce) == 0 {
+		case len(data.TransmissionNonce) == 0:
 			finishRequestWithErr(w, "TransmissionNonce is empty", http.StatusBadRequest)
-			return
-		}
-		if len(data.Hash) == 0 {
+		case len(data.Hash) == 0:
 			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest)
-			return
-		}
-
-		if len(data.TransmissionNonce) != 24 {
+		case len(data.TransmissionNonce) != 24:
 			finishRequestWithErr(w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest)
-			return
-		}
-		if len(data.PublicKey) != 32 {
+		case len(data.PublicKey) != 32:
 			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest)
-			return
+		default:
+			err = app.ProcessSave(r.Context(), data, r.Header.Get("CF-IPCountry"))
+			if err != nil {
+				finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
+				return
+			}
+			setStatusAndHeader(w, http.StatusOK)
+			w.Write([]byte("[]"))
 		}
-
-		err = app.ProcessSave(r.Context(), data, r.Header.Get("CF-IPCountry"))
-		if err != nil {
-			finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
-			return
-		}
-
-		setStatusAndHeader(w, http.StatusOK)
-		w.Write([]byte("[]"))
 	}
 }
 
@@ -109,39 +97,32 @@ func Read(app *app.App) http.HandlerFunc {
 
 		data := webModels.ReadRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
-		if err != nil {
+		switch {
+		case err != nil:
 			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
-			return
-		}
-		if len(data.Hash) == 0 {
+		case len(data.Hash) == 0:
 			finishRequestWithErr(w, "Hash not found", http.StatusBadRequest)
-			return
-		}
-		if len(data.PublicKey) == 0 {
+		case len(data.PublicKey) == 0:
 			finishRequestWithErr(w, "PublicKey not found", http.StatusBadRequest)
-			return
-		}
-		if len(data.PublicKey) != 32 {
+		case len(data.PublicKey) != 32:
 			finishRequestWithErr(w, "PublicKey length is wrong !=32", http.StatusBadRequest)
-			return
+		default:
+			encrypted, costFactor, err := app.ProcessRead(r.Context(), data)
+			if err != nil {
+				finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
+				return
+			}
+			if encrypted == nil {
+				// not found
+				finishRequestWithWarn(w, "Message not found", http.StatusNotFound)
+				return
+			}
+
+			message := webModels.ReadResponse{Message: encrypted, CostFactor: costFactor}
+
+			setStatusAndHeader(w, http.StatusOK)
+			w.Write(jsonFromStruct(message))
 		}
-
-		encrypted, costFactor, err := app.ProcessRead(r.Context(), data)
-		if err != nil {
-			finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
-			return
-		}
-		if encrypted == nil {
-			// not found
-			finishRequestWithWarn(w, "Message not found", http.StatusNotFound)
-			return
-		}
-
-		message := webModels.ReadResponse{Message: encrypted, CostFactor: costFactor}
-
-		setStatusAndHeader(w, http.StatusOK)
-		w.Write(jsonFromStruct(message))
-
 	}
 }
 
