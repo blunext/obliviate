@@ -32,12 +32,6 @@ func NewMessage(key string, txt []byte, valid time.Time, nonce []byte, publicKey
 			Country:    country,
 		},
 	}
-	if time != 0 {
-		m.Message.Time = time
-	}
-	if costFactor != 0 {
-		m.Message.CostFactor = costFactor
-	}
 	return m
 }
 

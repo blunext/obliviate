@@ -7,7 +7,6 @@ export const commons = {
     SAVE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/save' : '/save',
     READ_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/read' : '/read',
     DELETE_URL: process.env.NODE_ENV === 'development' ? 'http://localhost:3000/delete' : '/delete',
-    costFactorDefault: 14,
     costFactor: 15, // CPU/memory cost parameter
     queryIndexWithPassword: 4,
 };

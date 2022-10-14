@@ -22,7 +22,7 @@ function Decrypt(props) {
     const [messagePassword, setMessagePassword] = useState('');
     const [messagePasswordOk, setMessagePasswordOk] = useState(true);
     const [messageReadInfo, setMessageReadInfo] = useState(false);
-    const [costFactor, setCostFactor] = useState(commons.costFactorDefault);
+    const [costFactor, setCostFactor] = useState(commons.costFactor);
 
     function decrypt() {
         if (loadCypherAction) {
@@ -76,9 +76,7 @@ function Decrypt(props) {
             // decode message with secretbox
             if (hasPassword) {
                 setSalt(decrypted.slice(0, nacl.secretbox.keyLength));
-                if (result.costFactor !== undefined) { // for backward compatibility
-                    setCostFactor(result.costFactor);
-                }
+                setCostFactor(result.costFactor);
             } else {
                 setSecretKey(decrypted.slice(0, nacl.secretbox.keyLength));
             }
