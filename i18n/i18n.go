@@ -1,10 +1,11 @@
 package i18n
 
 import (
+	"sync"
+
 	"github.com/sirupsen/logrus"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
-	"sync"
 )
 
 type translations map[string]string
@@ -73,6 +74,6 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 
 	t.list[acceptedBaseLang] = tran
 
-	logrus.Debugf("language created: %v", acceptedBaseLang)
+	logrus.Infof("language created: %v", acceptedBaseLang)
 	return tran
 }

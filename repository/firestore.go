@@ -70,7 +70,7 @@ func NewConnection(ctx context.Context, firestoreCredentialFile string, projectI
 
 	if !d.counter.counterExists(ctx) {
 		d.counter.initCounter(ctx)
-		logrus.Info("Counter initialized")
+		logrus.Debugf("Counter initialized")
 	}
 
 	i, _ := d.counter.getCount(ctx)
@@ -84,7 +84,7 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	logrus.Debugf("massage saved, key: %v, t: %d, len: %d, c: %s", data.Key(), data.Message.Time, len(data.Message.Txt), data.Message.Country)
+	logrus.Infof("massage saved, key: %v, t: %d, len: %d, c: %s", data.Key(), data.Message.Time, len(data.Message.Txt), data.Message.Country)
 	return nil
 }
 
@@ -97,12 +97,12 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 		if status.Code(err) != codes.NotFound {
 			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
 		}
-		logrus.Trace("message not found")
+		logrus.Warn("message not found")
 		return data.Message, nil
 	}
 
 	if err := doc.DataTo(&data.Message); err != nil {
-		logrus.Trace("message found")
+		logrus.Info("message found")
 		return data.Message, fmt.Errorf("error mapping data into message struct: %v", err)
 	}
 
@@ -140,7 +140,7 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 	// If there are no documents to delete,
 	// the process is over.
 	if numDeleted == 0 {
-		logrus.Trace("Nothing to delete")
+		logrus.Warn("Nothing to delete")
 		return nil
 	}
 	_, err := batch.Commit(ctx)
@@ -171,7 +171,7 @@ func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
 	if err := doc.DataTo(&key); err != nil {
 		return nil, fmt.Errorf("error mapping data into key struct : %v\n", err)
 	}
-	logrus.Info("encrypted keys fetched from db")
+	logrus.Debug("encrypted keys fetched from db")
 	return key.Key, nil
 }
 

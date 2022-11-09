@@ -20,11 +20,11 @@ func StaticFiles(config *config.Configuration, useEmbedFS bool) http.HandlerFunc
 
 func getStaticsFS(static fs.FS, useEmbedFS bool, stripPath string) http.FileSystem {
 	if !useEmbedFS {
-		logrus.Println("using live os files mode")
+		logrus.Trace("using live os files mode")
 		return http.FS(os.DirFS(stripPath))
 	}
 
-	logrus.Println("using embed files mode")
+	logrus.Trace("using embed files mode")
 	fsys, err := fs.Sub(static, stripPath)
 	if err != nil {
 		logrus.Panicln(err)

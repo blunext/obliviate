@@ -1,14 +1,18 @@
 package main
 
 import (
-	"cloud.google.com/go/profiler"
 	"context"
 	"embed"
 	"fmt"
+	"net/http"
+	"os"
+	"time"
+
+	"cloud.google.com/go/profiler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/sirupsen/logrus"
-	"net/http"
+
 	"obliviate/app"
 	"obliviate/config"
 	"obliviate/crypt"
@@ -16,8 +20,6 @@ import (
 	"obliviate/handler"
 	"obliviate/repository"
 	"obliviate/repository/mock"
-	"os"
-	"time"
 )
 
 const (
@@ -44,7 +46,7 @@ func main() {
 	var db repository.DataBase
 
 	if conf.ProdEnv {
-		initLogrus(logrus.DebugLevel)
+		initLogrus(logrus.InfoLevel)
 		db = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
@@ -87,7 +89,7 @@ func main() {
 		}
 	}
 
-	logrus.Info("Server starts")
+	logrus.Info("Service ready")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 	if err != nil {
 		logrus.Errorf("Error ListenAndServe: %v", err)

@@ -22,7 +22,7 @@ func StorageMock() *db {
 
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	d.messageStore[data.Key()] = data
-	logrus.Debugf("massage saved, key: %s", data.Key())
+	logrus.Infof("massage saved, key: %s", data.Key())
 	return nil
 }
 

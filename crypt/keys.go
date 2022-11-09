@@ -42,11 +42,11 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 		copy(k.PublicKey[:], decrypted[:32])
 		copy(k.PrivateKey[:], decrypted[32:])
 
-		logrus.Info("encryption keys fetched and decrypted by master key")
+		logrus.Debug("encryption keys fetched and decrypted by master key")
 
 	} else {
 		if conf.ProdEnv && expectKeys { // prevent to rewrite the keys
-			logrus.Fatalf("Keys expected")
+			logrus.Fatal("Keys expected")
 		}
 
 		// generate Keys
@@ -68,11 +68,11 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 			return nil, fmt.Errorf("error storing keys into DB: %v", err)
 		}
 
-		logrus.Info("encryption keys generated, encrypted by master key, stored in DB")
+		logrus.Debug("encryption keys generated, encrypted by master key, stored in DB")
 	}
 
 	k.PublicKeyEncoded = base64.StdEncoding.EncodeToString(k.PublicKey[:])
-	logrus.Info("encryption keys are ready")
+	logrus.Debug("encryption keys are ready")
 
 	return &k, nil
 }
