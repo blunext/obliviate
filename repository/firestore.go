@@ -97,7 +97,7 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 		if status.Code(err) != codes.NotFound {
 			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
 		}
-		logrus.Warn("message not found")
+		logrus.Info("message not found")
 		return data.Message, nil
 	}
 
