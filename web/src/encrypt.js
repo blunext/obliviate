@@ -2,7 +2,6 @@ import React from "react";
 import {calculateKeyDerived, commons, post} from "./commons";
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
-import {isIE} from "react-device-detect";
 
 class Encrypt extends React.Component {
     constructor(props) {
@@ -108,15 +107,8 @@ class Encrypt extends React.Component {
         post('POST', obj, commons.SAVE_URL, this.encodeSuccess, this.encodeError);
     }
     encodeButtonAccessibility = (state) => {
-        if (state) {
-            this.setState({buttonEncode: true})
-            this.setState({encodeSpinner: false})
-        } else {
-            this.setState({buttonEncode: false})
-            if (!isIE) {
-                this.setState({encodeSpinner: false})
-            }
-        }
+        this.setState({buttonEncode: state})
+        this.setState({encodeSpinner: !state})
     }
     encodeSuccess = (result) => {
         let index;
@@ -124,10 +116,6 @@ class Encrypt extends React.Component {
             index = commons.queryIndexWithPassword;
         } else {
             index = 3;
-        }
-        if (!window.location.origin) { // IE fix
-            window.location.origin = window.location.protocol + "//" + window.location.hostname +
-                (window.location.port === '443' ? "" : ":" + window.location.port);
         }
         const url = window.location.origin + '/?' + this.urlNonce.substring(0, index) + "#" + this.urlNonce.substring(index, 32);
         this.props.linkCallback(url);
@@ -158,9 +146,6 @@ class Encrypt extends React.Component {
                                        onChange={this.onChangePassword}
                                        value={this.state.messagePassword}/>
                             </div>
-                            <div
-                                className={isIE ? "col-sm text-danger text-center font-weight-light" : "col-sm text-danger text-center font-weight-light d-none"}>
-                                {this.props.var.ieEncryptWarning}</div>
                         </div>
                     </div>
                     <div className="row">

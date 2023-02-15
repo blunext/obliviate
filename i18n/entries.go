@@ -34,8 +34,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Optional password to increase security"},
 		{"passwordDecryptPlaceholder", "enter password"},
 		{"linkIsCorrupted", "Link is corrupted"},
-		{"ieEncryptWarning", "Internet Explorer detected. Encryption may take a little longer. Please be patient."},
-		{"ieDecryptWarning", "Internet Explorer detected. Decryption may take a little longer. Please be patient."},
 	},
 	language.Norwegian: {
 		{"title", "Private og sikre notater - send hemmelighetene dine trygt"},
@@ -63,8 +61,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Valgfritt passord for høyere sikkerhet"},
 		{"passwordDecryptPlaceholder", "Tast inn passord"},
 		{"linkIsCorrupted", "Lenken er korrumpert"},
-		{"ieDecryptWarning", "Internet Explorer oppdaget. Kryptering kan ta litt lengre tid. Vennligst vær tålmodig."},
-		{"ieEncryptWarning", "Internet Explorer oppdaget. Dekryptering kan ta litt lengre tid. Vennlgst vær tålmodig."},
 	},
 	language.Polish: {
 		{"title", "Prywatne bezpieczne wiadomości"},
@@ -92,8 +88,6 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Możesz użyć hasła aby zwiększyć bezpieczeństwo"},
 		{"passwordDecryptPlaceholder", "wprowadź hasło"},
 		{"linkIsCorrupted", "Link jest uszkodzony"},
-		{"ieEncryptWarning", "Używasz Internet Explorera. Szyfrowanie może potrwać trochę dłużej. Proszę o cierpliwość."},
-		{"ieDecryptWarning", "Używasz Internet Explorera. Odszyfrowanie może potrwać trochę dłużej. Proszę o cierpliwość."},
 	},
 	language.Spanish: {
 		{"title", "Notas privadas y seguras: envíe sus secretos de forma segura"},
@@ -121,7 +115,5 @@ var translationsSet = map[language.Tag][]translationPair{
 		{"passwordEncryptPlaceholder", "Contraseña opcional para aumentar la seguridad"},
 		{"passwordDecryptPlaceholder", "introduzca la contraseña"},
 		{"linkIsCorrupted", "El enlace está dañado"},
-		{"ieEncryptWarning", "Se ha detectado Internet Explorer. La codificación puede tardar un poco más. Por favor, tenga paciencia."},
-		{"ieDecryptWarning", "Se ha detectado Internet Explorer. El descifrado puede tardar un poco más. Por favor, tenga paciencia."},
 	},
 }

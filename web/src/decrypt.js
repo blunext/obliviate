@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
 import {calculateKeyDerived, commons, post} from "./commons";
-import {isIE} from "react-device-detect";
 
 function Decrypt(props) {
 
@@ -167,15 +166,8 @@ function Decrypt(props) {
     }
 
     function decodeButtonAccessibility(state) {
-        if (state) {
-            setDecodeButton(true);
-            setDecodeButtonSpinner(false);
-        } else {
-            setDecodeButton(false);
-            if (!isIE) {
-                setDecodeButtonSpinner(true);
-            }
-        }
+        setDecodeButton(state);
+        setDecodeButtonSpinner(!state);
     }
 
     function updatePassword(event) {
@@ -210,8 +202,6 @@ function Decrypt(props) {
                                    onChange={updatePassword}
                             />
                         </div>
-                        <div
-                            className="col-sm text-danger text-center font-weight-light d-none">{props.var.ieDecryptWarning}</div>
                     </div>
                 </div>
                 <div className="row">
