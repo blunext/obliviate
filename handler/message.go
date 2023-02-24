@@ -53,7 +53,7 @@ func Save(app *app.App) http.HandlerFunc {
 
 		defer r.Body.Close()
 		if r.Body == nil {
-			finishRequestWithErr(w, emptyBody, http.StatusBadRequest)
+			finishRequestWithErr(w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
 			return
 		}
 
@@ -61,24 +61,24 @@ func Save(app *app.App) http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&data)
 		switch {
 		case err != nil:
-			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
+			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.Message) == 0 || len(data.Message) > 256*1024*4:
-			finishRequestWithErr(w, fmt.Sprintf("Message len is wrong = %d", len(data.Message)), http.StatusBadRequest)
+			finishRequestWithErr(w, fmt.Sprintf("Message len is wrong = %d", len(data.Message)), http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.TransmissionNonce) == 0:
-			finishRequestWithErr(w, "TransmissionNonce is empty", http.StatusBadRequest)
+			finishRequestWithErr(w, "TransmissionNonce is empty", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.Hash) == 0:
-			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest)
+			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.TransmissionNonce) != 24:
-			finishRequestWithErr(w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest)
+			finishRequestWithErr(w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.PublicKey) != 32:
-			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest)
+			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		default:
 			err = app.ProcessSave(r.Context(), data, r.Header.Get("CF-IPCountry"))
 			if err != nil {
-				finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest)
+				finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest, app.Config.ProdEnv)
 				return
 			}
-			setStatusAndHeader(w, http.StatusOK)
+			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
 			w.Write([]byte("[]"))
 		}
 	}
@@ -91,7 +91,7 @@ func Read(app *app.App) http.HandlerFunc {
 
 		defer r.Body.Close()
 		if r.Body == nil {
-			finishRequestWithErr(w, emptyBody, http.StatusBadRequest)
+			finishRequestWithErr(w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
 			return
 		}
 
@@ -99,28 +99,28 @@ func Read(app *app.App) http.HandlerFunc {
 		err := json.NewDecoder(r.Body).Decode(&data)
 		switch {
 		case err != nil:
-			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
+			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.Hash) == 0:
-			finishRequestWithErr(w, "Hash not found", http.StatusBadRequest)
+			finishRequestWithErr(w, "Hash not found", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.PublicKey) == 0:
-			finishRequestWithErr(w, "PublicKey not found", http.StatusBadRequest)
+			finishRequestWithErr(w, "PublicKey not found", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.PublicKey) != 32:
-			finishRequestWithErr(w, "PublicKey length is wrong !=32", http.StatusBadRequest)
+			finishRequestWithErr(w, "PublicKey length is wrong !=32", http.StatusBadRequest, app.Config.ProdEnv)
 		default:
 			encrypted, costFactor, err := app.ProcessRead(r.Context(), data)
 			if err != nil {
-				finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest)
+				finishRequestWithErr(w, fmt.Sprintf("Cannot process read message, err: %v", err), http.StatusBadRequest, app.Config.ProdEnv)
 				return
 			}
 			if encrypted == nil {
 				// not found
-				finishRequestWithWarn(w, "Message not found", http.StatusNotFound)
+				finishRequestWithWarn(w, "Message not found", http.StatusNotFound, app.Config.ProdEnv)
 				return
 			}
 
 			message := webModels.ReadResponse{Message: encrypted, CostFactor: costFactor}
 
-			setStatusAndHeader(w, http.StatusOK)
+			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
 			w.Write(jsonFromStruct(message))
 		}
 	}
@@ -133,24 +133,24 @@ func Delete(app *app.App) http.HandlerFunc {
 
 		defer r.Body.Close()
 		if r.Body == nil {
-			finishRequestWithErr(w, emptyBody, http.StatusBadRequest)
+			finishRequestWithErr(w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
 			return
 		}
 
 		data := webModels.DeleteRequest{}
 		err := json.NewDecoder(r.Body).Decode(&data)
 		if err != nil {
-			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest)
+			finishRequestWithErr(w, jsonErrMsg, http.StatusBadRequest, app.Config.ProdEnv)
 			return
 		}
 		if len(data.Hash) == 0 {
-			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest)
+			finishRequestWithErr(w, "Hash is empty", http.StatusBadRequest, app.Config.ProdEnv)
 			return
 		}
 
 		app.ProcessDelete(r.Context(), data.Hash)
 
-		setStatusAndHeader(w, http.StatusOK)
+		setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
 		w.Write([]byte("[]"))
 	}
 }
@@ -162,9 +162,9 @@ func Expired(app *app.App) http.HandlerFunc {
 
 		if err := app.ProcessDeleteExpired(r.Context()); err != nil {
 			logrus.Errorf(err.Error())
-			setStatusAndHeader(w, http.StatusInternalServerError)
+			setStatusAndHeader(w, http.StatusInternalServerError, app.Config.ProdEnv)
 		} else {
-			setStatusAndHeader(w, http.StatusOK)
+			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
 		}
 		w.Write([]byte("[]"))
 	}

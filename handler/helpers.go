@@ -7,9 +7,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func setStatusAndHeader(w http.ResponseWriter, status int) {
+func setStatusAndHeader(w http.ResponseWriter, status int, prodEnv bool) {
 	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	if !prodEnv {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+	}
 	w.WriteHeader(status)
 }
 
@@ -21,14 +23,14 @@ func jsonFromStruct(s interface{}) []byte {
 	return j
 }
 
-func finishRequestWithErr(w http.ResponseWriter, msg string, status int) {
+func finishRequestWithErr(w http.ResponseWriter, msg string, status int, prodEnv bool) {
 	logrus.Error(msg)
-	setStatusAndHeader(w, status)
+	setStatusAndHeader(w, status, prodEnv)
 	w.Write([]byte(""))
 }
 
-func finishRequestWithWarn(w http.ResponseWriter, msg string, status int) {
+func finishRequestWithWarn(w http.ResponseWriter, msg string, status int, prodEnv bool) {
 	logrus.Warn(msg)
-	setStatusAndHeader(w, status)
+	setStatusAndHeader(w, status, prodEnv)
 	w.Write([]byte(""))
 }

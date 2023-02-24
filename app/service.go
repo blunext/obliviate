@@ -16,14 +16,14 @@ import (
 )
 
 type App struct {
-	config *config.Configuration
+	Config *config.Configuration
 	keys   *crypt.Keys
 	db     repository.DataBase
 }
 
 func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Keys) *App {
 	app := App{
-		config: config,
+		Config: config,
 		keys:   keys,
 		db:     db,
 	}
@@ -33,7 +33,7 @@ func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Ke
 func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest, country string) error {
 
 	hashEncoded := url.PathEscape(request.Hash)
-	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.config.DefaultDurationTime),
+	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.Config.DefaultDurationTime),
 		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor, country)
 
 	err := s.db.SaveMessage(ctx, messageDataModel)
@@ -81,7 +81,7 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 
 	if !request.Password {
 		// delete only when password is not required
-		if s.config.ProdEnv {
+		if s.Config.ProdEnv {
 			go func() {
 				ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
 				s.db.DeleteMessage(ct, hashEncoded)
