@@ -38,7 +38,9 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		w.Header().Set("Cache-Control", "no-cache, no-store")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		if !config.ProdEnv {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+		}
 
 		data := translation.GetTranslation(r.Header.Get("Accept-Language"))
 		data["PublicKey"] = publicKey
