@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"cloud.google.com/go/profiler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/sirupsen/logrus"
@@ -78,15 +77,6 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
-	}
-
-	if conf.ProdEnv {
-		if err := profiler.Start(profiler.Config{
-			Service:        os.Getenv("OBLIVIATE_PROJECT_ID"),
-			ServiceVersion: "1.0.0",
-		}); err != nil {
-			logrus.Warnf("ERROR starting profiler: %v", err)
-		}
 	}
 
 	logrus.Info("Service ready")

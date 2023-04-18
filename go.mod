@@ -5,7 +5,6 @@ go 1.20
 require (
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/kms v1.10.1
-	cloud.google.com/go/profiler v0.3.1
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/go-chi/chi v1.5.4
 	github.com/sirupsen/logrus v1.9.0
@@ -28,7 +27,6 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/pprof v0.0.0-20230405160723-4a4c7d95572b // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
