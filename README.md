@@ -10,7 +10,7 @@ Encrypted message with secret key is sealed again using asymmetric algorithm NaC
 
 All keys and nonces on browser side are unique for every action. NaCl Box server keys are generated while application
 started for the first time and are encrypted at rest using RSASSA-PSS 3072 bit key with a SHA-256 digest.
-RSA encryption/decryption keys use hardware security module (HSM).
+RSA encryption/decryption keys use Cloud KMS module.
 
 Service runs in Google Cloud RUN infrastructure and is available on https://securenote.io/.
 
