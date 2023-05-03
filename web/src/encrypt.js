@@ -2,6 +2,7 @@ import React from "react";
 import {calculateKeyDerived, commons, post} from "./commons";
 import nacl from "tweetnacl";
 import naclutil from "tweetnacl-util";
+import {isMobileOnly} from "react-device-detect";
 
 class Encrypt extends React.Component {
     constructor(props) {
@@ -142,7 +143,7 @@ class Encrypt extends React.Component {
                                 </div>
                                 <input type="text"
                                        className={this.state.passwordOk ? "form-control" : "form-control is-invalid"}
-                                       placeholder={this.props.var.passwordEncryptPlaceholder}
+                                       placeholder={isMobileOnly ? "" : this.props.var.passwordEncryptPlaceholder}
                                        onChange={this.onChangePassword}
                                        value={this.state.messagePassword}/>
                             </div>
