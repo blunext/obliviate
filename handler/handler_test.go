@@ -129,6 +129,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 
 		copy(transmissionNonce[:], encryptedTransmissionWithNonce)
 		decryptedTransmission, ok := box.Open(nil, encryptedTransmissionWithNonce[24:], &transmissionNonce, keys.PublicKey, browserPrivateKey)
+		assert.True(t, ok)
 
 		copy(messageSecretKey[:], decryptedTransmission)
 
