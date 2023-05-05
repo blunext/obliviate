@@ -74,6 +74,10 @@ func main() {
 	r.Delete("/expired", handler.Expired(app))
 	r.Delete("/delete", handler.Delete(app))
 
+	r.Get("/loaderio-3fb618812cd648609b8cdf6925e2294a/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("loaderio-3fb618812cd648609b8cdf6925e2294a"))
+	})
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
