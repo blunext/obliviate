@@ -2,12 +2,12 @@ package i18n
 
 import "golang.org/x/text/language"
 
-type translationPair struct {
+type entry struct {
 	key string
 	msg string
 }
 
-var translationsSet = map[language.Tag][]translationPair{
+var translationsSet = map[language.Tag][]entry{
 	language.English: {
 		{"title", "Private and secure notes - send your secrets safely"},
 		{"header", "Private secure notes"},

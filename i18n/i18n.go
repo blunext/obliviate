@@ -8,37 +8,39 @@ import (
 	"golang.org/x/text/message"
 )
 
-type translations map[string]string
+type translation map[string]string
 
 type i18n struct {
-	list    map[string]translations
-	matcher language.Matcher
+	translations map[string]translation
+	matcher      language.Matcher
 	sync.Mutex
 }
 
 func NewTranslation() *i18n {
 
-	var langs []language.Tag
+	var languages []language.Tag
 
-	langs = append(langs, language.English)
+	languages = append(languages, language.English)
 
-	for tag, transList := range translationsSet {
+	for tag, oneLanguage := range translationsSet {
 		if tag != language.English {
-			langs = append(langs, tag)
+			languages = append(languages, tag)
 		}
-		for _, tr := range transList {
-			err := message.SetString(tag, tr.key, tr.msg)
+		for _, entry := range oneLanguage {
+			err := message.SetString(tag, entry.key, entry.msg)
 			if err != nil {
 				logrus.Errorf("pair population error: %v", err)
 			}
 		}
 	}
-	tr := i18n{matcher: language.NewMatcher(langs), list: make(map[string]translations)}
+	tr := i18n{
+		matcher:      language.NewMatcher(languages),
+		translations: make(map[string]translation),
+	}
 	return &tr
 }
 
-func (t *i18n) GetTranslation(acceptLanguage string) translations {
-
+func (t *i18n) GetTranslation(acceptLanguage string) translation {
 	var acceptedTag language.Tag
 
 	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
@@ -52,18 +54,18 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 	t.Lock()
 	defer t.Unlock()
 
-	if tran, ok := t.list[acceptedBaseLang]; ok {
+	if tran, ok := t.translations[acceptedBaseLang]; ok {
 		logrus.Tracef("translation %v exists", acceptedBaseLang)
 		return tran
 	}
 
-	tran := translations{}
+	tran := translation{}
 	printer := message.NewPrinter(acceptedTag)
 
-	for tag, transList := range translationsSet {
+	for tag, oneLanguage := range translationsSet {
 		if tag.String()[:2] == acceptedBaseLang {
-			for _, tr := range transList {
-				tran[tr.key] = printer.Sprintf(tr.key)
+			for _, entry := range oneLanguage {
+				tran[entry.key] = printer.Sprintf(entry.key)
 			}
 		}
 	}
@@ -72,7 +74,7 @@ func (t *i18n) GetTranslation(acceptLanguage string) translations {
 		logrus.Errorf("could not determine translation for acceptedTag = %v, acceptedBaseLang = %v ", acceptedTag, acceptedBaseLang)
 	}
 
-	t.list[acceptedBaseLang] = tran
+	t.translations[acceptedBaseLang] = tran
 
 	logrus.Infof("language created: %v", acceptedBaseLang)
 	return tran
