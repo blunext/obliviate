@@ -30,11 +30,11 @@ func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Ke
 	return &app
 }
 
-func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest, country string) error {
-
+func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) error {
 	hashEncoded := url.PathEscape(request.Hash)
+	countryCode := ctx.Value(config.CountryCode).(string)
 	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.Config.DefaultDurationTime),
-		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor, country)
+		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor, countryCode)
 
 	err := s.db.SaveMessage(ctx, messageDataModel)
 	if err != nil {
@@ -50,7 +50,6 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest, co
 }
 
 func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([]byte, int, error) {
-
 	hashEncoded := url.PathEscape(request.Hash)
 
 	data, err := s.db.GetMessage(ctx, hashEncoded)

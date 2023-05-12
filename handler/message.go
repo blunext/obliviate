@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -75,7 +76,9 @@ func Save(app *app.App) http.HandlerFunc {
 		case len(data.PublicKey) != 32:
 			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		default:
-			err = app.ProcessSave(r.Context(), data, r.Header.Get("CF-IPCountry"))
+			ctx := context.WithValue(r.Context(), config.AcceptedLanguage, r.Header.Get("Accept-Language"))
+			ctx = context.WithValue(ctx, config.CountryCode, r.Header.Get("CF-IPCountry"))
+			err = app.ProcessSave(ctx, data)
 			if err != nil {
 				finishRequestWithErr(w, fmt.Sprintf("Cannot process input message, err: %v", err), http.StatusBadRequest, app.Config.ProdEnv)
 				return

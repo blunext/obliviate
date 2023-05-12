@@ -84,7 +84,8 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	logrus.Infof("massage saved, key: %v, t: %d, len: %d, c: %s", data.Key(), data.Message.Time, len(data.Message.Txt), data.Message.Country)
+	acceptLanguage := ctx.Value("Accept-Language")
+	logrus.Infof("massage saved t: %d, len: %d, c: %s, al: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country, acceptLanguage)
 	return nil
 }
 

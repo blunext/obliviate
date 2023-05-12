@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+const CountryCode = "CF-IPCountry"
+const AcceptedLanguage = "Accept-Language"
+
 type Configuration struct {
 	DefaultDurationTime     time.Duration
 	ProdEnv                 bool

@@ -22,7 +22,8 @@ func StorageMock() *db {
 
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	d.messageStore[data.Key()] = data
-	logrus.Infof("massage saved, key: %s", data.Key())
+	acceptLanguage := ctx.Value("Accept-Language")
+	logrus.Infof("massage saved, key: %s, al: %s", data.Key(), acceptLanguage)
 	return nil
 }
 
