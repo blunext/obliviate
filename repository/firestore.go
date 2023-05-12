@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"obliviate/config"
 	"obliviate/repository/model"
 )
 
@@ -84,8 +85,7 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	acceptLanguage := ctx.Value("Accept-Language")
-	logrus.Infof("massage saved t: %d, len: %d, c: %s, al: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country, acceptLanguage)
+	logrus.Infof("massage saved t: %d, len: %d, c: %s, al: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country, ctx.Value(config.AcceptLanguage))
 	return nil
 }
 

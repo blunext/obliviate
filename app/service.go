@@ -33,6 +33,7 @@ func NewApp(db repository.DataBase, config *config.Configuration, keys *crypt.Ke
 func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) error {
 	hashEncoded := url.PathEscape(request.Hash)
 	countryCode := ctx.Value(config.CountryCode).(string)
+
 	messageDataModel := model.NewMessage(hashEncoded, request.Message, time.Now().Add(s.Config.DefaultDurationTime),
 		request.TransmissionNonce, request.PublicKey, request.Time, request.CostFactor, countryCode)
 

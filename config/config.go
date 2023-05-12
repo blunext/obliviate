@@ -5,8 +5,12 @@ import (
 	"time"
 )
 
-const CountryCode = "CF-IPCountry"
-const AcceptedLanguage = "Accept-Language"
+type contextKey string
+
+var (
+	CountryCode    = contextKey("country-code")
+	AcceptLanguage = contextKey("accept-language")
+)
 
 type Configuration struct {
 	DefaultDurationTime     time.Duration

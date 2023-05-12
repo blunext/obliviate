@@ -76,7 +76,7 @@ func Save(app *app.App) http.HandlerFunc {
 		case len(data.PublicKey) != 32:
 			finishRequestWithErr(w, "PublicKey length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		default:
-			ctx := context.WithValue(r.Context(), config.AcceptedLanguage, r.Header.Get("Accept-Language"))
+			ctx := context.WithValue(r.Context(), config.AcceptLanguage, r.Header.Get("Accept-Language"))
 			ctx = context.WithValue(ctx, config.CountryCode, r.Header.Get("CF-IPCountry"))
 			err = app.ProcessSave(ctx, data)
 			if err != nil {
