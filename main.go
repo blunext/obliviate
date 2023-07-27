@@ -8,8 +8,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/sirupsen/logrus"
 
 	"obliviate/app"
@@ -26,7 +27,7 @@ const (
 )
 
 //go:embed variables.json
-//go:embed web/build
+//go:embed web/build/*
 var static embed.FS
 
 func main() {
@@ -64,6 +65,15 @@ func main() {
 	app := app.NewApp(db, &conf, keys)
 
 	r := chi.NewRouter()
+
+	if !conf.ProdEnv {
+		r.Use(cors.Handler(cors.Options{
+			AllowedOrigins: []string{"https://localhost:5173", "http://localhost:5173"},
+			AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
+			AllowedHeaders: []string{"Content-Type"},
+		}))
+	}
+
 	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript", "text/css", "image/x-icon", "text/plain", "application/json")
 	r.Use(compressor.Handler)
 
@@ -73,10 +83,6 @@ func main() {
 	r.Post("/read", handler.Read(app))
 	r.Delete("/expired", handler.Expired(app))
 	r.Delete("/delete", handler.Delete(app))
-
-	r.Get("/loaderio-3fb618812cd648609b8cdf6925e2294a/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("loaderio-3fb618812cd648609b8cdf6925e2294a"))
-	})
 
 	port := os.Getenv("PORT")
 	if port == "" {

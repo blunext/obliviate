@@ -9,9 +9,6 @@ import (
 
 func setStatusAndHeader(w http.ResponseWriter, status int, prodEnv bool) {
 	w.Header().Set("Content-Type", "application/json")
-	if !prodEnv {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
 	w.WriteHeader(status)
 }
 

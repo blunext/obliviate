@@ -31,8 +31,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Something went wrong. I cannot save the message. Please try again."},
 		{"decryptNetworkError", "Something went wrong. I cannot read the message. Please try again."},
 		{"password", "Password"},
-		{"passwordEncryptPlaceholder", "Use a password to increase security"},
-		{"passwordDecryptPlaceholder", "enter the password"},
+		{"enterPasswordPlaceholder", "enter the password"},
 		{"linkIsCorrupted", "The link is damaged"},
 	},
 	language.German: {
@@ -58,8 +57,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Etwas ist schief gelaufen. Ich kann die Nachricht nicht speichern. Bitte versuchen Sie es noch einmal."},
 		{"decryptNetworkError", "Etwas ist schief gelaufen. Ich kann die Nachricht nicht lesen. Bitte versuchen Sie es noch einmal."},
 		{"password", "Passwort"},
-		{"passwordEncryptPlaceholder", "Sie können ein Passwort verwenden, um die Sicherheit zu erhöhen"},
-		{"passwordDecryptPlaceholder", "Geben Sie das Passwort ein"},
+		{"enterPasswordPlaceholder", "Geben Sie das Passwort ein"},
 		{"linkIsCorrupted", "Der Link ist beschädigt"},
 	},
 	language.Dutch: {
@@ -85,8 +83,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Er is iets misgegaan. Ik kan het bericht niet opslaan. Probeer het opnieuw."},
 		{"decryptNetworkError", "Er is iets misgegaan. Ik kan het bericht niet lezen. Probeer het opnieuw."},
 		{"password", "Wachtwoord"},
-		{"passwordEncryptPlaceholder", "U kunt een wachtwoord gebruiken om de beveiliging te verhogen"},
-		{"passwordDecryptPlaceholder", "voer het wachtwoord in"},
+		{"enterPasswordPlaceholder", "voer het wachtwoord in"},
 		{"linkIsCorrupted", "De link is beschadigd"},
 	},
 	language.Danish: {
@@ -112,8 +109,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Noget gik galt. Jeg kan ikke gemme beskeden. Prøv igen."},
 		{"decryptNetworkError", "Noget gik galt. Jeg kan ikke læse beskeden. Prøv igen."},
 		{"password", "Adgangskode"},
-		{"passwordEncryptPlaceholder", "Brug en adgangskode for at øge sikkerheden"},
-		{"passwordDecryptPlaceholder", "indtast adgangskoden"},
+		{"enterPasswordPlaceholder", "indtast adgangskoden"},
 		{"linkIsCorrupted", "Linket er beskadiget"},
 	},
 	language.Norwegian: {
@@ -139,8 +135,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lagret. Vennligst prøv igjen."},
 		{"decryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lastet inn. Vennligst prøv igjen."},
 		{"password", "Passord"},
-		{"passwordEncryptPlaceholder", "Valgfritt passord for høyere sikkerhet"},
-		{"passwordDecryptPlaceholder", "Tast inn passord"},
+		{"enterPasswordPlaceholder", "Tast inn passord"},
 		{"linkIsCorrupted", "Lenken er korrumpert"},
 	},
 	language.Swedish: {
@@ -166,8 +161,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Något gick fel. Jag kan inte spara meddelandet. Försök igen."},
 		{"decryptNetworkError", "Något gick fel. Jag kan inte läsa meddelandet. Försök igen."},
 		{"password", "Lösenord"},
-		{"passwordEncryptPlaceholder", "Använd ett lösenord för att öka säkerheten"},
-		{"passwordDecryptPlaceholder", "ange lösenordet"},
+		{"enterPasswordPlaceholder", "ange lösenordet"},
 		{"linkIsCorrupted", "Länken är skadad"},
 	},
 	language.Finnish: {
@@ -193,8 +187,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Jotain meni pieleen. En voi tallentaa viestiä. Yritä uudelleen."},
 		{"decryptNetworkError", "Jotain meni pieleen. En voi lukea viestiä. Yritä uudelleen."},
 		{"password", "Salasana"},
-		{"passwordEncryptPlaceholder", "Käytä salasanaa lisätäksesi turvallisuutta"},
-		{"passwordDecryptPlaceholder", "anna salasana"},
+		{"enterPasswordPlaceholder", "anna salasana"},
 		{"linkIsCorrupted", "Linkki on vioittunut"},
 	},
 	language.Estonian: {
@@ -220,8 +213,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Midagi läks valesti. Ma ei saa sõnumit salvestada. Palun proovige uuesti."},
 		{"decryptNetworkError", "Midagi läks valesti. Ma ei saa sõnumit lugeda. Palun proovige uuesti."},
 		{"password", "Parool"},
-		{"passwordEncryptPlaceholder", "Parooli kasutamine suurendab turvalisust"},
-		{"passwordDecryptPlaceholder", "sisestage parool"},
+		{"enterPasswordPlaceholder", "sisestage parool"},
 		{"linkIsCorrupted", "Link on kahjustatud"},
 	},
 	language.Latvian: {
@@ -247,8 +239,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Kaut kas nogāja greizi. Nevaru saglabāt ziņu. Lūdzu, mēģiniet vēlreiz."},
 		{"decryptNetworkError", "Kaut kas nogāja greizi. Nevaru nolasīt ziņu. Lūdzu, mēģiniet vēlreiz."},
 		{"password", "Parole"},
-		{"passwordEncryptPlaceholder", "Izmantojiet paroli, lai palielinātu drošību"},
-		{"passwordDecryptPlaceholder", "ievadiet paroli"},
+		{"enterPasswordPlaceholder", "ievadiet paroli"},
 		{"linkIsCorrupted", "Saite ir bojāta"},
 	},
 	language.Lithuanian: {
@@ -274,8 +265,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Kažkas nutiko. Negaliu išsaugoti pranešimo. Prašome pabandyti dar kartą."},
 		{"decryptNetworkError", "Kažkas nutiko. Negaliu perskaityti pranešimo. Prašome pabandyti dar kartą."},
 		{"password", "Slaptažodis"},
-		{"passwordEncryptPlaceholder", "Naudokite slaptažodį, kad padidintumėte saugumą"},
-		{"passwordDecryptPlaceholder", "įveskite slaptažodį"},
+		{"enterPasswordPlaceholder", "įveskite slaptažodį"},
 		{"linkIsCorrupted", "Nuoroda pažeista"},
 	},
 	language.Hungarian: {
@@ -301,8 +291,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Valami rosszul sikerült. Nem tudom menteni az üzenetet. Kérjük, próbálja meg újra."},
 		{"decryptNetworkError", "Valami rosszul sikerült. Nem tudom elolvasni az üzenetet. Kérjük, próbálja meg újra."},
 		{"password", "Jelszó"},
-		{"passwordEncryptPlaceholder", "Használjon jelszót a biztonság növelése érdekében"},
-		{"passwordDecryptPlaceholder", "írja be a jelszót"},
+		{"enterPasswordPlaceholder", "írja be a jelszót"},
 		{"linkIsCorrupted", "A link sérült"},
 	},
 	language.Polish: {
@@ -328,8 +317,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Coś poszło nie tak. Nie mogę zapisać wiadomości. Spróbuj ponownie."},
 		{"decryptNetworkError", "Coś poszło nie tak. Nie mogę odczytać wiadomości. Spróbuj ponownie."},
 		{"password", "Hasło"},
-		{"passwordEncryptPlaceholder", "Możesz użyć hasła aby zwiększyć bezpieczeństwo"},
-		{"passwordDecryptPlaceholder", "wprowadź hasło"},
+		{"enterPasswordPlaceholder", "wprowadź hasło"},
 		{"linkIsCorrupted", "Link jest uszkodzony"},
 	},
 	language.Czech: {
@@ -355,8 +343,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Něco se pokazilo. Nemohu uložit zprávu. Zkuste to znovu."},
 		{"decryptNetworkError", "Něco se pokazilo. Nemohu přečíst zprávu. Zkuste to znovu."},
 		{"password", "Heslo"},
-		{"passwordEncryptPlaceholder", "Použijte heslo pro zvýšení zabezpečení"},
-		{"passwordDecryptPlaceholder", "zadejte heslo"},
+		{"enterPasswordPlaceholder", "zadejte heslo"},
 		{"linkIsCorrupted", "Odkaz je poškozen"},
 	},
 	language.Slovak: {
@@ -382,8 +369,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Niečo sa pokazilo. Nemôžem uložiť správu. Skúste to prosím neskôr."},
 		{"decryptNetworkError", "Niečo sa pokazilo. Nemôžem prečítať správu. Skúste to prosím neskôr."},
 		{"password", "Heslo"},
-		{"passwordEncryptPlaceholder", "Použite heslo na zvýšenie zabezpečenia"},
-		{"passwordDecryptPlaceholder", "zadajte heslo"},
+		{"enterPasswordPlaceholder", "zadajte heslo"},
 		{"linkIsCorrupted", "Odkaz je poškodený"},
 	},
 	language.Slovenian: {
@@ -409,8 +395,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Nekaj je šlo narobe. Ne morem shraniti sporočila. Poskusite znova."},
 		{"decryptNetworkError", "Nekaj je šlo narobe. Ne morem prebrati sporočila. Poskusite znova."},
 		{"password", "Geslo"},
-		{"passwordEncryptPlaceholder", "Uporabite geslo za povečanje varnosti"},
-		{"passwordDecryptPlaceholder", "vnesite geslo"},
+		{"enterPasswordPlaceholder", "vnesite geslo"},
 		{"linkIsCorrupted", "Povezava je poškodovana"},
 	},
 	language.Spanish: {
@@ -436,8 +421,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Algo salió mal. No puedo guardar el mensaje. Por favor, inténtalo de nuevo."},
 		{"decryptNetworkError", "Algo salió mal. No puedo leer el mensaje. Por favor, inténtalo de nuevo."},
 		{"password", "Contraseña"},
-		{"passwordEncryptPlaceholder", "Puedes usar una contraseña para aumentar la seguridad"},
-		{"passwordDecryptPlaceholder", "introduce la contraseña"},
+		{"enterPasswordPlaceholder", "introduce la contraseña"},
 		{"linkIsCorrupted", "El enlace está dañado"},
 	},
 	language.Portuguese: {
@@ -463,8 +447,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Algo deu errado. Não consigo salvar a mensagem. Por favor, tente novamente."},
 		{"decryptNetworkError", "Algo deu errado. Não consigo ler a mensagem. Por favor, tente novamente."},
 		{"password", "Senha"},
-		{"passwordEncryptPlaceholder", "Você pode usar uma senha para aumentar a segurança"},
-		{"passwordDecryptPlaceholder", "insira a senha"},
+		{"enterPasswordPlaceholder", "insira a senha"},
 		{"linkIsCorrupted", "O link está corrompido"},
 	},
 	language.Italian: {
@@ -490,8 +473,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Qualcosa è andato storto. Non riesco a salvare il messaggio. Riprova."},
 		{"decryptNetworkError", "Qualcosa è andato storto. Non riesco a leggere il messaggio. Riprova."},
 		{"password", "Password"},
-		{"passwordEncryptPlaceholder", "Puoi utilizzare una password per aumentare la sicurezza"},
-		{"passwordDecryptPlaceholder", "inserisci la password"},
+		{"enterPasswordPlaceholder", "inserisci la password"},
 		{"linkIsCorrupted", "Il link è danneggiato"},
 	},
 	language.Romanian: {
@@ -517,8 +499,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Ceva nu a mers bine. Nu pot salva mesajul. Vă rugăm să încercați din nou."},
 		{"decryptNetworkError", "Ceva nu a mers bine. Nu pot citi mesajul. Vă rugăm să încercați din nou."},
 		{"password", "Parolă"},
-		{"passwordEncryptPlaceholder", "Utilizați o parolă pentru a crește securitatea"},
-		{"passwordDecryptPlaceholder", "introduceți parola"},
+		{"enterPasswordPlaceholder", "introduceți parola"},
 		{"linkIsCorrupted", "Link-ul este corupt"},
 	},
 	language.French: {
@@ -544,8 +525,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Un problème est survenu. Je ne peux pas enregistrer le message. Veuillez réessayer."},
 		{"decryptNetworkError", "Un problème est survenu. Je ne peux pas lire le message. Veuillez réessayer."},
 		{"password", "Mot de passe"},
-		{"passwordEncryptPlaceholder", "Vous pouvez utiliser un mot de passe pour renforcer la sécurité"},
-		{"passwordDecryptPlaceholder", "entrez le mot de passe"},
+		{"enterPasswordPlaceholder", "entrez le mot de passe"},
 		{"linkIsCorrupted", "Le lien est endommagé"},
 	},
 	language.Ukrainian: {
@@ -571,8 +551,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Щось пішло не так. Я не можу зберегти повідомлення. Будь ласка, спробуйте знову."},
 		{"decryptNetworkError", "Щось пішло не так. Я не можу прочитати повідомлення. Будь ласка, спробуйте знову."},
 		{"password", "Пароль"},
-		{"passwordEncryptPlaceholder", "Ви можете використовувати пароль для збільшення безпеки"},
-		{"passwordDecryptPlaceholder", "введіть пароль"},
+		{"enterPasswordPlaceholder", "введіть пароль"},
 		{"linkIsCorrupted", "Посилання пошкоджено"},
 	},
 	language.Russian: {
@@ -598,8 +577,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Что-то пошло не так. Я не могу сохранить сообщение. Пожалуйста, попробуйте еще раз."},
 		{"decryptNetworkError", "Что-то пошло не так. Я не могу прочитать сообщение. Пожалуйста, попробуйте еще раз."},
 		{"password", "Пароль"},
-		{"passwordEncryptPlaceholder", "Вы можете использовать пароль для увеличения безопасности"},
-		{"passwordDecryptPlaceholder", "введите пароль"},
+		{"enterPasswordPlaceholder", "введите пароль"},
 		{"linkIsCorrupted", "Ссылка повреждена"},
 	},
 	language.Bulgarian: {
@@ -625,8 +603,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Нещо се обърка. Не мога да запазя съобщението. Моля, опитайте отново."},
 		{"decryptNetworkError", "Нещо се обърка. Не мога да прочета съобщението. Моля, опитайте отново."},
 		{"password", "Парола"},
-		{"passwordEncryptPlaceholder", "Използвайте парола, за да увеличите сигурността"},
-		{"passwordDecryptPlaceholder", "въведете паролата"},
+		{"enterPasswordPlaceholder", "въведете паролата"},
 		{"linkIsCorrupted", "Връзката е повредена"},
 	},
 	language.Croatian: {
@@ -652,8 +629,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Nešto je pošlo po zlu. Ne mogu spremiti poruku. Molimo pokušajte ponovno."},
 		{"decryptNetworkError", "Nešto je pošlo po zlu. Ne mogu pročitati poruku. Molimo pokušajte ponovno."},
 		{"password", "Lozinka"},
-		{"passwordEncryptPlaceholder", "Koristite lozinku za povećanje sigurnosti"},
-		{"passwordDecryptPlaceholder", "unesite lozinku"},
+		{"enterPasswordPlaceholder", "unesite lozinku"},
 		{"linkIsCorrupted", "Poveznica je oštećena"},
 	},
 	language.Albanian: {
@@ -679,8 +655,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Diçka shkoi keq. Nuk mund të ruaj mesazhin. Ju lutemi provoni përsëri."},
 		{"decryptNetworkError", "Diçka shkoi keq. Nuk mund të lexoj mesazhin. Ju lutemi provoni përsëri."},
 		{"password", "Fjalëkalimi"},
-		{"passwordEncryptPlaceholder", "Përdorni një fjalëkalim për të rritur sigurinë"},
-		{"passwordDecryptPlaceholder", "shkruani fjalëkalimin"},
+		{"enterPasswordPlaceholder", "shkruani fjalëkalimin"},
 		{"linkIsCorrupted", "Lidhja është e dëmtuar"},
 	},
 	language.Serbian: {
@@ -706,8 +681,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Došlo je do greške. Ne mogu sačuvati poruku. Molimo pokušajte ponovo."},
 		{"decryptNetworkError", "Došlo je do greške. Ne mogu pročitati poruku. Molimo pokušajte ponovo."},
 		{"password", "Lozinka"},
-		{"passwordEncryptPlaceholder", "Koristite lozinku kako biste povećali sigurnost"},
-		{"passwordDecryptPlaceholder", "unesite lozinku"},
+		{"enterPasswordPlaceholder", "unesite lozinku"},
 		{"linkIsCorrupted", "Link je oštećen"},
 	},
 	language.Greek: {
@@ -733,8 +707,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Κάτι πήγε στραβά. Δεν μπορώ να αποθηκεύσω το μήνυμα. Παρακαλώ δοκιμάστε ξανά."},
 		{"decryptNetworkError", "Κάτι πήγε στραβά. Δεν μπορώ να διαβάσω το μήνυμα. Παρακαλώ δοκιμάστε ξανά."},
 		{"password", "Κωδικός πρόσβασης"},
-		{"passwordEncryptPlaceholder", "Χρησιμοποιήστε έναν κωδικό πρόσβασης για να αυξήσετε την ασφάλεια"},
-		{"passwordDecryptPlaceholder", "εισάγετε τον κωδικό πρόσβασης"},
+		{"enterPasswordPlaceholder", "εισάγετε τον κωδικό πρόσβασης"},
 		{"linkIsCorrupted", "Ο σύνδεσμος είναι κατεστραμμένος"},
 	},
 	language.SimplifiedChinese: {
@@ -760,8 +733,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "出了点问题。无法保存消息。请重试。"},
 		{"decryptNetworkError", "出了点问题。无法读取消息。请重试。"},
 		{"password", "密码"},
-		{"passwordEncryptPlaceholder", "使用密码提高安全性"},
-		{"passwordDecryptPlaceholder", "输入密码"},
+		{"enterPasswordPlaceholder", "输入密码"},
 		{"linkIsCorrupted", "链接已损坏"},
 	},
 	language.Indonesian: {
@@ -787,8 +759,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Ada yang salah. Saya tidak dapat menyimpan pesan. Silakan coba lagi."},
 		{"decryptNetworkError", "Ada yang salah. Saya tidak dapat membaca pesan. Silakan coba lagi."},
 		{"password", "Kata sandi"},
-		{"passwordEncryptPlaceholder", "Anda dapat menggunakan kata sandi untuk meningkatkan keamanan"},
-		{"passwordDecryptPlaceholder", "masukkan kata sandi"},
+		{"enterPasswordPlaceholder", "masukkan kata sandi"},
 		{"linkIsCorrupted", "Tautan rusak"},
 	},
 	language.Turkish: {
@@ -814,8 +785,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "Bir şeyler yanlış gitti. Mesajı kaydedemiyorum. Lütfen tekrar deneyin."},
 		{"decryptNetworkError", "Bir şeyler yanlış gitti. Mesajı okuyamıyorum. Lütfen tekrar deneyin."},
 		{"password", "Parola"},
-		{"passwordEncryptPlaceholder", "Güvenliği artırmak için bir parola kullanabilirsiniz"},
-		{"passwordDecryptPlaceholder", "parolayı girin"},
+		{"enterPasswordPlaceholder", "parolayı girin"},
 		{"linkIsCorrupted", "Bağlantı bozuk"},
 	},
 	language.Hindi: {
@@ -841,8 +811,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "कुछ गलत हो गया। मैं संदेश को सहेज नहीं सकता। कृपया पुनः प्रयास करें।"},
 		{"decryptNetworkError", "कुछ गलत हो गया। मैं संदेश को पढ़ नहीं सकता। कृपया पुनः प्रयास करें।"},
 		{"password", "पासवर्ड"},
-		{"passwordEncryptPlaceholder", "सुरक्षा बढ़ाने के लिए पासवर्ड का उपयोग करें"},
-		{"passwordDecryptPlaceholder", "पासवर्ड दर्ज करें"},
+		{"enterPasswordPlaceholder", "पासवर्ड दर्ज करें"},
 		{"linkIsCorrupted", "लिंक क्षतिग्रस्त है"},
 	},
 	language.Bengali: {
@@ -869,8 +838,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"decryptNetworkError", "কিছু ভুল হয়েছে। আমি বার্তাটি পড়তে পারছি না। দয়া করে আবার চেষ্টা করুন।"},
 		{"password", "পাসওয়ার্ড"},
 		{"password", "পাসওয়ার্ড"},
-		{"passwordEncryptPlaceholder", "নিরাপত্তি বাড়ানোর জন্য পাসওয়ার্ড ব্যবহার করুন"},
-		{"passwordDecryptPlaceholder", "পাসওয়ার্ড লিখুন"},
+		{"enterPasswordPlaceholder", "পাসওয়ার্ড লিখুন"},
 		{"linkIsCorrupted", "লিঙ্কটি ক্ষতিগ্রস্ত"},
 	},
 	language.Japanese: {
@@ -896,8 +864,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"encryptNetworkError", "何か問題が発生しました。メッセージを保存できません。もう一度お試しください。"},
 		{"decryptNetworkError", "何か問題が発生しました。メッセージを読むことができません。もう一度お試しください。"},
 		{"password", "パスワード"},
-		{"passwordEncryptPlaceholder", "セキュリティを強化するためにパスワードを使用する"},
-		{"passwordDecryptPlaceholder", "パスワードを入力してください"},
+		{"enterPasswordPlaceholder", "パスワードを入力してください"},
 		{"linkIsCorrupted", "リンクが破損しています"},
 	},
 }
