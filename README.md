@@ -21,6 +21,3 @@ npm run build --prefix web
 go run .
 
 and go http://localhost:3000/
-```
----
-This project is tested with BrowserStack.
