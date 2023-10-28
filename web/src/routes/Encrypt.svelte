@@ -138,7 +138,9 @@
     }
 
     onMount(async () => {
-        textarea.focus()
+        setTimeout(() => {
+            textarea.focus();
+        }, 0);
     })
 
 
