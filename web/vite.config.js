@@ -3,13 +3,13 @@ import {defineConfig} from "vite";
 
 export default defineConfig({
 // Disable code splitting
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: () => 'app',
-            },
-        },
-    },
+//     build: {
+//         rollupOptions: {
+//             output: {
+//                 manualChunks: () => 'app',
+//             },
+//         },
+//     },
     plugins: [sveltekit()],
     css: {
         preprocessorOptions: {
