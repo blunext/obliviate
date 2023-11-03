@@ -15,7 +15,6 @@ COPY --from=nodeBuilder /app/build /app/web/build/
 RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -ldflags "-s -w" -v -o server
 
 FROM scratch
-COPY --from=goBuilder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=goBuilder /app/server /server
 COPY --from=goBuilder /etc/passwd /etc/passwd
 USER scratchuser

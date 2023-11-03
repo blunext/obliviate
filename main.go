@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	_ "golang.org/x/crypto/x509roots/fallback"
 	"net/http"
 	"os"
 	"time"
