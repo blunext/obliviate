@@ -48,8 +48,12 @@ func main() {
 
 	if conf.ProdEnv {
 		initLogrus(logrus.InfoLevel)
+		dbPrefix := ""
+		if os.Getenv("STAGE") != "prod" {
+			dbPrefix = "test_"
+		}
 		db = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
-			os.Getenv("OBLIVIATE_PROJECT_ID"), conf.ProdEnv)
+			os.Getenv("OBLIVIATE_PROJECT_ID"), dbPrefix, conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {
 		initLogrus(logrus.TraceLevel)

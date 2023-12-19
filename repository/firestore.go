@@ -41,8 +41,7 @@ type db struct {
 	counter           Counter
 }
 
-func NewConnection(ctx context.Context, firestoreCredentialFile string, projectID string, prodEnv bool) *db {
-
+func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, prefix string, prodEnv bool) *db {
 	var err error
 	var app *firebase.App
 
@@ -63,8 +62,8 @@ func NewConnection(ctx context.Context, firestoreCredentialFile string, projectI
 	}
 
 	d := db{
-		messageCollection: collection{coll: "messages", keyColl: "commons", keyDoc: "keys"},
-		counter:           Counter{counterShards, "stats", client},
+		messageCollection: collection{coll: prefix + "messages", keyColl: prefix + "commons", keyDoc: "keys"},
+		counter:           Counter{counterShards, prefix + "stats", client},
 		client:            client,
 	}
 	logrus.Info("Firestore connected")
