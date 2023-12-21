@@ -122,10 +122,10 @@ func (d *db) DeleteMessage(ctx context.Context, key string) {
 }
 
 func (d *db) DeleteBeforeNow(ctx context.Context) error {
-
-	iter := d.client.Collection(d.messageCollection.coll).Where("valid", "<", time.Now()).Documents(ctx)
+	// https://firebase.google.com/docs/firestore/manage-data/delete-data#go
 	numDeleted := 0
-	batch := d.client.Batch()
+	iter := d.client.Collection(d.messageCollection.coll).Where("valid", "<", time.Now()).Documents(ctx)
+	bulkWriter := d.client.BulkWriter(ctx)
 	for {
 		doc, err := iter.Next()
 		if err == iterator.Done {
@@ -134,17 +134,17 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("failed to iterate: %v", err)
 		}
-		batch.Delete(doc.Ref)
+		bulkWriter.Delete(doc.Ref)
 		numDeleted++
 	}
-	// If there are no documents to delete,
-	// the process is over.
 	if numDeleted == 0 {
 		logrus.Warn("Nothing to delete")
+		bulkWriter.End()
 		return nil
 	}
-	_, err := batch.Commit(ctx)
-	return err
+	bulkWriter.Flush()
+	logrus.Infof("Deleted %d documents", numDeleted)
+	return nil
 }
 
 // -----------------------------------------------------------
