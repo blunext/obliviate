@@ -1,0 +1,12 @@
+npm create svelte@latest web
+cd web
+npm install @sveltejs/adapter-static
+npm install @stablelib/base64
+npm install @stablelib/utf8
+npm install bootstrap
+npm install clipboard
+npm install scrypt-async
+npm install tweetnacl
+npx svelte-add@latest scss
+npm install
+#upgrade: ncu --upgrade --target minor --interactive
