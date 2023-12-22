@@ -55,7 +55,7 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 
 	data, err := s.db.GetMessage(ctx, hashEncoded)
 	if err != nil {
-		return nil, 0, fmt.Errorf("errod in GetMessage, err: %v", err)
+		return nil, 0, fmt.Errorf("error in GetMessage, err: %v", err)
 	}
 	if data.Txt == nil {
 		return nil, 0, nil
