@@ -43,8 +43,7 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) er
 	}
 
 	go func() {
-		ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
-		s.db.IncreaseCounter(ct)
+		s.db.IncreaseCounter(context.Background())
 	}()
 
 	return nil
@@ -81,14 +80,9 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 
 	if !request.Password {
 		// delete only when password is not required
-		if s.Config.ProdEnv {
-			go func() {
-				ct, _ := context.WithTimeout(context.Background(), 3*time.Minute)
-				s.db.DeleteMessage(ct, hashEncoded)
-			}()
-		} else { // for testing purposes
-			s.db.DeleteMessage(ctx, hashEncoded)
-		}
+		go func() {
+			s.db.DeleteMessage(context.Background(), hashEncoded)
+		}()
 	}
 
 	return encrypted, data.CostFactor, nil
