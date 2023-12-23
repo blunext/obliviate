@@ -42,7 +42,10 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 
 		data := translation.GetTranslation(r.Header.Get("Accept-Language"))
 		data["PublicKey"] = publicKey
-		t.Execute(w, data)
+		err := t.Execute(w, data)
+		if err != nil {
+			logrus.Fatalf("Count not execute the template; data: %v", data)
+		}
 	}
 }
 
@@ -81,6 +84,7 @@ func Save(app *app.App) http.HandlerFunc {
 				return
 			}
 			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
+			//nolint:errcheck
 			w.Write([]byte("[]"))
 		}
 	}
@@ -123,6 +127,7 @@ func Read(app *app.App) http.HandlerFunc {
 			message := webModels.ReadResponse{Message: encrypted, CostFactor: costFactor}
 
 			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
+			//nolint:errcheck
 			w.Write(jsonFromStruct(message))
 		}
 	}
@@ -153,6 +158,7 @@ func Delete(app *app.App) http.HandlerFunc {
 		app.ProcessDelete(r.Context(), data.Hash)
 
 		setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
+		//nolint:errcheck
 		w.Write([]byte("[]"))
 	}
 }
@@ -168,6 +174,7 @@ func Expired(app *app.App) http.HandlerFunc {
 		} else {
 			setStatusAndHeader(w, http.StatusOK, app.Config.ProdEnv)
 		}
+		//nolint:errcheck
 		w.Write([]byte("[]"))
 	}
 }

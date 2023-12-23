@@ -23,11 +23,13 @@ func jsonFromStruct(s interface{}) []byte {
 func finishRequestWithErr(w http.ResponseWriter, msg string, status int, prodEnv bool) {
 	logrus.Error(msg)
 	setStatusAndHeader(w, status, prodEnv)
+	//nolint:errcheck
 	w.Write([]byte(""))
 }
 
 func finishRequestWithWarn(w http.ResponseWriter, msg string, status int, prodEnv bool) {
 	logrus.Warn(msg)
 	setStatusAndHeader(w, status, prodEnv)
+	//nolint:errcheck
 	w.Write([]byte(""))
 }

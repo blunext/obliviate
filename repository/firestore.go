@@ -69,8 +69,10 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 	logrus.Info("Firestore connected")
 
 	if !d.counter.counterExists(ctx) {
-		d.counter.initCounter(ctx)
-		logrus.Debugf("Counter initialized")
+		if d.counter.initCounter(ctx) != nil {
+			logrus.Fatal("Could not initialize the counters")
+		}
+		logrus.Debug("Counter initialized")
 	}
 
 	i, _ := d.counter.getCount(ctx)
@@ -134,7 +136,7 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 		if err != nil {
 			return fmt.Errorf("failed to iterate: %v", err)
 		}
-		bulkWriter.Delete(doc.Ref)
+		_, _ = bulkWriter.Delete(doc.Ref)
 		numDeleted++
 	}
 	if numDeleted == 0 {
