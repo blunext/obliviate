@@ -89,7 +89,7 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
 	slog.InfoContext(ctx,
-		fmt.Sprintf("massage saved t: %d, len: %d, c: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country),
+		fmt.Sprintf("message saved t: %d, len: %d, c: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country),
 		logs.Length, len(data.Message.Txt), logs.Country, data.Message.Country, logs.Time, data.Message.Time, logs.AcceptedLang, ctx.Value(config.AcceptLanguage))
 	return nil
 }
@@ -113,7 +113,7 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 	}
 
 	if data.Message.ValidTo.Before(time.Now()) {
-		slog.WarnContext(ctx, "massage found but not valid")
+		slog.WarnContext(ctx, "message found but not valid")
 		return data.Message, nil
 	}
 

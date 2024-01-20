@@ -23,7 +23,7 @@ func StorageMock() *db {
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	d.messageStore[data.Key()] = data
 	acceptLanguage := ctx.Value("Accept-Language")
-	slog.Info("massage saved", logs.Key, data.Key(), logs.AcceptedLang, acceptLanguage)
+	slog.Info("message saved", logs.Key, data.Key(), logs.AcceptedLang, acceptLanguage)
 	return nil
 }
 
