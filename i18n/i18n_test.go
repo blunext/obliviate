@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,7 @@ func TestI18n_GetLazyTranslation(t *testing.T) {
 
 	trans := NewTranslation()
 	for _, list := range testData {
-		translation := trans.GetTranslation(list.tag)
+		translation := trans.GetTranslation(context.Background(), list.tag)
 
 		var msg string
 		var ok bool

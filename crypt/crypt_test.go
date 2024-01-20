@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
 	"obliviate/config"
@@ -18,15 +17,6 @@ var conf *config.Configuration
 var db repository.DataBase
 
 func init() {
-	formatter := new(logrus.TextFormatter)
-	formatter.TimestampFormat = "02-01-2006 15:04:05"
-	formatter.FullTimestamp = true
-	formatter.ForceColors = true
-	logrus.SetFormatter(formatter)
-	// logrus.SetReportCaller(true)
-	logrus.SetOutput(os.Stdout)
-	logrus.SetLevel(logrus.FatalLevel)
-
 	conf = &config.Configuration{
 		DefaultDurationTime:     time.Hour * 24 * 7,
 		ProdEnv:                 os.Getenv("ENV") == "PROD",

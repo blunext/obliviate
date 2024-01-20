@@ -2,9 +2,9 @@ package mock
 
 import (
 	"context"
+	"log/slog"
+	"obliviate/logs"
 	"time"
-
-	"github.com/sirupsen/logrus"
 
 	model "obliviate/repository/model"
 )
@@ -23,16 +23,16 @@ func StorageMock() *db {
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	d.messageStore[data.Key()] = data
 	acceptLanguage := ctx.Value("Accept-Language")
-	logrus.Infof("massage saved, key: %s, al: %s", data.Key(), acceptLanguage)
+	slog.Info("massage saved", logs.Key, data.Key(), logs.AcceptedLang, acceptLanguage)
 	return nil
 }
 
 func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, error) {
 	if m, ok := d.messageStore[key]; ok {
-		logrus.Debugf("key found: %s", m.Key())
+		slog.Debug("key found", logs.Key, m.Key())
 		return m.Message, nil
 	} else {
-		logrus.Debugf("key not found: %s", m.Key())
+		slog.Debug("key not found", logs.Key, m.Key())
 		return m.Message, nil
 	}
 }

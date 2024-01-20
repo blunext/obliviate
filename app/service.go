@@ -3,10 +3,9 @@ package app
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"time"
-
-	"github.com/sirupsen/logrus"
 
 	"obliviate/config"
 	"obliviate/crypt"
@@ -97,6 +96,6 @@ func (s *App) ProcessDeleteExpired(ctx context.Context) error {
 	if err := s.db.DeleteBeforeNow(ctx); err != nil {
 		return fmt.Errorf("delete expired error: %v", err)
 	}
-	logrus.Info("Delete expired, done")
+	slog.InfoContext(ctx, "Delete expired, done")
 	return nil
 }

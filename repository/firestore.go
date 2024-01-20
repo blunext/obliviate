@@ -3,17 +3,18 @@ package repository
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
-	"github.com/sirupsen/logrus"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"obliviate/config"
+	"obliviate/logs"
 	"obliviate/repository/model"
 )
 
@@ -54,11 +55,11 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 	}
 
 	if err != nil {
-		logrus.Errorf("Cannot create new App while connecting to firestore: %v", err)
+		slog.ErrorContext(ctx, "Cannot create new App while connecting to firestore", logs.Error, err)
 	}
 	client, err := app.Firestore(ctx)
 	if err != nil {
-		logrus.Errorf("Cannot create new client while connecting to firestore: %v", err)
+		slog.ErrorContext(ctx, "Cannot create new client while connecting to firestore", logs.Error, err)
 	}
 
 	d := db{
@@ -66,17 +67,18 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 		counter:           Counter{counterShards, prefix + "stats", client},
 		client:            client,
 	}
-	logrus.Info("Firestore connected")
+	slog.InfoContext(ctx, "Firestore connected")
 
 	if !d.counter.counterExists(ctx) {
-		if d.counter.initCounter(ctx) != nil {
-			logrus.Fatal("Could not initialize the counters")
+		if err := d.counter.initCounter(ctx); err != nil {
+			slog.ErrorContext(ctx, "Could not initialize the counters", logs.Error, err)
+			panic("Could not initialize the counters")
 		}
-		logrus.Debug("Counter initialized")
+		slog.InfoContext(ctx, "Counter initialized")
 	}
 
 	i, _ := d.counter.getCount(ctx)
-	logrus.Infof("Counter = %d", i)
+	slog.InfoContext(ctx, fmt.Sprintf("Counter = %d", i), logs.Counter, i)
 
 	return &d
 }
@@ -86,7 +88,9 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	if err != nil {
 		return fmt.Errorf("error while saving key: %s, err: %v", data.Key(), err)
 	}
-	logrus.Infof("massage saved t: %d, len: %d, c: %s, al: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country, ctx.Value(config.AcceptLanguage))
+	slog.InfoContext(ctx,
+		fmt.Sprintf("massage saved t: %d, len: %d, c: %s", data.Message.Time, len(data.Message.Txt), data.Message.Country),
+		logs.Length, len(data.Message.Txt), logs.Country, data.Message.Country, logs.Time, data.Message.Time, logs.AcceptedLang, ctx.Value(config.AcceptLanguage))
 	return nil
 }
 
@@ -99,17 +103,17 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 		if status.Code(err) != codes.NotFound {
 			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
 		}
-		logrus.Info("message not found")
+		slog.InfoContext(ctx, "message not found")
 		return data.Message, nil
 	}
 
 	if err := doc.DataTo(&data.Message); err != nil {
-		logrus.Info("message found")
+		slog.InfoContext(ctx, "message found")
 		return data.Message, fmt.Errorf("error mapping data into message struct: %v", err)
 	}
 
 	if data.Message.ValidTo.Before(time.Now()) {
-		logrus.Warn("massage found but not valid")
+		slog.WarnContext(ctx, "massage found but not valid")
 		return data.Message, nil
 	}
 
@@ -119,7 +123,7 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 func (d *db) DeleteMessage(ctx context.Context, key string) {
 	_, err := d.client.Collection(d.messageCollection.coll).Doc(key).Delete(ctx)
 	if err != nil {
-		logrus.Errorf("cannot remove doc, key: %v\n", key)
+		slog.ErrorContext(ctx, "cannot remove doc", logs.Key, key)
 	}
 }
 
@@ -140,12 +144,12 @@ func (d *db) DeleteBeforeNow(ctx context.Context) error {
 		numDeleted++
 	}
 	if numDeleted == 0 {
-		logrus.Warn("Nothing to delete")
+		slog.WarnContext(ctx, "Nothing to delete")
 		bulkWriter.End()
 		return nil
 	}
 	bulkWriter.Flush()
-	logrus.Infof("Deleted %d documents", numDeleted)
+	slog.InfoContext(ctx, fmt.Sprintf("Deleted %d documents", numDeleted), logs.NumDeleted, numDeleted)
 	return nil
 }
 
@@ -157,7 +161,7 @@ func (d *db) SaveEncryptedKeys(ctx context.Context, encrypted []byte) error {
 	if err != nil {
 		return fmt.Errorf("error while saving encrypted keys: %s, err: %v", keys.Key, err)
 	}
-	logrus.Info("encrypted keys saved")
+	slog.InfoContext(ctx, "encrypted keys saved")
 	return nil
 }
 
@@ -171,15 +175,15 @@ func (d *db) GetEncryptedKeys(ctx context.Context) ([]byte, error) {
 	}
 	key := model.Key{}
 	if err := doc.DataTo(&key); err != nil {
-		return nil, fmt.Errorf("error mapping data into key struct : %v\n", err)
+		return nil, fmt.Errorf("error mapping data into key struct: %v\n", err)
 	}
-	logrus.Debug("encrypted keys fetched from db")
+	slog.DebugContext(ctx, "encrypted keys fetched from db")
 	return key.Key, nil
 }
 
 func (d *db) IncreaseCounter(ctx context.Context) {
 	_, err := d.counter.incrementCounter(ctx)
 	if err != nil {
-		logrus.Warningf("Increase counter error: %v", err)
+		slog.ErrorContext(ctx, "Increase counter error", logs.Error, err)
 	}
 }

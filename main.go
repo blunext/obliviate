@@ -5,14 +5,15 @@ import (
 	"embed"
 	"fmt"
 	_ "golang.org/x/crypto/x509roots/fallback"
+	"log/slog"
 	"net/http"
+	"obliviate/logs"
 	"os"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
-	"github.com/sirupsen/logrus"
 
 	"obliviate/app"
 	"obliviate/config"
@@ -32,7 +33,6 @@ const (
 var static embed.FS
 
 func main() {
-
 	conf := config.Configuration{
 		DefaultDurationTime:     messageDurationTime,
 		ProdEnv:                 os.Getenv("ENV") == "PROD",
@@ -47,24 +47,27 @@ func main() {
 	var db repository.DataBase
 
 	if conf.ProdEnv {
-		initLogrus(logrus.InfoLevel)
+		logger := slog.New(logs.NewCloudLoggingHandler(slog.LevelInfo))
 		dbPrefix := ""
 		if os.Getenv("STAGE") != "prod" {
 			dbPrefix = "test_"
+			logger = slog.New(logs.NewCloudLoggingHandler(slog.LevelDebug))
 		}
+		slog.SetDefault(logger)
+
 		db = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), dbPrefix, conf.ProdEnv)
 		algorithm = rsa.NewAlgorithm()
 	} else {
-		initLogrus(logrus.TraceLevel)
+		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})))
 		db = mock.StorageMock()
 		algorithm = rsa.NewMockAlgorithm()
-		logrus.Info("Mock DB and encryption started")
+		slog.Info("Mock DB and encryption started")
 	}
 
 	keys, err := crypt.NewKeys(db, &conf, algorithm, true)
 	if err != nil {
-		logrus.Panicf("error getting keys, err: %v", err)
+		slog.Error("error getting keys", logs.Error, err)
 	}
 
 	app := app.NewApp(db, &conf, keys)
@@ -81,6 +84,7 @@ func main() {
 
 	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript", "text/css", "image/x-icon", "text/plain", "application/json")
 	r.Use(compressor.Handler)
+	r.Use(logs.WithCloudTraceContext)
 
 	r.Get("/*", handler.StaticFiles(&conf, true))
 	r.Get("/variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
@@ -94,28 +98,9 @@ func main() {
 		port = "3000"
 	}
 
-	logrus.Info("Service ready")
+	slog.Info("Service ready")
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 	if err != nil {
-		logrus.Errorf("Error ListenAndServe: %v", err)
+		slog.Error("Error ListenAndServe", logs.Error, err)
 	}
-}
-
-func initLogrus(level logrus.Level) {
-
-	if os.Getenv("ENV") == "PROD" {
-		logrus.SetFormatter(&logrus.JSONFormatter{
-			FieldMap: logrus.FieldMap{
-				logrus.FieldKeyTime:  "time",
-				logrus.FieldKeyLevel: "severity",
-				logrus.FieldKeyMsg:   "message",
-			},
-		})
-	} else {
-		logrus.SetFormatter(&logrus.TextFormatter{
-			TimestampFormat: "02-01-2006 15:04:05",
-			FullTimestamp:   true,
-		})
-	}
-	logrus.SetLevel(level)
 }

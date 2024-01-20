@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log/slog"
 
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/nacl/box"
 
 	"obliviate/config"
@@ -42,11 +42,12 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 		copy(k.PublicKey[:], decrypted[:32])
 		copy(k.PrivateKey[:], decrypted[32:])
 
-		logrus.Debug("encryption keys fetched and decrypted by master key")
+		slog.Debug("encryption keys fetched and decrypted by master key")
 
 	} else {
 		if conf.ProdEnv && expectKeys { // prevent to overwrite the keys
-			logrus.Fatal("Keys expected")
+			slog.Error("Keys expected")
+			panic("Keys expected")
 		}
 
 		// generate Keys
@@ -68,11 +69,11 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 			return nil, fmt.Errorf("error storing keys into DB: %v", err)
 		}
 
-		logrus.Debug("encryption keys generated, encrypted by master key, stored in DB")
+		slog.Debug("encryption keys generated, encrypted by master key, stored in DB")
 	}
 
 	k.PublicKeyEncoded = base64.StdEncoding.EncodeToString(k.PublicKey[:])
-	logrus.Debug("encryption keys are ready")
+	slog.Debug("encryption keys are ready")
 
 	return &k, nil
 }

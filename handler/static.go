@@ -2,10 +2,10 @@ package handler
 
 import (
 	"io/fs"
+	"log/slog"
 	"net/http"
+	"obliviate/logs"
 	"os"
-
-	"github.com/sirupsen/logrus"
 
 	"obliviate/config"
 )
@@ -20,14 +20,14 @@ func StaticFiles(config *config.Configuration, useEmbedFS bool) http.HandlerFunc
 
 func getStaticsFS(static fs.FS, useEmbedFS bool, stripPath string) http.FileSystem {
 	if !useEmbedFS {
-		logrus.Trace("using live os files mode")
+		slog.Info("using live os files mode")
 		return http.FS(os.DirFS(stripPath))
 	}
 
-	logrus.Trace("using embed files mode")
+	slog.Info("using embed files mode")
 	fsys, err := fs.Sub(static, stripPath)
 	if err != nil {
-		logrus.Panicln(err)
+		slog.Error("FS error", logs.Error, err)
 	}
 
 	return http.FS(fsys)

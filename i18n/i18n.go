@@ -1,9 +1,11 @@
 package i18n
 
 import (
+	"context"
+	"log/slog"
+	"obliviate/logs"
 	"sync"
 
-	"github.com/sirupsen/logrus"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 )
@@ -29,7 +31,7 @@ func NewTranslation() *i18n {
 		for _, entry := range oneLanguage {
 			err := message.SetString(tag, entry.key, entry.msg)
 			if err != nil {
-				logrus.Errorf("pair population error: %v", err)
+				slog.Error("pair population error", logs.Error, err)
 			}
 		}
 	}
@@ -40,7 +42,7 @@ func NewTranslation() *i18n {
 	return &tr
 }
 
-func (t *i18n) GetTranslation(acceptLanguage string) translation {
+func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) translation {
 	var acceptedTag language.Tag
 
 	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
@@ -55,7 +57,7 @@ func (t *i18n) GetTranslation(acceptLanguage string) translation {
 	defer t.Unlock()
 
 	if tran, ok := t.translations[acceptedBaseLang]; ok {
-		logrus.Tracef("translation %v exists", acceptedBaseLang)
+		slog.InfoContext(ctx, "translation exists", logs.Language, acceptedBaseLang)
 		return tran
 	}
 
@@ -71,11 +73,11 @@ func (t *i18n) GetTranslation(acceptLanguage string) translation {
 	}
 
 	if len(tran) == 0 {
-		logrus.Errorf("could not determine translation for acceptedTag = %v, acceptedBaseLang = %v ", acceptedTag, acceptedBaseLang)
+		slog.ErrorContext(ctx, "could not determine translation", logs.LanguageTag, acceptedTag, logs.Language, acceptedBaseLang)
 	}
 
 	t.translations[acceptedBaseLang] = tran
 
-	logrus.Infof("language created: %v", acceptedBaseLang)
+	slog.InfoContext(ctx, "language created", logs.Language, acceptedBaseLang)
 	return tran
 }

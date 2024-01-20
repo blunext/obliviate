@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"crypto/sha1"
 	"encoding/json"
@@ -12,7 +13,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/nacl/box"
 	"golang.org/x/crypto/nacl/secretbox"
@@ -50,15 +50,6 @@ var params = []testParams{
 }
 
 func init() {
-	formatter := new(logrus.TextFormatter)
-	formatter.TimestampFormat = "02-01-2006 15:04:05"
-	formatter.FullTimestamp = true
-	formatter.ForceColors = true
-	logrus.SetFormatter(formatter)
-	// logrus.SetReportCaller(true)
-	logrus.SetOutput(os.Stdout)
-	logrus.SetLevel(logrus.FatalLevel)
-
 	conf = &config.Configuration{
 		DefaultDurationTime:     time.Hour * 24 * 7,
 		ProdEnv:                 os.Getenv("ENV") == "PROD",
@@ -76,7 +67,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 	// rsa := rsa.NewAlgorithm()
 	keys, err := crypt.NewKeys(db, conf, rsa, true)
 	if err != nil {
-		logrus.Panicf("cannot create key pair, err: %v", err)
+		panic("cannot create key pair")
 	}
 	app := app.NewApp(db, conf, keys)
 
@@ -99,7 +90,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 			PublicKey:         browserPublicKey[:],
 		}
 
-		code, _ := makePost(t, jsonFromStruct(saveRequest), Save(app))
+		code, _ := makePost(t, jsonFromStruct(context.Background(), saveRequest), Save(app))
 		assert.Equal(t, tab.status, code, "response code not expected")
 
 		// read
@@ -111,7 +102,7 @@ func TestEncodeDecodeMessage(t *testing.T) {
 			PublicKey: browserPublicKey[:],
 		}
 
-		code, readResponse := makePost(t, jsonFromStruct(readRequest), Read(app))
+		code, readResponse := makePost(t, jsonFromStruct(context.Background(), readRequest), Read(app))
 		assert.Equal(t, tab.status, code, "response code not expected")
 
 		if code != http.StatusOK {

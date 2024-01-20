@@ -8,7 +8,6 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/go-chi/cors v1.2.1
-	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.17.0
 	golang.org/x/crypto/x509roots/fallback v0.0.0-20231218163308-9d2ee975ef9f

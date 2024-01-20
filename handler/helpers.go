@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	"github.com/sirupsen/logrus"
+	"obliviate/logs"
 )
 
 func setStatusAndHeader(w http.ResponseWriter, status int, prodEnv bool) {
@@ -12,23 +14,23 @@ func setStatusAndHeader(w http.ResponseWriter, status int, prodEnv bool) {
 	w.WriteHeader(status)
 }
 
-func jsonFromStruct(s interface{}) []byte {
+func jsonFromStruct(ctx context.Context, s interface{}) []byte {
 	j, err := json.Marshal(s)
 	if err != nil {
-		logrus.Errorf("cannot marshal %v, err: %v", s, err)
+		slog.ErrorContext(ctx, "cannot marshal json", logs.Error, err, logs.JSON, s)
 	}
 	return j
 }
 
-func finishRequestWithErr(w http.ResponseWriter, msg string, status int, prodEnv bool) {
-	logrus.Error(msg)
+func finishRequestWithErr(ctx context.Context, w http.ResponseWriter, msg string, status int, prodEnv bool) {
+	slog.ErrorContext(ctx, msg)
 	setStatusAndHeader(w, status, prodEnv)
 	//nolint:errcheck
 	w.Write([]byte(""))
 }
 
-func finishRequestWithWarn(w http.ResponseWriter, msg string, status int, prodEnv bool) {
-	logrus.Warn(msg)
+func finishRequestWithWarn(ctx context.Context, w http.ResponseWriter, msg string, status int, prodEnv bool) {
+	slog.WarnContext(ctx, msg)
 	setStatusAndHeader(w, status, prodEnv)
 	//nolint:errcheck
 	w.Write([]byte(""))
