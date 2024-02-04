@@ -152,7 +152,7 @@
         }
 
         const message = new TextDecoder('utf-8').decode(messageBytes)
-        messageCallback(message)
+        messageCallback(message, messagePassword)
 
         if (hasPassword) {
             const obj = {}
@@ -201,7 +201,7 @@
 
     export let newMessageCallback = () => {
     }
-    export let messageCallback = (message) => {
+    export let messageCallback = (message, messagePassword) => {
     }
 </script>
 

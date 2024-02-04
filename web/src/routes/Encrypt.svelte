@@ -33,9 +33,9 @@
     let message = ""
     let messageOk = true
     let textarea
-    let hasPassword = false
+    export let messagePassword = ""
+    let hasPassword = messagePassword !== ""
     let passwordOk = true
-    let messagePassword = ""
     let buttonEncode = true
     let encodeSpinner = false
     let secretKey = new Uint8Array()
@@ -138,6 +138,7 @@
     }
 
     onMount(async () => {
+        // console.log("encrypt: messagePassword: " + messagePassword)
         setTimeout(() => {
             textarea.focus();
         }, 0);

@@ -11,6 +11,7 @@
     let link = ""
     let hash = ""
     let message = ""
+    let messagePassword = ""
 
     function showLinkCallback(url = "") {
         // console.log("linkCallback: ", url)
@@ -19,14 +20,15 @@
     }
 
     function newMessageCallback() {
-        // console.log("newMessageCallback")
+        // console.log("newMessageCallback: messagePassword: ", messagePassword)
         hash = ""
         visible = parts.ENCRYPT
     }
 
-    function messageCallback(msg) {
-        // console.log("messageCallback: ", msg)
+    function messageCallback(msg, msgPassword) {
+        // console.log("messageCallback: msg: ", msg, "messagePassword: ", msgPassword)
         message = msg
+        messagePassword = msgPassword
         visible = parts.SHOW
     }
 
@@ -45,7 +47,7 @@
 <div class="container border border-primary-subtle rounded">
     <div class="mt-2 mb-2">
         {#if visible === parts.ENCRYPT}
-            <Encrypt {data} {showLinkCallback}/>
+            <Encrypt {data} {messagePassword} {showLinkCallback}/>
         {:else if visible === parts.LINK}
             <ShowLink {data} {link} {newMessageCallback}/>
         {:else if visible === parts.DECRYPT}
