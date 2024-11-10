@@ -1,5 +1,4 @@
-npm create svelte@latest web
-cd web
+npx sv create .
 npm install @sveltejs/adapter-static
 npm install @stablelib/base64
 npm install @stablelib/utf8
