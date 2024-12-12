@@ -4,12 +4,14 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	_ "golang.org/x/crypto/x509roots/fallback"
 	"log/slog"
 	"net/http"
-	"obliviate/logs"
 	"os"
 	"time"
+
+	_ "golang.org/x/crypto/x509roots/fallback"
+
+	"obliviate/logs"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
