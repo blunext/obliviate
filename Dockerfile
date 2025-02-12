@@ -5,7 +5,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 RUN npm install
 RUN npm run build
 
-FROM golang:1.23 as goBuilder
+FROM golang:1.24 as goBuilder
 RUN useradd -u 10001 -d /app scratchuser
 WORKDIR /app
 COPY go.* ./
