@@ -11,19 +11,19 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.3.1",
-		"@sveltejs/kit": "^2.20.5",
+		"@sveltejs/kit": "^2.21.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
-		"sass-embedded": "^1.86.3",
-		"svelte": "^5.25.12",
-		"svelte-check": "^4.1.5",
+		"sass-embedded": "^1.88.0",
+		"svelte": "^5.28.6",
+		"svelte-check": "^4.1.7",
 		"typescript": "^5.8.3",
-		"vite": "^5.4.18"
+		"vite": "^5.4.19"
 	},
 	"dependencies": {
 		"@stablelib/base64": "^2.0.1",
 		"@stablelib/utf8": "^2.0.1",
 		"@sveltejs/adapter-static": "^3.0.8",
-		"bootstrap": "^5.3.5",
+		"bootstrap": "^5.3.6",
 		"clipboard": "^2.0.11",
 		"scrypt-async": "^2.0.1",
 		"tweetnacl": "^1.0.3"
