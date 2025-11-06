@@ -1,0 +1,102 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - deployment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - test
+          - production
+      commit_sha:
+        description: 'Commit SHA to deploy (leave empty for latest)'
+        required: false
+        type: string
+
+env:
+  PROJECT_ID: obliviate
+  REGION: europe-west1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine deployment parameters
+        run: |
+          # For automatic deployment (push)
+          if [ "${{ github.event_name }}" = "push" ]; then
+            if [ "${{ github.ref_name }}" = "main" ]; then
+              echo "SERVICE_NAME=obliviate" >> $GITHUB_ENV
+              echo "ENV_NAME=PRODUCTION" >> $GITHUB_ENV
+            elif [ "${{ github.ref_name }}" = "deployment" ]; then
+              echo "SERVICE_NAME=obliviate-test" >> $GITHUB_ENV
+              echo "ENV_NAME=TEST" >> $GITHUB_ENV
+            fi
+            echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+          
+          # For manual deployment (workflow_dispatch)
+          else
+            if [ "${{ inputs.environment }}" = "production" ]; then
+              echo "SERVICE_NAME=obliviate" >> $GITHUB_ENV
+              echo "ENV_NAME=PRODUCTION" >> $GITHUB_ENV
+            else
+              echo "SERVICE_NAME=obliviate-test" >> $GITHUB_ENV
+              echo "ENV_NAME=TEST" >> $GITHUB_ENV
+            fi
+          
+            # Use provided SHA or take latest
+            if [ -n "${{ inputs.commit_sha }}" ]; then
+              echo "COMMIT_SHA=${{ inputs.commit_sha }}" >> $GITHUB_ENV
+            else
+              echo "COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.COMMIT_SHA }}
+
+      - name: Display deployment info
+        run: |
+          echo "🎯 Deploying to: $ENV_NAME"
+          echo "📦 Service: $SERVICE_NAME"
+          echo "🔖 Commit: $COMMIT_SHA"
+          echo "👤 Triggered by: ${{ github.actor }}"
+          echo "🔄 Event: ${{ github.event_name }}"
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy to Cloud Run from source
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --source . \
+            --region $REGION \
+            --project $PROJECT_ID \
+            --allow-unauthenticated \
+            --update-labels "commit-sha=$COMMIT_SHA,deployed-by=${{ github.actor }}"
+
+      - name: Show deployment URL
+        run: |
+          echo "✅ Deployed successfully!"
+          SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
+            --region $REGION \
+            --project $PROJECT_ID \
+            --format='value(status.url)')
+          
+          echo "🔗 Service URL: $SERVICE_URL"
+          echo "📝 Commit deployed: $COMMIT_SHA"
