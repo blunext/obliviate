@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - deployment
+      - development
   workflow_dispatch:
     inputs:
       environment:
@@ -16,7 +16,7 @@ on:
           - test
           - production
       commit_sha:
-        description: 'Commit SHA to deploy (leave empty for latest)'
+        description: 'Commit SHA to deploy'
         required: false
         type: string
 
@@ -36,7 +36,7 @@ jobs:
             if [ "${{ github.ref_name }}" = "main" ]; then
               echo "SERVICE_NAME=obliviate" >> $GITHUB_ENV
               echo "ENV_NAME=PRODUCTION" >> $GITHUB_ENV
-            elif [ "${{ github.ref_name }}" = "deployment" ]; then
+            elif [ "${{ github.ref_name }}" = "development" ]; then
               echo "SERVICE_NAME=obliviate-test" >> $GITHUB_ENV
               echo "ENV_NAME=TEST" >> $GITHUB_ENV
             fi
