@@ -9,6 +9,10 @@ test:
 		go test -run '(Test|Example)' -race $(pkg) || exit 1;\
 		)
 
+bench:
+	@echo ">> BENCHMARK"
+	@go test -bench=. -benchmem ./...
+
 codequality:
 	@echo ">> CODE QUALITY"
 
