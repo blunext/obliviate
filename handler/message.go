@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"obliviate/logs"
 	"text/template"
+
+	"obliviate/logs"
 
 	"obliviate/app"
 	"obliviate/config"
@@ -37,8 +38,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 			t, _ = template.New("variables.json").ParseFS(config.EmbededStaticFiles, "variables.json")
 		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
-		w.Header().Set("Cache-Control", "no-cache, no-store")
-		w.Header().Set("Expires", "0")
+		w.Header().Set("Vary", "Accept-Language")
 
 		data := translation.GetTranslation(ctx, r.Header.Get("Accept-Language"))
 		data["PublicKey"] = publicKey
