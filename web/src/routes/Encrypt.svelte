@@ -42,7 +42,6 @@
     let salt = new Uint8Array()
     let time = 0
     let urlNonce = ""
-    let keys = nacl.box.keyPair()
 
     function handleInputChange() {
         messageOk = message !== ""
@@ -85,6 +84,8 @@
     }
 
     function continueProcessing() {
+        const ephemeralKeys = nacl.box.keyPair()
+
         const messageNonce = nacl.randomBytes(nacl.secretbox.nonceLength)
         urlNonce = base64.encode(messageNonce)
 
@@ -99,21 +100,35 @@
         }
         fullMessage.set(encryptedMessage, secretKey.length)
 
-        // encrypt message transmission with nacl box
+        // encrypt message transmission with nacl box using ephemeral keys
         const transmissionNonce = nacl.randomBytes(nacl.box.nonceLength)
-        const transmission = nacl.box(fullMessage, transmissionNonce, data.serverPublicKey, keys.secretKey)
+        const transmission = nacl.box(fullMessage, transmissionNonce, data.serverPublicKey, ephemeralKeys.secretKey)
 
         const obj = {}
         obj.message = base64.encode(transmission)
         obj.nonce = base64.encode(transmissionNonce)
         obj.hash = base64.encode(nacl.hash(messageNonce))
-        obj.publicKey = base64.encode(keys.publicKey)
+        obj.publicKey = base64.encode(ephemeralKeys.publicKey)
         if (hasPassword) {
             obj.time = time
             obj.costFactor = CONSTANTS.costFactor
         }
         post('POST', obj, CONSTANTS.SAVE_URL, encodeSuccess, encodeError)
 
+        // Destroy ALL sensitive data in memory
+        ephemeralKeys.secretKey.fill(0)
+        ephemeralKeys.publicKey.fill(0)
+        secretKey.fill(0)
+        if (hasPassword) {
+            salt.fill(0)
+        }
+        transmissionNonce.fill(0)
+        messageNonce.fill(0)
+        fullMessage.fill(0)
+        transmission.fill(0)
+
+        // Clear plaintext message
+        message = ""
     }
 
     function encodeSuccess(result) {

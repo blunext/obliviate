@@ -58,7 +58,7 @@
 
         decodeButtonAccessibility(false)
 
-        const keys = nacl.box.keyPair()
+        const ephemeralKeys = nacl.box.keyPair()
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1)
 
         let urlNonce = new Uint8Array()
@@ -75,7 +75,7 @@
 
         const obj = {}
         obj.hash = base64.encode(nacl.hash(urlNonce))
-        obj.publicKey = base64.encode(keys.publicKey)
+        obj.publicKey = base64.encode(ephemeralKeys.publicKey)
         if (hasPassword) {
             obj.password = true
         }
@@ -90,7 +90,12 @@
             const noncePart = messageWithNonceAsUint8Array.slice(0, nacl.box.nonceLength)
             const messagePart = messageWithNonceAsUint8Array.slice(nacl.box.nonceLength, result.message.length)
 
-            const decrypted = nacl.box.open(messagePart, noncePart, data.serverPublicKey, keys.secretKey)
+            const decrypted = nacl.box.open(messagePart, noncePart, data.serverPublicKey, ephemeralKeys.secretKey)
+
+            // Destroy ephemeral keys immediately
+            ephemeralKeys.secretKey.fill(0)
+            ephemeralKeys.publicKey.fill(0)
+
             if (!decrypted) {
                 decodeButtonAccessibility(true)
                 alert(data.generalError)
@@ -104,6 +109,10 @@
                 secretKey = decrypted.slice(0, nacl.secretbox.keyLength)
             }
             encodedMessage = decrypted.slice(nacl.secretbox.keyLength, decrypted.length)
+
+            // Destroy decrypted data from box (contains salt/secretKey + ciphertext)
+            decrypted.fill(0)
+
             cypherLoaded = true
         }
     }
@@ -152,7 +161,19 @@
         }
 
         const message = new TextDecoder('utf-8').decode(messageBytes)
+
+        // Destroy plaintext bytes immediately after decoding to string
+        messageBytes.fill(0)
+
         messageCallback(message, messagePassword)
+
+        // Destroy ALL sensitive data in memory after decryption
+        secretKey.fill(0)
+        if (hasPassword) {
+            salt.fill(0)
+        }
+        urlCryptoData.urlNonce.fill(0)
+        encodedMessage.fill(0)
 
         if (hasPassword) {
             const obj = {}

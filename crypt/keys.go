@@ -107,3 +107,21 @@ func (keys *Keys) GenerateNonce() ([24]byte, error) {
 	}
 	return nonce, nil
 }
+
+// ZeroBytes securely zeros bytes in memory (slice or array)
+func ZeroBytes[T ~[]byte | ~[24]byte | ~[32]byte](data *T) {
+	switch v := any(data).(type) {
+	case *[]byte:
+		for i := range *v {
+			(*v)[i] = 0
+		}
+	case *[24]byte:
+		for i := range v {
+			v[i] = 0
+		}
+	case *[32]byte:
+		for i := range v {
+			v[i] = 0
+		}
+	}
+}

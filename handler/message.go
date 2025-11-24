@@ -76,7 +76,7 @@ func Save(app *app.App) http.HandlerFunc {
 		case len(data.TransmissionNonce) != 24:
 			finishRequestWithErr(ctx, w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.PublicKey) != 32:
-			finishRequestWithErr(ctx, w, "PublicKey length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
+			finishRequestWithErr(ctx, w, "PublicKey length is wrong !=32", http.StatusBadRequest, app.Config.ProdEnv)
 		default:
 			ctx := context.WithValue(ctx, config.AcceptLanguage, r.Header.Get("Accept-Language"))
 			ctx = context.WithValue(ctx, config.CountryCode, r.Header.Get("CF-IPCountry"))

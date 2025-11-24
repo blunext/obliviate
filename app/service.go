@@ -58,19 +58,26 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 	if data.Txt == nil {
 		return nil, 0, nil
 	}
+
 	var senderPublicKey [32]byte
 	copy(senderPublicKey[:], data.PublicKey)
+	defer crypt.ZeroBytes(&senderPublicKey)
 
 	var senderNonce [24]byte
 	copy(senderNonce[:], data.Nonce)
+	defer crypt.ZeroBytes(&senderNonce)
 
 	decrypted, err := s.keys.BoxOpen(data.Txt, &senderPublicKey, &senderNonce)
 	if err != nil {
 		return nil, 0, fmt.Errorf("cannot open box, err: %v", err)
 	}
 
+	// destroy plain text message after use
+	defer crypt.ZeroBytes(&decrypted)
+
 	var recipientPublicKey [32]byte
 	copy(recipientPublicKey[:], request.PublicKey)
+	defer crypt.ZeroBytes(&recipientPublicKey)
 
 	encrypted, err := s.keys.BoxSeal(decrypted, &recipientPublicKey)
 	if err != nil {
