@@ -9,8 +9,8 @@ require (
 	github.com/go-chi/chi/v5 v5.2.3
 	github.com/go-chi/cors v1.2.2
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/crypto v0.44.0
-	golang.org/x/crypto/x509roots/fallback v0.0.0-20251117181716-2df4153a0311
+	golang.org/x/crypto v0.45.0
+	golang.org/x/crypto/x509roots/fallback v0.0.0-20251119195548-4e0068c0098b
 	golang.org/x/text v0.31.0
 	google.golang.org/api v0.256.0
 	google.golang.org/grpc v1.77.0
