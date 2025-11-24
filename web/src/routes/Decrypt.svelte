@@ -2,6 +2,7 @@
     import nacl from "tweetnacl"
     import * as base64 from '@stablelib/base64'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
+    import EyeIcon from '$lib/EyeIcon.svelte'
 
     export let data = {
         serverPublicKey: new Uint8Array(),
@@ -32,6 +33,7 @@
 
     const hasPassword = window.location.search.substring(1).length === CONSTANTS.queryIndexWithPassword
     let messagePasswordOk = true
+    let showPassword = false
     let decodeButton = true
     let decodeButtonSpinner = false
     let loadCypherAction = true
@@ -220,6 +222,10 @@
         }
     }
 
+    function togglePasswordVisibility() {
+        showPassword = !showPassword
+    }
+
     export let newMessageCallback = () => {
     }
     export let messageCallback = (message, messagePassword) => {
@@ -241,12 +247,15 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">{data.password}</span>
                         </div>
-                        <input type="text"
+                        <input type={showPassword ? "text" : "password"}
                                class="form-control {messagePasswordOk ? '' : 'is-invalid'}"
                                placeholder={data.enterPasswordPlaceholder}
                                on:input={updatePassword}
                                bind:value={messagePassword}
                         />
+                        <button class="btn btn-light border text-secondary" type="button" on:click={togglePasswordVisibility}>
+                            <EyeIcon show={!showPassword} />
+                        </button>
                     </div>
                 </div>
             </div>

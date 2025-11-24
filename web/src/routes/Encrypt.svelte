@@ -3,6 +3,7 @@
     import nacl from "tweetnacl"
     import * as base64 from '@stablelib/base64'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
+    import EyeIcon from '$lib/EyeIcon.svelte'
 
     export let data = {
         serverPublicKey: new Uint8Array(),
@@ -36,6 +37,7 @@
     export let messagePassword = ""
     let hasPassword = messagePassword !== ""
     let passwordOk = true
+    let showPassword = false
     let buttonEncode = true
     let encodeSpinner = false
     let secretKey = new Uint8Array()
@@ -53,6 +55,10 @@
 
     function onPasswordToggle() {
         hasPassword = !hasPassword
+    }
+
+    function togglePasswordVisibility() {
+        showPassword = !showPassword
     }
 
     function processEncrypt() {
@@ -180,11 +186,14 @@
         <div class={hasPassword ? "mb-3" : "mb-3 collapse"}>
             <div class="input-group">
                 <span class="input-group-text">{data.password}</span>
-                <input type="text"
+                <input type={showPassword ? "text" : "password"}
                        class={passwordOk ? "form-control" : "form-control is-invalid"}
                        placeholder={data.enterPasswordPlaceholder}
                        bind:value={messagePassword}
                        on:input={onChangePassword}/>
+                <button class="btn btn-light border text-secondary" type="button" on:click={togglePasswordVisibility}>
+                    <EyeIcon show={!showPassword} />
+                </button>
             </div>
         </div>
     </div>
