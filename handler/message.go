@@ -44,8 +44,9 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		data["PublicKey"] = publicKey
 		err := t.Execute(w, data)
 		if err != nil {
-			slog.ErrorContext(ctx, "Count not execute the template", logs.Error, err, logs.TemplateData, data)
-			panic("Count not execute the template")
+			slog.ErrorContext(ctx, "Could not execute the template", logs.Error, err, logs.TemplateData, data)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
 		}
 	}
 }
