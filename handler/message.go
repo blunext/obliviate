@@ -17,8 +17,10 @@ import (
 )
 
 const (
-	jsonErrMsg = "input json error"
-	emptyBody  = "empty body post, no json expected"
+	jsonErrMsg       = "input json error"
+	emptyBody        = "empty body post, no json expected"
+	maxSaveBodySize  = 256 * 1024 * 6 // ~1.5MB: accounts for base64 encoding (~33% overhead) + JSON structure
+	maxSmallBodySize = 1024           // for Read/Delete endpoints (hash + public key)
 )
 
 func ProcessTemplate(config *config.Configuration, publicKey string) http.HandlerFunc {
@@ -57,6 +59,7 @@ func Save(app *app.App) http.HandlerFunc {
 		ctx := r.Context()
 		slog.InfoContext(ctx, "Save handler...")
 
+		r.Body = http.MaxBytesReader(w, r.Body, maxSaveBodySize)
 		defer r.Body.Close()
 		if r.Body == nil {
 			finishRequestWithErr(ctx, w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
@@ -99,6 +102,7 @@ func Read(app *app.App) http.HandlerFunc {
 		ctx := r.Context()
 		slog.InfoContext(ctx, "Read handler")
 
+		r.Body = http.MaxBytesReader(w, r.Body, maxSmallBodySize)
 		defer r.Body.Close()
 		if r.Body == nil {
 			finishRequestWithErr(ctx, w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
@@ -143,6 +147,7 @@ func Delete(app *app.App) http.HandlerFunc {
 		ctx := r.Context()
 		slog.InfoContext(ctx, "Delete Handler")
 
+		r.Body = http.MaxBytesReader(w, r.Body, maxSmallBodySize)
 		defer r.Body.Close()
 		if r.Body == nil {
 			finishRequestWithErr(ctx, w, emptyBody, http.StatusBadRequest, app.Config.ProdEnv)
