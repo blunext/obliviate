@@ -81,10 +81,20 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Deploy to Cloud Run from source
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker europe-west1-docker.pkg.dev --quiet
+
+      - name: Build and push Docker image
+        run: |
+          IMAGE=europe-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SERVICE_NAME:$COMMIT_SHA
+          docker build -t $IMAGE .
+          docker push $IMAGE
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      - name: Deploy to Cloud Run
         run: |
           gcloud run deploy $SERVICE_NAME \
-            --source . \
+            --image $IMAGE \
             --region $REGION \
             --project $PROJECT_ID \
             --allow-unauthenticated \
