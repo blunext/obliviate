@@ -2,8 +2,10 @@
     import {onMount} from "svelte"
     import nacl from "tweetnacl"
     import * as base64 from '@stablelib/base64'
+    import {zxcvbn} from '@zxcvbn-ts/core'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
     import EyeIcon from '$lib/EyeIcon.svelte'
+    import ShieldIcon from '$lib/ShieldIcon.svelte'
 
     export let data = {
         serverPublicKey: new Uint8Array(),
@@ -33,11 +35,15 @@
 
     let message = ""
     let messageOk = true
+    /** @type {HTMLTextAreaElement} */
     let textarea
     export let messagePassword = ""
     let hasPassword = messagePassword !== ""
     let passwordOk = true
+    let passwordScore = 0
     let showPassword = false
+    /** @type {ReturnType<typeof setTimeout> | undefined} */
+    let debounceTimer
     let buttonEncode = true
     let encodeSpinner = false
     let secretKey = new Uint8Array()
@@ -51,6 +57,15 @@
 
     function onChangePassword() {
         passwordOk = messagePassword !== ""
+        clearTimeout(debounceTimer)
+        if (messagePassword === "") {
+            passwordScore = 0
+            return
+        }
+        debounceTimer = setTimeout(() => {
+            const result = zxcvbn(messagePassword)
+            passwordScore = result.score
+        }, 300)
     }
 
     function onPasswordToggle() {
@@ -186,6 +201,9 @@
         <div class={hasPassword ? "mb-3" : "mb-3 collapse"}>
             <div class="input-group">
                 <span class="input-group-text">{data.password}</span>
+                <span class="input-group-text">
+                    <ShieldIcon score={messagePassword === "" ? undefined : passwordScore} />
+                </span>
                 <input type={showPassword ? "text" : "password"}
                        class={passwordOk ? "form-control" : "form-control is-invalid"}
                        placeholder={data.enterPasswordPlaceholder}
