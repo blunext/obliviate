@@ -45,6 +45,29 @@ func (d *MockDB) GetMessage(ctx context.Context, key string) (model.MessageType,
 	}
 }
 
+func (d *MockDB) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
+	m, ok := d.messageStore[key]
+	if !ok {
+		slog.Debug("key not found", logs.Key, key)
+		return model.MessageType{}, nil
+	}
+
+	// Check read count limit
+	if m.Message.ReadCount >= maxReads {
+		delete(d.messageStore, key)
+		return model.MessageType{}, nil
+	}
+
+	// Update read count
+	m.Message.ReadCount++
+	d.messageStore[key] = m
+
+	return m.Message, nil
+}
+
 func (d *MockDB) DeleteMessage(ctx context.Context, key string) {
 	d.mu.Lock()
 	defer d.mu.Unlock()

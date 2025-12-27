@@ -12,6 +12,7 @@ type MessageType struct {
 	Time       int       `firestore:"time,omitempty"`
 	CostFactor int       `firestore:"costFactor,omitempty"`
 	Country    string    `firestore:"country,omitempty"`
+	ReadCount  int       `firestore:"readCount,omitempty"`
 }
 
 type MessageModel struct {

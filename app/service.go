@@ -14,6 +14,8 @@ import (
 	"obliviate/repository/model"
 )
 
+const maxPasswordMessageReads = 10
+
 type App struct {
 	Config *config.Configuration
 	keys   *crypt.Keys
@@ -51,7 +53,16 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) er
 func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([]byte, int, error) {
 	hashEncoded := url.PathEscape(request.Hash)
 
-	data, err := s.db.GetMessage(ctx, hashEncoded)
+	var data model.MessageType
+	var err error
+
+	if request.Password {
+		// For password-protected messages, use read limit
+		data, err = s.db.GetMessageWithReadLimit(ctx, hashEncoded, maxPasswordMessageReads)
+	} else {
+		data, err = s.db.GetMessage(ctx, hashEncoded)
+	}
+
 	if err != nil {
 		return nil, 0, fmt.Errorf("error in GetMessage, err: %v", err)
 	}

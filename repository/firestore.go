@@ -23,6 +23,7 @@ const counterShards = 5
 type DataBase interface {
 	SaveMessage(ctx context.Context, data model.MessageModel) error
 	GetMessage(context.Context, string) (model.MessageType, error)
+	GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error)
 	DeleteMessage(context.Context, string)
 	DeleteBeforeNow(context.Context) error
 	SaveEncryptedKeys(context.Context, []byte) error
@@ -114,10 +115,61 @@ func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, err
 
 	if data.Message.ValidTo.Before(time.Now()) {
 		slog.WarnContext(ctx, "message found but not valid")
-		return data.Message, nil
+		return model.MessageType{}, nil
 	}
 
 	return data.Message, nil
+}
+
+func (d *db) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
+	var result model.MessageType
+
+	docRef := d.client.Collection(d.messageCollection.coll).Doc(key)
+
+	err := d.client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
+		doc, err := tx.Get(docRef)
+		if err != nil {
+			if status.Code(err) == codes.NotFound {
+				slog.InfoContext(ctx, "message not found")
+				return nil
+			}
+			return fmt.Errorf("error while getting message in transaction, err: %v", err)
+		}
+
+		if err := doc.DataTo(&result); err != nil {
+			return fmt.Errorf("error mapping data into message struct: %v", err)
+		}
+
+		if result.ValidTo.Before(time.Now()) {
+			slog.WarnContext(ctx, "message found but expired")
+			result = model.MessageType{}
+			return nil
+		}
+
+		// Check read count limit
+		if result.ReadCount >= maxReads {
+			slog.WarnContext(ctx, "message read limit exceeded, deleting", logs.Key, key, "readCount", result.ReadCount)
+			if err := tx.Delete(docRef); err != nil {
+				return fmt.Errorf("error deleting message after limit exceeded: %v", err)
+			}
+			result = model.MessageType{}
+			return nil
+		}
+
+		// Update read count
+		if err := tx.Update(docRef, []firestore.Update{{Path: "readCount", Value: result.ReadCount + 1}}); err != nil {
+			return fmt.Errorf("error updating read count: %v", err)
+		}
+
+		slog.InfoContext(ctx, "message read count incremented", logs.Key, key, "readCount", result.ReadCount+1)
+		return nil
+	})
+
+	if err != nil {
+		return model.MessageType{}, err
+	}
+
+	return result, nil
 }
 
 func (d *db) DeleteMessage(ctx context.Context, key string) {
