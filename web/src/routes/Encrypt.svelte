@@ -176,7 +176,7 @@
     onMount(async () => {
         // console.log("encrypt: messagePassword: " + messagePassword)
         setTimeout(() => {
-            textarea.focus();
+            textarea?.focus();
         }, 0);
     })
 
