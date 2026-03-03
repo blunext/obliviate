@@ -9,13 +9,10 @@ import (
 	"os"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
 	_ "golang.org/x/crypto/x509roots/fallback"
 
 	"obliviate/logs"
-
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 
 	"obliviate/app"
 	"obliviate/config"
@@ -74,26 +71,20 @@ func main() {
 
 	app := app.NewApp(db, &conf, keys)
 
-	r := chi.NewRouter()
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
+	mux.HandleFunc("POST /save", handler.Save(app))
+	mux.HandleFunc("POST /read", handler.Read(app))
+	mux.HandleFunc("DELETE /expired", handler.Expired(app))
+	mux.HandleFunc("DELETE /delete", handler.Delete(app))
+	mux.Handle("GET /", handler.StaticFiles(&conf, true))
 
+	var finalHandler http.Handler = mux
+	finalHandler = logs.WithCloudTraceContext(finalHandler)
+	finalHandler = gziphandler.GzipHandler(finalHandler)
 	if !conf.ProdEnv {
-		r.Use(cors.Handler(cors.Options{
-			AllowedOrigins: []string{"https://localhost:5173", "http://localhost:5173"},
-			AllowedMethods: []string{"GET", "POST", "DELETE", "OPTIONS"},
-			AllowedHeaders: []string{"Content-Type"},
-		}))
+		finalHandler = corsMiddleware(finalHandler)
 	}
-
-	compressor := middleware.NewCompressor(5, "text/html", "text/javascript", "application/javascript", "text/css", "image/x-icon", "text/plain", "application/json")
-	r.Use(compressor.Handler)
-	r.Use(logs.WithCloudTraceContext)
-
-	r.Get("/*", handler.StaticFiles(&conf, true))
-	r.Get("/variables", handler.ProcessTemplate(&conf, keys.PublicKeyEncoded))
-	r.Post("/save", handler.Save(app))
-	r.Post("/read", handler.Read(app))
-	r.Delete("/expired", handler.Expired(app))
-	r.Delete("/delete", handler.Delete(app))
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -101,8 +92,25 @@ func main() {
 	}
 
 	slog.Info("Service ready")
-	err = http.ListenAndServe(fmt.Sprintf(":%s", port), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", port), finalHandler)
 	if err != nil {
 		slog.Error("Error ListenAndServe", logs.Error, err)
 	}
 }
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin == "http://localhost:5173" || origin == "https://localhost:5173" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		}
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+

@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/nacl/box"
@@ -27,7 +26,7 @@ import (
 //go:embed handler/testdata/variables.json
 var testStaticFiles embed.FS
 
-func setupIntegrationApp(t *testing.T) (*app.App, *chi.Mux, *crypt.Keys) {
+func setupIntegrationApp(t *testing.T) (*app.App, *http.ServeMux, *crypt.Keys) {
 	conf := &config.Configuration{
 		DefaultDurationTime: time.Hour * 24 * 7,
 		ProdEnv:             false,
@@ -42,13 +41,13 @@ func setupIntegrationApp(t *testing.T) (*app.App, *chi.Mux, *crypt.Keys) {
 
 	application := app.NewApp(db, conf, keys)
 
-	r := chi.NewRouter()
-	r.Post("/save", handler.Save(application))
-	r.Post("/read", handler.Read(application))
-	r.Delete("/delete", handler.Delete(application))
-	r.Delete("/expired", handler.Expired(application))
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /save", handler.Save(application))
+	mux.HandleFunc("POST /read", handler.Read(application))
+	mux.HandleFunc("DELETE /delete", handler.Delete(application))
+	mux.HandleFunc("DELETE /expired", handler.Expired(application))
 
-	return application, r, keys
+	return application, mux, keys
 }
 
 func TestEndToEnd_MessageLifecycle(t *testing.T) {
