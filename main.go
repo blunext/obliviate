@@ -28,7 +28,7 @@ const (
 )
 
 //go:embed variables.json
-//go:embed web/build/*
+//go:embed all:web/build
 var static embed.FS
 
 func main() {
