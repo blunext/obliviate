@@ -45,7 +45,7 @@ func TestSaveHandler_Validation(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		body           interface{}
+		body           any
 		expectedStatus int
 		expectedInBody string
 	}{
@@ -186,7 +186,7 @@ func TestReadHandler_Validation(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		body           interface{}
+		body           any
 		expectedStatus int
 		setupData      bool // Whether to setup test data first
 	}{
@@ -271,7 +271,7 @@ func TestDeleteHandler_Validation(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		body           interface{}
+		body           any
 		expectedStatus int
 	}{
 		{

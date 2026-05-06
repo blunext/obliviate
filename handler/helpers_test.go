@@ -63,7 +63,7 @@ func TestSetStatusAndHeader(t *testing.T) {
 func TestJsonFromStruct(t *testing.T) {
 	tests := []struct {
 		name       string
-		input      interface{}
+		input      any
 		wantErr    bool
 		validateFn func(*testing.T, []byte)
 	}{
@@ -78,7 +78,7 @@ func TestJsonFromStruct(t *testing.T) {
 			},
 			wantErr: false,
 			validateFn: func(t *testing.T, result []byte) {
-				var output map[string]interface{}
+				var output map[string]any
 				err := json.Unmarshal(result, &output)
 				require.NoError(t, err)
 				assert.Equal(t, "test", output["name"])
@@ -94,7 +94,7 @@ func TestJsonFromStruct(t *testing.T) {
 			},
 			wantErr: false,
 			validateFn: func(t *testing.T, result []byte) {
-				var output map[string]interface{}
+				var output map[string]any
 				err := json.Unmarshal(result, &output)
 				require.NoError(t, err)
 				assert.NotNil(t, output["data"])
@@ -126,11 +126,11 @@ func TestJsonFromStruct(t *testing.T) {
 			},
 			wantErr: false,
 			validateFn: func(t *testing.T, result []byte) {
-				var output map[string]interface{}
+				var output map[string]any
 				err := json.Unmarshal(result, &output)
 				require.NoError(t, err)
 				assert.Equal(t, "outer-value", output["outer"])
-				inner, ok := output["inner"].(map[string]interface{})
+				inner, ok := output["inner"].(map[string]any)
 				require.True(t, ok)
 				assert.Equal(t, "inner-value", inner["field"])
 			},
@@ -146,7 +146,7 @@ func TestJsonFromStruct(t *testing.T) {
 			},
 			wantErr: false,
 			validateFn: func(t *testing.T, result []byte) {
-				var output map[string]interface{}
+				var output map[string]any
 				err := json.Unmarshal(result, &output)
 				require.NoError(t, err)
 				assert.Equal(t, "value", output["present"])
@@ -320,7 +320,7 @@ func TestHelpers_Integration(t *testing.T) {
 		body, err := io.ReadAll(result.Body)
 		require.NoError(t, err)
 
-		var decoded map[string]interface{}
+		var decoded map[string]any
 		err = json.Unmarshal(body, &decoded)
 		require.NoError(t, err)
 		assert.Equal(t, "success", decoded["message"])
@@ -345,7 +345,7 @@ func TestHelpers_ConcurrentSafety(t *testing.T) {
 	t.Run("concurrent jsonFromStruct calls", func(t *testing.T) {
 		done := make(chan bool, 10)
 
-		for i := 0; i < 10; i++ {
+		for i := range 10 {
 			go func(val int) {
 				defer func() { done <- true }()
 
@@ -361,7 +361,7 @@ func TestHelpers_ConcurrentSafety(t *testing.T) {
 		}
 
 		// Wait for all goroutines
-		for i := 0; i < 10; i++ {
+		for range 10 {
 			<-done
 		}
 	})

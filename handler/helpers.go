@@ -14,7 +14,7 @@ func setStatusAndHeader(w http.ResponseWriter, status int, prodEnv bool) {
 	w.WriteHeader(status)
 }
 
-func jsonFromStruct(ctx context.Context, s interface{}) []byte {
+func jsonFromStruct(ctx context.Context, s any) []byte {
 	j, err := json.Marshal(s)
 	if err != nil {
 		slog.ErrorContext(ctx, "cannot marshal json", logs.Error, err, logs.JSON, s)
