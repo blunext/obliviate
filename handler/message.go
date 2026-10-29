@@ -25,8 +25,9 @@ const (
 
 func ProcessTemplate(config *config.Configuration, publicKey string) http.HandlerFunc {
 
-	// json encodes values that may contain characters not allowed in a raw JSON string, e.g. HTML
-	funcs := template.FuncMap{"json": func(v string) (string, error) {
+	// json encodes values that may contain characters not allowed in a raw JSON string, e.g. HTML.
+	// It takes any, so a missing key renders as null instead of failing the template.
+	funcs := template.FuncMap{"json": func(v any) (string, error) {
 		b, err := json.Marshal(v)
 		return string(b), err
 	}}

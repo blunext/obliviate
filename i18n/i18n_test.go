@@ -2,6 +2,7 @@ package i18n
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,6 +41,24 @@ func TestI18n_InfoIsRenderedWithLinks(t *testing.T) {
 
 	assert.Contains(t, translation["info"], "w serwisie "+githubLink+". Jeśli")
 	assert.Contains(t, translation["info"], `wyślij nam <a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">wiadomość</a>.`)
+}
+
+func TestI18n_InfoHasPlaceholdersInEveryLanguage(t *testing.T) {
+	for tag, entries := range translationsSet {
+		var info, contactLink string
+		for _, e := range entries {
+			switch e.key {
+			case "info":
+				info = e.msg
+			case "contactLink":
+				contactLink = e.msg
+			}
+		}
+		assert.Equal(t, 1, strings.Count(info, "{github}"), "%s: {github} count", tag)
+		assert.Equal(t, 1, strings.Count(info, "{contact}"), "%s: {contact} count", tag)
+		assert.NotEmpty(t, contactLink, "%s: contactLink", tag)
+		assert.NotContains(t, renderInfo(info, contactLink), "{", "%s: unreplaced placeholder", tag)
+	}
 }
 
 func TestRenderInfo_EscapesTranslation(t *testing.T) {
