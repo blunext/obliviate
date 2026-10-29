@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"maps"
 	"net/http"
 	"text/template"
 
@@ -49,7 +50,8 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Vary", "Accept-Language")
 
-		data := translation.GetTranslation(ctx, r.Header.Get("Accept-Language"))
+		// the translation is cached and shared between requests, so it is copied before adding the key
+		data := maps.Clone(translation.GetTranslation(ctx, r.Header.Get("Accept-Language")))
 		data["PublicKey"] = publicKey
 		err := t.Execute(w, data)
 		if err != nil {

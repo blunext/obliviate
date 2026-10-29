@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync"
 	"testing"
 	"testing/fstest"
 
@@ -41,4 +42,32 @@ func TestProcessTemplate_ReturnsValidJSON(t *testing.T) {
 			}
 		}
 	}
+}
+
+// Run with -race: the cached translation map is shared between requests and must not be modified.
+// Only prod mode is tested, as locally the template itself is re-parsed into a shared variable.
+func TestProcessTemplate_ConcurrentRequests(t *testing.T) {
+	variables, err := os.ReadFile("../variables.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	conf := &config.Configuration{
+		ProdEnv:            true,
+		EmbededStaticFiles: fstest.MapFS{"variables.json": {Data: variables}},
+	}
+	handler := ProcessTemplate(conf, "publicKey")
+
+	var wg sync.WaitGroup
+	for range 50 {
+		for _, lang := range []string{"pl", "en", "de"} {
+			wg.Go(func() {
+				req := httptest.NewRequest(http.MethodGet, "/variables", nil)
+				req.Header.Set("Accept-Language", lang)
+				rr := httptest.NewRecorder()
+				handler.ServeHTTP(rr, req)
+				assert.Equal(t, http.StatusOK, rr.Code)
+			})
+		}
+	}
+	wg.Wait()
 }
