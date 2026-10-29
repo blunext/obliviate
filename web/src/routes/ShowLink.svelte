@@ -3,7 +3,7 @@
     import {onMount, afterUpdate} from "svelte"
 
     export let data = {
-        serverPublicKey: new Uint8Array(),
+        serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
         copyLink: "",
         copyLinkButton: "",
         decodedMessage: "",
@@ -50,7 +50,7 @@
 <textarea class="form-control mb-3 bg-primary-subtle" id="link"
           bind:value={link}
           bind:this={textarea}
-          readOnly/>
+          readOnly></textarea>
 
 <div class="container">
     <div class="row">

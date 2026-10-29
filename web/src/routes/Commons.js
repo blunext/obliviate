@@ -29,7 +29,7 @@ export const calculateKeyDerived = function (password, salt, logN, callback) {
             }
         )
     } catch (ex) {
-        alert(ex.message)
+        alert(ex instanceof Error ? ex.message : String(ex))
     }
 }
 
@@ -50,7 +50,7 @@ export const post = function(method, webObject, url, postSuccess, postError) {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`)
+                throw Object.assign(new Error(`HTTP error! Status: ${response.status}`), {status: response.status})
             }
             return response.json()
         })

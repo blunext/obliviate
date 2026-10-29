@@ -5,7 +5,7 @@
     import EyeIcon from '$lib/EyeIcon.svelte'
 
     export let data = {
-        serverPublicKey: new Uint8Array(),
+        serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
         copyLink: "",
         copyLinkButton: "",
         decodedMessage: "",
@@ -34,7 +34,7 @@
     let decodeButton = true
     let decodeButtonSpinner = false
     let loadCypherAction = true
-    let urlCryptoData = {urlNonce: new Uint8Array(), hash: ""}
+    let urlCryptoData = {urlNonce: /** @type {Uint8Array} */ (new Uint8Array()), hash: ""}
     let salt = new Uint8Array()
     let costFactor = CONSTANTS.costFactor
     let secretKey = new Uint8Array()
@@ -60,6 +60,7 @@
         const ephemeralKeys = nacl.box.keyPair()
         const nonce = window.location.search.substring(1) + window.location.hash.substring(1)
 
+        /** @type {Uint8Array} */
         let urlNonce = new Uint8Array()
         try {
             urlNonce = base64.decode(nonce)
@@ -185,9 +186,8 @@
     function loadError(err) {
         // console.log("loadError: " + err)
         decodeButtonAccessibility(true)
-        if (err.response !== undefined && err.response.status === 404) {
+        if (err.status === 404) {
             messageReadInfo = true
-            messageReadInfo = false //hide pass
         } else {
             alert(data.decryptNetworkError)
         }
@@ -236,6 +236,13 @@
                 <p class="text-secondary">{data.messageRead}</p>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm">
+                <button type="button" class="btn btn-primary btn-lg w-100"
+                        on:click={newMessageCallback}>{data.newMessageButton}
+                </button>
+            </div>
+        </div>
     {:else}
         {#if hasPassword}
             <div class="row">
@@ -261,7 +268,7 @@
             <div class="col-sm mb-2">
                 <button type="button" on:click={decrypt}
                         class="btn btn-danger btn-lg w-100 {decodeButton ? '' : 'disabled'}">
-                    <span class="spinner-border spinner-border-sm {decodeButtonSpinner ? '' : 'd-none'}"/>
+                    <span class="spinner-border spinner-border-sm {decodeButtonSpinner ? '' : 'd-none'}"></span>
                     {data.readMessageButton}
                 </button>
             </div>

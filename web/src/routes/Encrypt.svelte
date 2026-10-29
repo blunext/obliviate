@@ -8,7 +8,7 @@
     import ShieldIcon from '$lib/ShieldIcon.svelte'
 
     export let data = {
-        serverPublicKey: new Uint8Array(),
+        serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
         copyLink: "",
         copyLinkButton: "",
         decodedMessage: "",
@@ -43,7 +43,9 @@
     let debounceTimer
     let buttonEncode = true
     let encodeSpinner = false
+    /** @type {Uint8Array} */
     let secretKey = new Uint8Array()
+    /** @type {Uint8Array} */
     let salt = new Uint8Array()
     let time = 0
     let urlNonce = ""
@@ -190,7 +192,7 @@
                   rows="4" maxLength="262144"
                   bind:value={message}
                   bind:this={textarea}
-                  on:input={handleInputChange}/>
+                  on:input={handleInputChange}></textarea>
     </div>
 </div>
 <div class="container">
@@ -222,7 +224,7 @@
             <button type="button"
                     class={buttonEncode ? "btn btn-danger btn-lg w-100" : "btn btn-danger btn-lg w-100 disabled"}
                     on:click={processEncrypt}>
-                <span class={encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}/>
+                <span class={encodeSpinner ? "spinner-border spinner-border-sm" : "spinner-border spinner-border-sm d-none"}></span>
                 {data.secureButton}
             </button>
         </div>

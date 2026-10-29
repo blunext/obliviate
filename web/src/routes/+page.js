@@ -4,7 +4,7 @@ import * as base64 from '@stablelib/base64'
 export const prerender = true
 
 let vars = {
-    serverPublicKey: new Uint8Array(),
+    serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
     copyLink: "",
     copyLinkButton: "",
     decodedMessage: "",
@@ -41,5 +41,6 @@ export async function load({fetch}) {
     } catch (error) {
         console.error("Network error: ", error)
         alert("Something went wrong. Try again.")
+        return vars
     }
 }

@@ -51,7 +51,7 @@
         {:else if visible === parts.LINK}
             <ShowLink {data} {link} {newMessageCallback}/>
         {:else if visible === parts.DECRYPT}
-            <Decrypt {data} {hash} {newMessageCallback} {messageCallback}/>
+            <Decrypt {data} {newMessageCallback} {messageCallback}/>
         {:else if visible === parts.SHOW}
             <ShowMessage {data} {message} {newMessageCallback}/>
         {/if}
@@ -59,7 +59,7 @@
 
     <div class="container mt-3">
         <div class="row">
-            <div class="col-sm-1"/>
+            <div class="col-sm-1"></div>
             <div class="col">
                 <hr/>
             </div>
@@ -67,17 +67,17 @@
             <div class="col">
                 <hr/>
             </div>
-            <div class="col-sm-1"/>
+            <div class="col-sm-1"></div>
         </div>
         <div class="row">
-            <div class="col-sm-1"/>
+            <div class="col-sm-1"></div>
             <div class="col">
                 <p class="fw-light">
                     <!-- info is HTML composed and escaped by the backend (i18n.renderInfo) -->
                     <small>{@html data.info}</small>
                 </p>
             </div>
-            <div class="col-sm-1"/>
+            <div class="col-sm-1"></div>
         </div>
     </div>
 </div>

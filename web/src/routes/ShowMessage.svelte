@@ -1,6 +1,6 @@
 <script>
     export let data = {
-        serverPublicKey: new Uint8Array(),
+        serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
         copyLink: "",
         copyLinkButton: "",
         decodedMessage: "",
@@ -31,7 +31,7 @@
     <div class="row">
         <div class="col-sm text-secondary">
             <p class="text-center">{data.decodedMessage}:</p>
-            <div class="border-top my-3"/>
+            <div class="border-top my-3"></div>
             <p class="br-line">{message}</p>
         </div>
     </div>
