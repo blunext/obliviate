@@ -46,8 +46,7 @@ func NewKeys(db repository.DataBase, conf *config.Configuration, algorithm rsa.E
 
 	} else {
 		if conf.ProdEnv && expectKeys { // prevent to overwrite the keys
-			slog.Error("Keys expected")
-			panic("Keys expected")
+			return nil, fmt.Errorf("keys expected in DB, refusing to generate new ones")
 		}
 
 		// generate Keys

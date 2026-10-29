@@ -54,8 +54,13 @@ func main() {
 		}
 		slog.SetDefault(logger)
 
-		db = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
+		var err error
+		db, err = repository.NewConnection(context.Background(), conf.FirestoreCredentialFile,
 			os.Getenv("OBLIVIATE_PROJECT_ID"), dbPrefix, conf.ProdEnv)
+		if err != nil {
+			slog.Error("error connecting to firestore", logs.Error, err)
+			os.Exit(1)
+		}
 		algorithm = rsa.NewAlgorithm()
 	} else {
 		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})))
@@ -67,6 +72,7 @@ func main() {
 	keys, err := crypt.NewKeys(db, &conf, algorithm, true)
 	if err != nil {
 		slog.Error("error getting keys", logs.Error, err)
+		os.Exit(1)
 	}
 
 	app := app.NewApp(db, &conf, keys)
@@ -95,6 +101,7 @@ func main() {
 	err = http.ListenAndServe(fmt.Sprintf(":%s", port), finalHandler)
 	if err != nil {
 		slog.Error("Error ListenAndServe", logs.Error, err)
+		os.Exit(1)
 	}
 }
 
@@ -113,4 +120,3 @@ func corsMiddleware(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
-

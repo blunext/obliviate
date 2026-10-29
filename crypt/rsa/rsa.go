@@ -51,6 +51,9 @@ func (Algorithm) Encrypt(conf *config.Configuration, plaintext []byte) ([]byte, 
 
 	// Parse the key.
 	block, _ := pem.Decode([]byte(response.Pem))
+	if block == nil {
+		return nil, fmt.Errorf("invalid PEM public key %v", conf.MasterKey)
+	}
 	abstractKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
 		return nil, fmt.Errorf("x509.ParsePKIXPublicKey: %+v", err)

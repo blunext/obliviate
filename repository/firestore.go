@@ -42,7 +42,7 @@ type db struct {
 	counter           Counter
 }
 
-func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, prefix string, prodEnv bool) *db {
+func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, prefix string, prodEnv bool) (*db, error) {
 	var err error
 	var app *firebase.App
 
@@ -55,11 +55,11 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 	}
 
 	if err != nil {
-		slog.ErrorContext(ctx, "Cannot create new App while connecting to firestore", logs.Error, err)
+		return nil, fmt.Errorf("cannot create firebase app: %v", err)
 	}
 	client, err := app.Firestore(ctx)
 	if err != nil {
-		slog.ErrorContext(ctx, "Cannot create new client while connecting to firestore", logs.Error, err)
+		return nil, fmt.Errorf("cannot create firestore client: %v", err)
 	}
 
 	d := db{
@@ -71,8 +71,7 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 
 	if !d.counter.counterExists(ctx) {
 		if err := d.counter.initCounter(ctx); err != nil {
-			slog.ErrorContext(ctx, "Could not initialize the counters", logs.Error, err)
-			panic("Could not initialize the counters")
+			return nil, fmt.Errorf("cannot initialize the counters: %v", err)
 		}
 		slog.InfoContext(ctx, "Counter initialized")
 	}
@@ -80,7 +79,7 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 	i, _ := d.counter.getCount(ctx)
 	slog.InfoContext(ctx, fmt.Sprintf("Counter = %d", i), logs.Counter, i)
 
-	return &d
+	return &d, nil
 }
 
 func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
