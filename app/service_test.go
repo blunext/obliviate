@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"os"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -129,10 +131,6 @@ func TestProcessSave(t *testing.T) {
 				}
 			} else {
 				assert.NoError(t, err)
-
-				// Verify message was saved to database
-				// Give goroutine time to increment counter
-				time.Sleep(10 * time.Millisecond)
 			}
 		})
 	}
@@ -270,9 +268,6 @@ func TestProcessRead_WithPassword(t *testing.T) {
 	_, _, err = testApp.ProcessRead(context.Background(), readReq)
 	assert.NoError(t, err)
 
-	// Wait for potential deletion goroutine
-	time.Sleep(10 * time.Millisecond)
-
 	// Try reading again - should still exist
 	recipientPubKey2, _, err := box.GenerateKey(rand.Reader)
 	require.NoError(t, err)
@@ -330,9 +325,6 @@ func TestProcessRead_AutoDelete(t *testing.T) {
 	_, _, err = testApp.ProcessRead(context.Background(), readReq)
 	assert.NoError(t, err)
 
-	// Wait for deletion goroutine to complete
-	time.Sleep(50 * time.Millisecond)
-
 	// Try reading again - should NOT exist
 	recipientPubKey2, _, err := box.GenerateKey(rand.Reader)
 	require.NoError(t, err)
@@ -346,6 +338,52 @@ func TestProcessRead_AutoDelete(t *testing.T) {
 	encrypted2, _, err := testApp.ProcessRead(context.Background(), readReq2)
 	assert.NoError(t, err)
 	assert.Nil(t, encrypted2, "message should be deleted after non-password read")
+}
+
+func TestProcessRead_ConcurrentReadsGetMessageOnce(t *testing.T) {
+	setupTest(t)
+
+	browserPublicKey, browserPrivateKey, err := box.GenerateKey(rand.Reader)
+	require.NoError(t, err)
+
+	nonce, err := testKeys.GenerateNonce()
+	require.NoError(t, err)
+
+	encrypted := box.Seal(nonce[:], []byte("read me once"), &nonce, testKeys.PublicKey, browserPrivateKey)
+
+	testHash := "concurrent-read-hash"
+	ctx := context.WithValue(context.Background(), config.CountryCode, "US")
+
+	err = testApp.ProcessSave(ctx, webModels.SaveRequest{
+		Message:           encrypted[24:],
+		TransmissionNonce: nonce[:],
+		Hash:              testHash,
+		PublicKey:         browserPublicKey[:],
+	})
+	require.NoError(t, err)
+
+	const readers = 20
+	var found atomic.Int32
+	var wg sync.WaitGroup
+	for range readers {
+		wg.Go(func() {
+			recipientPubKey, _, err := box.GenerateKey(rand.Reader)
+			if !assert.NoError(t, err) {
+				return
+			}
+			result, _, err := testApp.ProcessRead(context.Background(), webModels.ReadRequest{
+				Hash:      testHash,
+				PublicKey: recipientPubKey[:],
+			})
+			assert.NoError(t, err)
+			if result != nil {
+				found.Add(1)
+			}
+		})
+	}
+	wg.Wait()
+
+	assert.Equal(t, int32(1), found.Load(), "exactly one concurrent reader should get the message")
 }
 
 func TestProcessDelete(t *testing.T) {

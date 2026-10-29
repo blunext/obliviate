@@ -43,9 +43,8 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) er
 		return fmt.Errorf("cannot save message, err: %v", err)
 	}
 
-	go func() {
-		s.db.IncreaseCounter(context.Background())
-	}()
+	// synchronous: Cloud Run throttles the CPU once the response is sent
+	s.db.IncreaseCounter(ctx)
 
 	return nil
 }
@@ -60,7 +59,8 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 		// For password-protected messages, use read limit
 		data, err = s.db.GetMessageWithReadLimit(ctx, hashEncoded, maxPasswordMessageReads)
 	} else {
-		data, err = s.db.GetMessage(ctx, hashEncoded)
+		// the message is deleted in the same transaction, before it is decrypted
+		data, err = s.db.GetAndDeleteMessage(ctx, hashEncoded)
 	}
 
 	if err != nil {
@@ -93,13 +93,6 @@ func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([
 	encrypted, err := s.keys.BoxSeal(decrypted, &recipientPublicKey)
 	if err != nil {
 		return nil, 0, fmt.Errorf("cannot seal message, err: %v", err)
-	}
-
-	if !request.Password {
-		// delete only when password is not required
-		go func() {
-			s.db.DeleteMessage(context.Background(), hashEncoded)
-		}()
 	}
 
 	return encrypted, data.CostFactor, nil

@@ -22,7 +22,7 @@ const counterShards = 5
 
 type DataBase interface {
 	SaveMessage(ctx context.Context, data model.MessageModel) error
-	GetMessage(context.Context, string) (model.MessageType, error)
+	GetAndDeleteMessage(context.Context, string) (model.MessageType, error)
 	GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error)
 	DeleteMessage(context.Context, string)
 	DeleteBeforeNow(context.Context) error
@@ -95,30 +95,46 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	return nil
 }
 
-func (d *db) GetMessage(ctx context.Context, key string) (model.MessageType, error) {
+// GetAndDeleteMessage reads the message and deletes it in one transaction,
+// so concurrent reads cannot both get it and the deletion cannot be lost.
+func (d *db) GetAndDeleteMessage(ctx context.Context, key string) (model.MessageType, error) {
+	var result model.MessageType
 
-	data := model.MessageModel{}
+	docRef := d.client.Collection(d.messageCollection.coll).Doc(key)
 
-	doc, err := d.client.Collection(d.messageCollection.coll).Doc(key).Get(ctx)
-	if err != nil {
-		if status.Code(err) != codes.NotFound {
-			return data.Message, fmt.Errorf("error while getting message, err: %v", err)
+	err := d.client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
+		// the transaction may be retried, so the result of a previous attempt is discarded
+		result = model.MessageType{}
+
+		doc, err := tx.Get(docRef)
+		if err != nil {
+			if status.Code(err) == codes.NotFound {
+				slog.InfoContext(ctx, "message not found")
+				return nil
+			}
+			return fmt.Errorf("error while getting message in transaction, err: %v", err)
 		}
-		slog.InfoContext(ctx, "message not found")
-		return data.Message, nil
+
+		if err := doc.DataTo(&result); err != nil {
+			return fmt.Errorf("error mapping data into message struct: %v", err)
+		}
+
+		if err := tx.Delete(docRef); err != nil {
+			return fmt.Errorf("error deleting message: %v", err)
+		}
+
+		if result.ValidTo.Before(time.Now()) {
+			slog.WarnContext(ctx, "message found but not valid")
+			result = model.MessageType{}
+		}
+		return nil
+	})
+
+	if err != nil {
+		return model.MessageType{}, err
 	}
 
-	if err := doc.DataTo(&data.Message); err != nil {
-		slog.InfoContext(ctx, "message found")
-		return data.Message, fmt.Errorf("error mapping data into message struct: %v", err)
-	}
-
-	if data.Message.ValidTo.Before(time.Now()) {
-		slog.WarnContext(ctx, "message found but not valid")
-		return model.MessageType{}, nil
-	}
-
-	return data.Message, nil
+	return result, nil
 }
 
 func (d *db) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {

@@ -32,17 +32,22 @@ func (d *MockDB) SaveMessage(ctx context.Context, data model.MessageModel) error
 	return nil
 }
 
-func (d *MockDB) GetMessage(ctx context.Context, key string) (model.MessageType, error) {
-	d.mu.RLock()
-	defer d.mu.RUnlock()
+func (d *MockDB) GetAndDeleteMessage(ctx context.Context, key string) (model.MessageType, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 
-	if m, ok := d.messageStore[key]; ok {
-		slog.Debug("key found", logs.Key, m.Key())
-		return m.Message, nil
-	} else {
-		slog.Debug("key not found", logs.Key, m.Key())
-		return m.Message, nil
+	m, ok := d.messageStore[key]
+	if !ok {
+		slog.Debug("key not found", logs.Key, key)
+		return model.MessageType{}, nil
 	}
+	slog.Debug("key found", logs.Key, key)
+	delete(d.messageStore, key)
+
+	if m.Message.ValidTo.Before(time.Now()) {
+		return model.MessageType{}, nil
+	}
+	return m.Message, nil
 }
 
 func (d *MockDB) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
