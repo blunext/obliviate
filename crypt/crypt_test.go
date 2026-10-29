@@ -45,11 +45,8 @@ func TestKeysGenerationAndStorage(t *testing.T) {
 
 	pubKey := keys.PublicKeyEncoded
 
-	var priv [32]byte
-	//nolint:gosimple
-	var pub [32]byte
-	pub = *keys.PublicKey
-	priv = *keys.PrivateKey
+	pub := *keys.PublicKey
+	priv := *keys.PrivateKey
 
 	// Re-use the SAME rsaAlg instance because it holds the state (plaintext) needed for decryption
 	keys, err = NewKeys(testDB, conf, rsaAlg, true)
