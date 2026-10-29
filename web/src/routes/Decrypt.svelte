@@ -2,7 +2,7 @@
     import nacl from "tweetnacl"
     import * as base64 from '@stablelib/base64'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
-    import EyeIcon from '$lib/EyeIcon.svelte'
+    import EyeIcon from '#lib/EyeIcon.svelte'
 
     export let data = {
         serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),

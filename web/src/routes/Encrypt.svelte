@@ -4,8 +4,8 @@
     import * as base64 from '@stablelib/base64'
     import {zxcvbn} from '@zxcvbn-ts/core'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
-    import EyeIcon from '$lib/EyeIcon.svelte'
-    import ShieldIcon from '$lib/ShieldIcon.svelte'
+    import EyeIcon from '#lib/EyeIcon.svelte'
+    import ShieldIcon from '#lib/ShieldIcon.svelte'
 
     export let data = {
         serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),

@@ -2,6 +2,10 @@
 	"name": "web",
 	"version": "0.0.1",
 	"type": "module",
+	"imports": {
+		"#lib": "./src/lib",
+		"#lib/*": "./src/lib/*"
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -10,19 +14,18 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.70.3",
-		"@sveltejs/vite-plugin-svelte": "^5.1.1",
+		"@sveltejs/kit": "^3.1.0",
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"sass-embedded": "^1.107.0",
 		"svelte": "^5.57.3",
 		"svelte-check": "^4.7.7",
-		"typescript": "^5.9.3",
-		"vite": "^6.4.5"
+		"typescript": "^6.0.3",
+		"vite": "^8.3.5"
 	},
 	"dependencies": {
 		"@stablelib/base64": "^2.0.1",
 		"@stablelib/utf8": "^2.1.0",
-		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/adapter-static": "^4.0.0",
 		"@zxcvbn-ts/core": "^3.0.4",
 		"@zxcvbn-ts/language-common": "^3.0.4",
 		"bootstrap": "^5.3.8",
