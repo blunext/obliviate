@@ -2,7 +2,7 @@
     import {onMount} from "svelte"
     import nacl from "tweetnacl"
     import * as base64 from '@stablelib/base64'
-    import {zxcvbn} from '@zxcvbn-ts/core'
+    import {ZxcvbnFactory} from '@zxcvbn-ts/core'
     import {CONSTANTS, calculateKeyDerived, post} from './Commons.js'
     import EyeIcon from '#lib/EyeIcon.svelte'
     import ShieldIcon from '#lib/ShieldIcon.svelte'
@@ -39,6 +39,7 @@
     let passwordOk = true
     let passwordScore = 0
     let showPassword = false
+    const zxcvbn = new ZxcvbnFactory()
     /** @type {ReturnType<typeof setTimeout> | undefined} */
     let debounceTimer
     let buttonEncode = true
@@ -62,7 +63,7 @@
             return
         }
         debounceTimer = setTimeout(() => {
-            const result = zxcvbn(messagePassword)
+            const result = zxcvbn.check(messagePassword)
             passwordScore = result.score
         }, 300)
     }
