@@ -127,7 +127,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"decryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lastet inn. Vennligst prøv igjen."},
 		{"password", "Passord"},
 		{"enterPasswordPlaceholder", "Tast inn passord"},
-		{"linkIsCorrupted", "Lenken er korrumpert"},
+		{"linkIsCorrupted", "Lenken er skadet"},
 	},
 	language.Swedish: {
 		{"title", "Privata och säkra anteckningar - skicka dina hemligheter säkert"},
@@ -258,12 +258,12 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLink", "Másolja a linket, és küldje el egy barátjának. Az üzenet azonnal törlődik az elolvasása után, vagy 4 hét elteltével."},
 		{"copyLinkButton", "Link másolása"},
 		{"newMessageButton", "Új üzenet"},
-		{"decodedMessage", "Dekódolt üzenet"},
+		{"decodedMessage", "Visszafejtett üzenet"},
 		{"messageRead", "Az üzenet elolvasásra került, lejárt, vagy a link hibás"},
-		{"readMessageButton", "Üzenet dekódolása"},
+		{"readMessageButton", "Üzenet visszafejtése"},
 		{"infoHeader", "leírás"},
 		{"info", "Az eszköz különböző titkosítási módszereket használ a maximális biztonság biztosítása érdekében. " +
-			"A link nélkül az üzenetet nem lehet dekódolni. Használjon jelszót a biztonság további növelése érdekében. " +
+			"A link nélkül az üzenetet nem lehet visszafejteni. Használjon jelszót a biztonság további növelése érdekében. " +
 			"Az eszköz forráskódja nyílt, és megtekinthető itt: {github}. Ha kapcsolatba szeretne lépni velünk, küldjön egy {contact}."},
 		{"contactLink", "üzenetet"},
 		{"generalError", "Hiba történt. Kérjük, próbálja meg később."},
@@ -591,7 +591,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"description", "Mesazhe të koduara të sigurta"},
 		{"enterTextMessage", "Shkruani mesazhin për t'u koduar"},
 		{"secureButton", "Kodoni mesazhin"},
-		{"copyLink", "Kopjoni lidhjen dhe dërgojani atë një mikut. Mesazhi do të fshihet menjëherë pasi të lexohet ose pas 4 javësh."},
+		{"copyLink", "Kopjoni lidhjen dhe dërgojani një miku. Mesazhi do të fshihet menjëherë pasi të lexohet ose pas 4 javësh."},
 		{"copyLinkButton", "Kopjoni lidhjen"},
 		{"newMessageButton", "Mesazh i ri"},
 		{"decodedMessage", "Mesazh i dekoduar"},
@@ -600,7 +600,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "përshkrim"},
 		{"info", "Mjeti përdor metoda të ndryshme kodimi për të siguruar maksimumin e sigurisë. " +
 			"Pa lidhjen, nuk është e mundur të dekodohet mesazhi. Përdorni një fjalëkalim për të rritur sigurinë më tej. " +
-			"Kodi burimor i mjetit është i hapur dhe mund të shikohet në {github}. Nëse dëshironi të na kontaktoni, dërgoni një {contact}."},
+			"Kodi burimor i mjetit është i hapur dhe mund të shikohet në {github}. Nëse dëshironi të na kontaktoni, na dërgoni një {contact}."},
 		{"contactLink", "mesazh"},
 		{"generalError", "Diçka shkoi keq. Ju lutemi provoni përsëri më vonë."},
 		{"encryptNetworkError", "Diçka shkoi keq. Nuk mund të ruaj mesazhin. Ju lutemi provoni përsëri."},
@@ -759,7 +759,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"description", "নিরাপদ এনক্রিপ্টেড বার্তা"},
 		{"enterTextMessage", "এনক্রিপ্ট করার জন্য বার্তা লিখুন"},
 		{"secureButton", "বার্তাটি এনক্রিপ্ট করুন"},
-		{"copyLink", "লিঙ্কটি কপি করুন এবং এটি একটি বন্ধুর কাছে পাঠান। বার্তাটি পড়ার সঙ্গে সঙ্গে অথবা ৪ সপ্তাহ পরে মুছে ফেলা হবে।"},
+		{"copyLink", "লিঙ্কটি কপি করুন এবং এটি একজন বন্ধুর কাছে পাঠান। বার্তাটি পড়ার সঙ্গে সঙ্গে অথবা ৪ সপ্তাহ পরে মুছে ফেলা হবে।"},
 		{"copyLinkButton", "লিঙ্ক কপি করুন"},
 		{"newMessageButton", "নতুন বার্তা"},
 		{"decodedMessage", "ডিক্রিপ্টেড বার্তা"},
@@ -787,7 +787,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLinkButton", "リンクをコピー"},
 		{"newMessageButton", "新しいメッセージ"},
 		{"decodedMessage", "復号化されたメッセージ"},
-		{"messageRead", "メッセージが読まれた、期限切れ、またはリンクが正しくありません"},
+		{"messageRead", "メッセージは既読か期限切れです。またはリンクが正しくありません"},
 		{"readMessageButton", "メッセージを復号化"},
 		{"infoHeader", "説明"},
 		{"info", "このツールは、さまざまな暗号化方法を使用して最大限のセキュリティを確保します。" +
