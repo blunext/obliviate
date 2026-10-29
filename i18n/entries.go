@@ -133,7 +133,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"title", "Privata och säkra anteckningar - skicka dina hemligheter säkert"},
 		{"header", "Privata säkra anteckningar"},
 		{"description", "Säkra krypterade meddelanden"},
-		{"enterTextMessage", "Ange meddelandet att kryptera"},
+		{"enterTextMessage", "Ange meddelandet som ska krypteras"},
 		{"secureButton", "Kryptera meddelandet"},
 		{"copyLink", "Kopiera länken och skicka den till en vän. Meddelandet raderas omedelbart efter att det har lästs eller efter 4 veckor."},
 		{"copyLinkButton", "Kopiera länk"},
@@ -468,9 +468,9 @@ var translationsSet = map[language.Tag][]entry{
 	language.French: {
 		{"title", "Notes privées et sécurisées - envoyez vos secrets en toute sécurité"},
 		{"header", "Notes privées sécurisées"},
-		{"description", "Messages sécurisés et cryptés"},
-		{"enterTextMessage", "Entrez le message à crypter"},
-		{"secureButton", "Crypter le message"},
+		{"description", "Messages sécurisés et chiffrés"},
+		{"enterTextMessage", "Entrez le message à chiffrer"},
+		{"secureButton", "Chiffrer le message"},
 		{"copyLink", "Copiez le lien et envoyez-le à un ami. Le message sera supprimé immédiatement après avoir été lu ou après 4 semaines."},
 		{"copyLinkButton", "Copier le lien"},
 		{"newMessageButton", "Nouveau message"},
@@ -478,7 +478,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"messageRead", "Message lu, expiré ou le lien est incorrect"},
 		{"readMessageButton", "Déchiffrer le message"},
 		{"infoHeader", "description"},
-		{"info", "L'outil utilise diverses méthodes de cryptage pour assurer une sécurité maximale. " +
+		{"info", "L'outil utilise diverses méthodes de chiffrement pour assurer une sécurité maximale. " +
 			"Sans le lien, il est impossible de déchiffrer le message. Utilisez un mot de passe pour renforcer davantage la sécurité. " +
 			"Le code source de l'outil est ouvert et peut être consulté sur {github}. Si vous souhaitez nous contacter, envoyez-nous un {contact}."},
 		{"contactLink", "message"},
@@ -499,11 +499,11 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLinkButton", "Копіювати посилання"},
 		{"newMessageButton", "Нове повідомлення"},
 		{"decodedMessage", "Розшифроване повідомлення"},
-		{"messageRead", "Повідомлення прочитано, прострочено або посилання невірне"},
+		{"messageRead", "Повідомлення прочитано, термін його дії минув або посилання неправильне"},
 		{"readMessageButton", "Розшифрувати повідомлення"},
 		{"infoHeader", "опис"},
 		{"info", "Інструмент використовує різні методи шифрування для забезпечення максимальної безпеки. " +
-			"Без посилання неможливо розшифрувати повідомлення. Використовуйте пароль для додаткового збільшення безпеки. " +
+			"Без посилання неможливо розшифрувати повідомлення. Використовуйте пароль, щоб додатково підвищити безпеку. " +
 			"Вихідний код інструменту відкритий та доступний для перегляду на {github}. Якщо ви хочете зв'язатися з нами, надішліть нам {contact}."},
 		{"contactLink", "повідомлення"},
 		{"generalError", "Щось пішло не так. Будь ласка, спробуйте знову пізніше."},
@@ -523,11 +523,11 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLinkButton", "Копировать ссылку"},
 		{"newMessageButton", "Новое сообщение"},
 		{"decodedMessage", "Расшифрованное сообщение"},
-		{"messageRead", "Сообщение прочитано, истекло или ссылка неверна"},
+		{"messageRead", "Сообщение прочитано, срок его действия истёк или ссылка неверна"},
 		{"readMessageButton", "Расшифровать сообщение"},
 		{"infoHeader", "описание"},
 		{"info", "Инструмент использует различные методы шифрования для обеспечения максимальной безопасности. " +
-			"Без ссылки невозможно расшифровать сообщение. Используйте пароль для дополнительного увеличения безопасности. " +
+			"Без ссылки невозможно расшифровать сообщение. Используйте пароль, чтобы дополнительно повысить безопасность. " +
 			"Исходный код инструмента открыт и может быть просмотрен на {github}. Если вы хотите связаться с нами, отправьте нам {contact}."},
 		{"contactLink", "сообщение"},
 		{"generalError", "Что-то пошло не так. Пожалуйста, попробуйте еще раз позже."},
@@ -747,8 +747,8 @@ var translationsSet = map[language.Tag][]entry{
 			"उपकरण का स्रोत कोड खुला है और {github} पर देखा जा सकता है। यदि आप हमसे संपर्क करना चाहते हैं, तो हमें एक {contact} भेजें।"},
 		{"contactLink", "संदेश"},
 		{"generalError", "कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।"},
-		{"encryptNetworkError", "कुछ गलत हो गया। मैं संदेश को सहेज नहीं सकता। कृपया पुनः प्रयास करें।"},
-		{"decryptNetworkError", "कुछ गलत हो गया। मैं संदेश को पढ़ नहीं सकता। कृपया पुनः प्रयास करें।"},
+		{"encryptNetworkError", "कुछ गलत हो गया। संदेश सहेजा नहीं जा सका। कृपया पुनः प्रयास करें।"},
+		{"decryptNetworkError", "कुछ गलत हो गया। संदेश पढ़ा नहीं जा सका। कृपया पुनः प्रयास करें।"},
 		{"password", "पासवर्ड"},
 		{"enterPasswordPlaceholder", "पासवर्ड दर्ज करें"},
 		{"linkIsCorrupted", "लिंक क्षतिग्रस्त है"},
