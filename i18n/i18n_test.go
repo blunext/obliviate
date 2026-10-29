@@ -33,3 +33,17 @@ func TestI18n_GetLazyTranslation(t *testing.T) {
 	}
 
 }
+
+func TestI18n_InfoIsRenderedWithLinks(t *testing.T) {
+	trans := NewTranslation()
+	translation := trans.GetTranslation(context.Background(), "pl")
+
+	assert.Contains(t, translation["info"], "w serwisie "+githubLink+". Jeśli")
+	assert.Contains(t, translation["info"], `wyślij nam <a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">wiadomość</a>.`)
+}
+
+func TestRenderInfo_EscapesTranslation(t *testing.T) {
+	got := renderInfo(`a <b> & {github}'s {contact}`, "<x>")
+	assert.Equal(t, `a &lt;b&gt; &amp; `+githubLink+`&#39;s `+
+		`<a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">&lt;x&gt;</a>`, got)
+}

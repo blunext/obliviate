@@ -2,12 +2,21 @@ package i18n
 
 import (
 	"context"
+	"fmt"
+	"html"
 	"log/slog"
-	"obliviate/logs"
+	"strings"
 	"sync"
+
+	"obliviate/logs"
 
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+)
+
+const (
+	githubLink        = `<a href="https://github.com/blunext/obliviate" target="_blank" rel="noopener noreferrer">GitHub</a>`
+	contactLinkFormat = `<a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">%s</a>`
 )
 
 type translation map[string]string
@@ -74,10 +83,21 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 
 	if len(tran) == 0 {
 		slog.ErrorContext(ctx, "could not determine translation", logs.LanguageTag, acceptedTag, logs.Language, acceptedBaseLang)
+	} else {
+		tran["info"] = renderInfo(tran["info"], tran["contactLink"])
 	}
 
 	t.translations[acceptedBaseLang] = tran
 
 	slog.InfoContext(ctx, "language created", logs.Language, acceptedBaseLang)
 	return tran
+}
+
+// renderInfo escapes the info text and replaces {github} and {contact} placeholders with HTML links
+func renderInfo(info, contactLabel string) string {
+	r := strings.NewReplacer(
+		"{github}", githubLink,
+		"{contact}", fmt.Sprintf(contactLinkFormat, html.EscapeString(contactLabel)),
+	)
+	return r.Replace(html.EscapeString(info))
 }

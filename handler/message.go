@@ -25,9 +25,15 @@ const (
 
 func ProcessTemplate(config *config.Configuration, publicKey string) http.HandlerFunc {
 
+	// json encodes values that may contain characters not allowed in a raw JSON string, e.g. HTML
+	funcs := template.FuncMap{"json": func(v string) (string, error) {
+		b, err := json.Marshal(v)
+		return string(b), err
+	}}
+
 	var t *template.Template
 	if config.ProdEnv {
-		t = template.Must(template.New("variables.json").ParseFS(config.EmbededStaticFiles, "variables.json"))
+		t = template.Must(template.New("variables.json").Funcs(funcs).ParseFS(config.EmbededStaticFiles, "variables.json"))
 	}
 
 	translation := i18n.NewTranslation()
@@ -37,7 +43,7 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		slog.InfoContext(ctx, "ProcessTemplate Handler")
 
 		if !config.ProdEnv {
-			t, _ = template.New("variables.json").ParseFS(config.EmbededStaticFiles, "variables.json")
+			t, _ = template.New("variables.json").Funcs(funcs).ParseFS(config.EmbededStaticFiles, "variables.json")
 		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Vary", "Accept-Language")

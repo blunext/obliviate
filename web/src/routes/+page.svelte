@@ -73,12 +73,8 @@
             <div class="col-sm-1"/>
             <div class="col">
                 <p class="fw-light">
-                    <small>{data.info}
-                        <a href="https://github.com/blunext/obliviate" target="_blank"
-                           rel="noopener noreferrer">GitHub</a>{data.info1}
-                        <a href="mailto:info@securenote.io" target="_blank"
-                           rel="noopener noreferrer">{data.info2}</a>{data.info3}
-                    </small>
+                    <!-- info is HTML composed and escaped by the backend (i18n.renderInfo) -->
+                    <small>{@html data.info}</small>
                 </p>
             </div>
             <div class="col-sm-1"/>

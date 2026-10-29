@@ -23,10 +23,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "description"},
 		{"info", "The tool uses various encryption methods to ensure maximum security. " +
 			"Without the link, it is not possible to decrypt the message. Use a password to further increase security. " +
-			"The source code of the tool is open and can be viewed on"},
-		{"info1", ". If you want to contact us, send us a"},
-		{"info2", "message"},
-		{"info3", "."},
+			"The source code of the tool is open and can be viewed on {github}. If you want to contact us, send us a {contact}."},
+		{"contactLink", "message"},
 		{"generalError", "Something went wrong. Please try again later."},
 		{"encryptNetworkError", "Something went wrong. I cannot save the message. Please try again."},
 		{"decryptNetworkError", "Something went wrong. I cannot read the message. Please try again."},
@@ -49,10 +47,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "Beschreibung"},
 		{"info", "Das Tool verwendet verschiedene Verschlüsselungsmethoden, um maximale Sicherheit zu gewährleisten. " +
 			"Ohne den Link ist es nicht möglich, die Nachricht zu entschlüsseln. Verwenden Sie ein Passwort, um die Sicherheit weiter zu erhöhen. " +
-			"Der Quellcode des Tools ist offen und kann auf"},
-		{"info1", " eingesehen werden. Wenn Sie uns kontaktieren möchten, senden Sie uns eine"},
-		{"info2", "Nachricht"},
-		{"info3", "."},
+			"Der Quellcode des Tools ist offen und kann auf {github} eingesehen werden. Wenn Sie uns kontaktieren möchten, senden Sie uns eine {contact}."},
+		{"contactLink", "Nachricht"},
 		{"generalError", "Etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal."},
 		{"encryptNetworkError", "Etwas ist schief gelaufen. Ich kann die Nachricht nicht speichern. Bitte versuchen Sie es noch einmal."},
 		{"decryptNetworkError", "Etwas ist schief gelaufen. Ich kann die Nachricht nicht lesen. Bitte versuchen Sie es noch einmal."},
@@ -75,10 +71,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "beschrijving"},
 		{"info", "De tool gebruikt verschillende versleutelingsmethoden om maximale beveiliging te garanderen. " +
 			"Zonder de link is het niet mogelijk om het bericht te ontsleutelen. Gebruik een wachtwoord om de beveiliging verder te verhogen. " +
-			"De broncode van de tool is open en kan worden bekeken op"},
-		{"info1", ". Als u contact met ons wilt opnemen, stuur ons dan een"},
-		{"info2", "bericht"},
-		{"info3", "."},
+			"De broncode van de tool is open en kan worden bekeken op {github}. Als u contact met ons wilt opnemen, stuur ons dan een {contact}."},
+		{"contactLink", "bericht"},
 		{"generalError", "Er is iets misgegaan. Probeer het later opnieuw."},
 		{"encryptNetworkError", "Er is iets misgegaan. Ik kan het bericht niet opslaan. Probeer het opnieuw."},
 		{"decryptNetworkError", "Er is iets misgegaan. Ik kan het bericht niet lezen. Probeer het opnieuw."},
@@ -101,10 +95,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "beskrivelse"},
 		{"info", "Værktøjet bruger forskellige krypteringsmetoder for at sikre maksimal sikkerhed. " +
 			"Uden linket er det ikke muligt at dekryptere beskeden. Brug en adgangskode for at øge sikkerheden yderligere. " +
-			"Kildekoden til værktøjet er åben og kan ses på"},
-		{"info1", ". Hvis du ønsker at kontakte os, send os en"},
-		{"info2", "besked"},
-		{"info3", "."},
+			"Kildekoden til værktøjet er åben og kan ses på {github}. Hvis du ønsker at kontakte os, send os en {contact}."},
+		{"contactLink", "besked"},
 		{"generalError", "Noget gik galt. Prøv venligst igen senere."},
 		{"encryptNetworkError", "Noget gik galt. Jeg kan ikke gemme beskeden. Prøv igen."},
 		{"decryptNetworkError", "Noget gik galt. Jeg kan ikke læse beskeden. Prøv igen."},
@@ -127,10 +119,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "Info om"},
 		{"info", "Dette verktøyet er laget med hensyn og respekt med tanke på ditt personvern. " +
 			"For bedre sikkerhet, vennligst bruk et passord. Verktøyet er open-source og lesbar for offentligheten. " +
-			"Koden er tilgjengelig på"},
-		{"info1", ". Om du ønsker å ta kontakt, vennligst send oss "},
-		{"info2", "e-post"},
-		{"info3", "."},
+			"Koden er tilgjengelig på {github}. Om du ønsker å ta kontakt, vennligst send oss  {contact}."},
+		{"contactLink", "e-post"},
 		{"generalError", "Noe gikk galt. Vennligst prøv igjen senere"},
 		{"encryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lagret. Vennligst prøv igjen."},
 		{"decryptNetworkError", "Noe gikk galt, meldingen kunne ikke bli lastet inn. Vennligst prøv igjen."},
@@ -153,10 +143,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "beskrivning"},
 		{"info", "Verktyget använder olika krypteringsmetoder för att säkerställa maximal säkerhet. " +
 			"Utan länken är det inte möjligt att dekryptera meddelandet. Använd ett lösenord för att ytterligare öka säkerheten. " +
-			"Källkoden för verktyget är öppen och kan ses på"},
-		{"info1", ". Om du vill kontakta oss, skicka oss ett"},
-		{"info2", "meddelande"},
-		{"info3", "."},
+			"Källkoden för verktyget är öppen och kan ses på {github}. Om du vill kontakta oss, skicka oss ett {contact}."},
+		{"contactLink", "meddelande"},
 		{"generalError", "Något gick fel. Försök igen senare."},
 		{"encryptNetworkError", "Något gick fel. Jag kan inte spara meddelandet. Försök igen."},
 		{"decryptNetworkError", "Något gick fel. Jag kan inte läsa meddelandet. Försök igen."},
@@ -179,10 +167,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "kuvaus"},
 		{"info", "Työkalu käyttää erilaisia salausmenetelmiä maksimaalisen turvallisuuden varmistamiseksi. " +
 			"Ilman linkkiä viestiä ei voi purkaa. Käytä salasanaa lisätäksesi turvallisuutta. " +
-			"Työkalun lähdekoodi on avoin ja sen voi tarkastella"},
-		{"info1", ". Jos haluat ottaa meihin yhteyttä, lähetä meille"},
-		{"info2", "viesti"},
-		{"info3", "."},
+			"Työkalun lähdekoodi on avoin ja sen voi tarkastella {github}. Jos haluat ottaa meihin yhteyttä, lähetä meille {contact}."},
+		{"contactLink", "viesti"},
 		{"generalError", "Jotain meni pieleen. Yritä uudelleen myöhemmin."},
 		{"encryptNetworkError", "Jotain meni pieleen. En voi tallentaa viestiä. Yritä uudelleen."},
 		{"decryptNetworkError", "Jotain meni pieleen. En voi lukea viestiä. Yritä uudelleen."},
@@ -205,10 +191,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "kirjeldus"},
 		{"info", "Tööriist kasutab mitmesuguseid krüptimismeetodeid maksimaalse turvalisuse tagamiseks. " +
 			"Linki olemasoluta ei saa sõnumit dekrüpteerida. Parooli kasutamine suurendab turvalisust veelgi. " +
-			"Tööriista lähtekood on avatud ja seda saab vaadata"},
-		{"info1", ". Kui soovite meiega ühendust võtta, saatke meile"},
-		{"info2", "sõnum"},
-		{"info3", "."},
+			"Tööriista lähtekood on avatud ja seda saab vaadata {github}. Kui soovite meiega ühendust võtta, saatke meile {contact}."},
+		{"contactLink", "sõnum"},
 		{"generalError", "Midagi läks valesti. Palun proovige hiljem uuesti."},
 		{"encryptNetworkError", "Midagi läks valesti. Ma ei saa sõnumit salvestada. Palun proovige uuesti."},
 		{"decryptNetworkError", "Midagi läks valesti. Ma ei saa sõnumit lugeda. Palun proovige uuesti."},
@@ -231,10 +215,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "apraksts"},
 		{"info", "Rīks izmanto dažādas šifrēšanas metodes, lai nodrošinātu maksimālu drošību. " +
 			"Bez saites ziņu nevar atšifrēt. Lai palielinātu drošību, izmantojiet paroli. " +
-			"Rīka pirmkods ir atvērts un to var apskatīt vietnē"},
-		{"info1", ". Ja vēlaties sazināties ar mums, nosūtiet mums"},
-		{"info2", "ziņu"},
-		{"info3", "."},
+			"Rīka pirmkods ir atvērts un to var apskatīt vietnē {github}. Ja vēlaties sazināties ar mums, nosūtiet mums {contact}."},
+		{"contactLink", "ziņu"},
 		{"generalError", "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlreiz vēlāk."},
 		{"encryptNetworkError", "Kaut kas nogāja greizi. Nevaru saglabāt ziņu. Lūdzu, mēģiniet vēlreiz."},
 		{"decryptNetworkError", "Kaut kas nogāja greizi. Nevaru nolasīt ziņu. Lūdzu, mēģiniet vēlreiz."},
@@ -257,10 +239,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "aprašymas"},
 		{"info", "Įrankis naudoja įvairius šifravimo metodus, kad užtikrintų didžiausią saugumą. " +
 			"Be nuorodos, pranešimo iššifruoti neįmanoma. Naudokite slaptažodį, kad padidintumėte saugumą. " +
-			"Įrankio šaltinio kodas yra atviras ir gali būti peržiūrimas"},
-		{"info1", ". Jei norite susisiekti su mumis, siųskite mums"},
-		{"info2", "pranešimą"},
-		{"info3", "."},
+			"Įrankio šaltinio kodas yra atviras ir gali būti peržiūrimas {github}. Jei norite susisiekti su mumis, siųskite mums {contact}."},
+		{"contactLink", "pranešimą"},
 		{"generalError", "Kažkas nutiko. Prašome pabandyti vėliau."},
 		{"encryptNetworkError", "Kažkas nutiko. Negaliu išsaugoti pranešimo. Prašome pabandyti dar kartą."},
 		{"decryptNetworkError", "Kažkas nutiko. Negaliu perskaityti pranešimo. Prašome pabandyti dar kartą."},
@@ -283,10 +263,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "leírás"},
 		{"info", "Az eszköz különböző titkosítási módszereket használ a maximális biztonság biztosítása érdekében. " +
 			"A link nélkül az üzenetet nem lehet dekódolni. Használjon jelszót a biztonság további növelése érdekében. " +
-			"Az eszköz forráskódja nyílt, és megtekinthető a"},
-		{"info1", ". Ha kapcsolatba szeretne lépni velünk, küldjön egy"},
-		{"info2", "üzenetet"},
-		{"info3", "."},
+			"Az eszköz forráskódja nyílt, és megtekinthető a {github}. Ha kapcsolatba szeretne lépni velünk, küldjön egy {contact}."},
+		{"contactLink", "üzenetet"},
 		{"generalError", "Valami rosszul sikerült. Kérjük, próbálja meg később."},
 		{"encryptNetworkError", "Valami rosszul sikerült. Nem tudom menteni az üzenetet. Kérjük, próbálja meg újra."},
 		{"decryptNetworkError", "Valami rosszul sikerült. Nem tudom elolvasni az üzenetet. Kérjük, próbálja meg újra."},
@@ -309,10 +287,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "opis"},
 		{"info", "Narzędzie używa różnych metod szyfrowania, aby zapewnić maksymalne bezpieczeństwo. " +
 			"Bez linku nie da się odszyfrować wiadomości. Użyj hasła, aby dodatkowo zwiększyć bezpieczeństwo. " +
-			"Kod źródłowy narzędzia jest otwarty i możesz go obejrzeć w serwisie"},
-		{"info1", ". Jeśli chcesz się z nami skontaktować, wyślij nam"},
-		{"info2", "wiadomość"},
-		{"info3", "."},
+			"Kod źródłowy narzędzia jest otwarty i możesz go obejrzeć w serwisie {github}. Jeśli chcesz się z nami skontaktować, wyślij nam {contact}."},
+		{"contactLink", "wiadomość"},
 		{"generalError", "Coś poszło nie tak. Spróbuj ponownie później."},
 		{"encryptNetworkError", "Coś poszło nie tak. Nie udało się zapisać wiadomości. Spróbuj ponownie."},
 		{"decryptNetworkError", "Coś poszło nie tak. Nie udało się odczytać wiadomości. Spróbuj ponownie."},
@@ -335,10 +311,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "popis"},
 		{"info", "Nástroj používá různé šifrovací metody pro zajištění maximálního zabezpečení. " +
 			"Bez odkazu není možné zprávu dešifrovat. Použijte heslo pro další zvýšení zabezpečení. " +
-			"Zdrojový kód nástroje je otevřený a lze jej zobrazit na"},
-		{"info1", ". Pokud nás chcete kontaktovat, pošlete nám"},
-		{"info2", "zprávu"},
-		{"info3", "."},
+			"Zdrojový kód nástroje je otevřený a lze jej zobrazit na {github}. Pokud nás chcete kontaktovat, pošlete nám {contact}."},
+		{"contactLink", "zprávu"},
 		{"generalError", "Něco se pokazilo. Zkuste to prosím později."},
 		{"encryptNetworkError", "Něco se pokazilo. Nemohu uložit zprávu. Zkuste to znovu."},
 		{"decryptNetworkError", "Něco se pokazilo. Nemohu přečíst zprávu. Zkuste to znovu."},
@@ -361,10 +335,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "popis"},
 		{"info", "Nástroj používa rôzne šifrovacie metódy na zabezpečenie maximálnej ochrany. " +
 			"Bez odkazu nie je možné dešifrovať správu. Použite heslo na ďalšie zvýšenie zabezpečenia. " +
-			"Zdrojový kód nástroja je otvorený a môže byť prezretý na"},
-		{"info1", ". Ak nás chcete kontaktovať, pošlite nám"},
-		{"info2", "správu"},
-		{"info3", "."},
+			"Zdrojový kód nástroja je otvorený a môže byť prezretý na {github}. Ak nás chcete kontaktovať, pošlite nám {contact}."},
+		{"contactLink", "správu"},
 		{"generalError", "Niečo sa pokazilo. Skúste to prosím neskôr."},
 		{"encryptNetworkError", "Niečo sa pokazilo. Nemôžem uložiť správu. Skúste to prosím neskôr."},
 		{"decryptNetworkError", "Niečo sa pokazilo. Nemôžem prečítať správu. Skúste to prosím neskôr."},
@@ -387,10 +359,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "opis"},
 		{"info", "Orodje uporablja različne šifrirne metode za zagotavljanje največje varnosti. " +
 			"Brez povezave ni mogoče dešifrirati sporočila. Uporabite geslo za dodatno povečanje varnosti. " +
-			"Izvorna koda orodja je odprta in si jo je mogoče ogledati na"},
-		{"info1", ". Če nas želite kontaktirati, nam pošljite"},
-		{"info2", "sporočilo"},
-		{"info3", "."},
+			"Izvorna koda orodja je odprta in si jo je mogoče ogledati na {github}. Če nas želite kontaktirati, nam pošljite {contact}."},
+		{"contactLink", "sporočilo"},
 		{"generalError", "Nekaj je šlo narobe. Poskusite znova kasneje."},
 		{"encryptNetworkError", "Nekaj je šlo narobe. Ne morem shraniti sporočila. Poskusite znova."},
 		{"decryptNetworkError", "Nekaj je šlo narobe. Ne morem prebrati sporočila. Poskusite znova."},
@@ -413,10 +383,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "descripción"},
 		{"info", "La herramienta utiliza varios métodos de cifrado para garantizar la máxima seguridad. " +
 			"Sin el enlace, no es posible descifrar el mensaje. Utiliza una contraseña para aumentar aún más la seguridad. " +
-			"El código fuente de la herramienta es abierto y se puede ver en"},
-		{"info1", ". Si quieres ponerte en contacto con nosotros, envíanos un"},
-		{"info2", "mensaje"},
-		{"info3", "."},
+			"El código fuente de la herramienta es abierto y se puede ver en {github}. Si quieres ponerte en contacto con nosotros, envíanos un {contact}."},
+		{"contactLink", "mensaje"},
 		{"generalError", "Algo salió mal. Por favor, inténtalo de nuevo más tarde."},
 		{"encryptNetworkError", "Algo salió mal. No puedo guardar el mensaje. Por favor, inténtalo de nuevo."},
 		{"decryptNetworkError", "Algo salió mal. No puedo leer el mensaje. Por favor, inténtalo de nuevo."},
@@ -439,10 +407,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "descrição"},
 		{"info", "A ferramenta utiliza vários métodos de criptografia para garantir a máxima segurança. " +
 			"Sem o link, não é possível descriptografar a mensagem. Use uma senha para aumentar ainda mais a segurança. " +
-			"O código-fonte da ferramenta é aberto e pode ser visualizado no"},
-		{"info1", ". Se você deseja entrar em contato conosco, envie-nos uma"},
-		{"info2", "mensagem"},
-		{"info3", "."},
+			"O código-fonte da ferramenta é aberto e pode ser visualizado no {github}. Se você deseja entrar em contato conosco, envie-nos uma {contact}."},
+		{"contactLink", "mensagem"},
 		{"generalError", "Algo deu errado. Por favor, tente novamente mais tarde."},
 		{"encryptNetworkError", "Algo deu errado. Não consigo salvar a mensagem. Por favor, tente novamente."},
 		{"decryptNetworkError", "Algo deu errado. Não consigo ler a mensagem. Por favor, tente novamente."},
@@ -465,10 +431,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "descrizione"},
 		{"info", "Lo strumento utilizza vari metodi di crittografia per garantire la massima sicurezza. " +
 			"Senza il link, non è possibile decriptare il messaggio. Usa una password per aumentare ulteriormente la sicurezza. " +
-			"Il codice sorgente dello strumento è aperto e può essere visualizzato su"},
-		{"info1", ". Se vuoi contattarci, inviaci un"},
-		{"info2", "messaggio"},
-		{"info3", "."},
+			"Il codice sorgente dello strumento è aperto e può essere visualizzato su {github}. Se vuoi contattarci, inviaci un {contact}."},
+		{"contactLink", "messaggio"},
 		{"generalError", "Qualcosa è andato storto. Riprova più tardi."},
 		{"encryptNetworkError", "Qualcosa è andato storto. Non riesco a salvare il messaggio. Riprova."},
 		{"decryptNetworkError", "Qualcosa è andato storto. Non riesco a leggere il messaggio. Riprova."},
@@ -491,10 +455,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "descriere"},
 		{"info", "Instrumentul utilizează diferite metode de criptare pentru a asigura securitatea maximă. " +
 			"Fără link, nu este posibil să decriptați mesajul. Utilizați o parolă pentru a crește și mai mult securitatea. " +
-			"Codul sursă al instrumentului este deschis și poate fi vizualizat pe"},
-		{"info1", ". Dacă doriți să ne contactați, trimiteți-ne un"},
-		{"info2", "mesaj"},
-		{"info3", "."},
+			"Codul sursă al instrumentului este deschis și poate fi vizualizat pe {github}. Dacă doriți să ne contactați, trimiteți-ne un {contact}."},
+		{"contactLink", "mesaj"},
 		{"generalError", "Ceva nu a mers bine. Vă rugăm să încercați din nou mai târziu."},
 		{"encryptNetworkError", "Ceva nu a mers bine. Nu pot salva mesajul. Vă rugăm să încercați din nou."},
 		{"decryptNetworkError", "Ceva nu a mers bine. Nu pot citi mesajul. Vă rugăm să încercați din nou."},
@@ -517,10 +479,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "description"},
 		{"info", "L'outil utilise diverses méthodes de cryptage pour assurer une sécurité maximale. " +
 			"Sans le lien, il est impossible de déchiffrer le message. Utilisez un mot de passe pour renforcer davantage la sécurité. " +
-			"Le code source de l'outil est ouvert et peut être consulté sur"},
-		{"info1", ". Si vous souhaitez nous contacter, envoyez-nous un"},
-		{"info2", "message"},
-		{"info3", "."},
+			"Le code source de l'outil est ouvert et peut être consulté sur {github}. Si vous souhaitez nous contacter, envoyez-nous un {contact}."},
+		{"contactLink", "message"},
 		{"generalError", "Un problème est survenu. Veuillez réessayer plus tard."},
 		{"encryptNetworkError", "Un problème est survenu. Je ne peux pas enregistrer le message. Veuillez réessayer."},
 		{"decryptNetworkError", "Un problème est survenu. Je ne peux pas lire le message. Veuillez réessayer."},
@@ -543,10 +503,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "опис"},
 		{"info", "Інструмент використовує різні методи шифрування для забезпечення максимальної безпеки. " +
 			"Без посилання неможливо розшифрувати повідомлення. Використовуйте пароль для додаткового збільшення безпеки. " +
-			"Вихідний код інструменту відкритий та доступний для перегляду на"},
-		{"info1", ". Якщо ви хочете зв'язатися з нами, надішліть нам"},
-		{"info2", "повідомлення"},
-		{"info3", "."},
+			"Вихідний код інструменту відкритий та доступний для перегляду на {github}. Якщо ви хочете зв'язатися з нами, надішліть нам {contact}."},
+		{"contactLink", "повідомлення"},
 		{"generalError", "Щось пішло не так. Будь ласка, спробуйте знову пізніше."},
 		{"encryptNetworkError", "Щось пішло не так. Я не можу зберегти повідомлення. Будь ласка, спробуйте знову."},
 		{"decryptNetworkError", "Щось пішло не так. Я не можу прочитати повідомлення. Будь ласка, спробуйте знову."},
@@ -569,10 +527,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "описание"},
 		{"info", "Инструмент использует различные методы шифрования для обеспечения максимальной безопасности. " +
 			"Без ссылки невозможно расшифровать сообщение. Используйте пароль для дополнительного увеличения безопасности. " +
-			"Исходный код инструмента открыт и может быть просмотрен на"},
-		{"info1", ". Если вы хотите связаться с нами, отправьте нам"},
-		{"info2", "сообщение"},
-		{"info3", "."},
+			"Исходный код инструмента открыт и может быть просмотрен на {github}. Если вы хотите связаться с нами, отправьте нам {contact}."},
+		{"contactLink", "сообщение"},
 		{"generalError", "Что-то пошло не так. Пожалуйста, попробуйте еще раз позже."},
 		{"encryptNetworkError", "Что-то пошло не так. Я не могу сохранить сообщение. Пожалуйста, попробуйте еще раз."},
 		{"decryptNetworkError", "Что-то пошло не так. Я не могу прочитать сообщение. Пожалуйста, попробуйте еще раз."},
@@ -595,10 +551,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "описание"},
 		{"info", "Инструментът използва различни методи за криптиране, за да гарантира максимална сигурност. " +
 			"Без връзката не е възможно да се декриптира съобщението. Използвайте парола, за да увеличите сигурността. " +
-			"Изходният код на инструмента е отворен и може да се види на"},
-		{"info1", ". Ако искате да се свържете с нас, изпратете ни"},
-		{"info2", "съобщение"},
-		{"info3", "."},
+			"Изходният код на инструмента е отворен и може да се види на {github}. Ако искате да се свържете с нас, изпратете ни {contact}."},
+		{"contactLink", "съобщение"},
 		{"generalError", "Нещо се обърка. Моля, опитайте отново по-късно."},
 		{"encryptNetworkError", "Нещо се обърка. Не мога да запазя съобщението. Моля, опитайте отново."},
 		{"decryptNetworkError", "Нещо се обърка. Не мога да прочета съобщението. Моля, опитайте отново."},
@@ -621,10 +575,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "opis"},
 		{"info", "Alat koristi razne metode šifriranja kako bi osigurao maksimalnu sigurnost. " +
 			"Bez poveznice nije moguće dešifrirati poruku. Koristite lozinku kako biste dodatno povećali sigurnost. " +
-			"Izvorni kod alata je otvoren i može se pregledati na"},
-		{"info1", ". Ako želite stupiti u kontakt s nama, pošaljite nam"},
-		{"info2", "poruku"},
-		{"info3", "."},
+			"Izvorni kod alata je otvoren i može se pregledati na {github}. Ako želite stupiti u kontakt s nama, pošaljite nam {contact}."},
+		{"contactLink", "poruku"},
 		{"generalError", "Nešto je pošlo po zlu. Molimo pokušajte ponovno kasnije."},
 		{"encryptNetworkError", "Nešto je pošlo po zlu. Ne mogu spremiti poruku. Molimo pokušajte ponovno."},
 		{"decryptNetworkError", "Nešto je pošlo po zlu. Ne mogu pročitati poruku. Molimo pokušajte ponovno."},
@@ -647,10 +599,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "përshkrim"},
 		{"info", "Mjeti përdor metoda të ndryshme kodimi për të siguruar maksimumin e sigurisë. " +
 			"Pa lidhjen, nuk është e mundur të dekodohet mesazhi. Përdorni një fjalëkalim për të rritur sigurinë më tej. " +
-			"Kodi burimor i mjetit është i hapur dhe mund të shikohet në"},
-		{"info1", ". Nëse dëshironi të na kontaktoni, dërgoni një"},
-		{"info2", "mesazh"},
-		{"info3", "."},
+			"Kodi burimor i mjetit është i hapur dhe mund të shikohet në {github}. Nëse dëshironi të na kontaktoni, dërgoni një {contact}."},
+		{"contactLink", "mesazh"},
 		{"generalError", "Diçka shkoi keq. Ju lutemi provoni përsëri më vonë."},
 		{"encryptNetworkError", "Diçka shkoi keq. Nuk mund të ruaj mesazhin. Ju lutemi provoni përsëri."},
 		{"decryptNetworkError", "Diçka shkoi keq. Nuk mund të lexoj mesazhin. Ju lutemi provoni përsëri."},
@@ -673,10 +623,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "opis"},
 		{"info", "Alat koristi različite metode šifrovanja kako bi osigurao maksimalnu sigurnost. " +
 			"Bez linka, nije moguće dešifrovati poruku. Koristite lozinku kako biste dodatno povećali sigurnost. " +
-			"Izvorni kod alata je otvoren i može se pogledati na"},
-		{"info1", ". Ako želite da nas kontaktirate, pošaljite nam"},
-		{"info2", "poruku"},
-		{"info3", "."},
+			"Izvorni kod alata je otvoren i može se pogledati na {github}. Ako želite da nas kontaktirate, pošaljite nam {contact}."},
+		{"contactLink", "poruku"},
 		{"generalError", "Došlo je do greške. Molimo pokušajte ponovo kasnije."},
 		{"encryptNetworkError", "Došlo je do greške. Ne mogu sačuvati poruku. Molimo pokušajte ponovo."},
 		{"decryptNetworkError", "Došlo je do greške. Ne mogu pročitati poruku. Molimo pokušajte ponovo."},
@@ -699,10 +647,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "περιγραφή"},
 		{"info", "Το εργαλείο χρησιμοποιεί διάφορες μεθόδους κρυπτογράφησης για να εξασφαλίσει τη μέγιστη ασφάλεια. " +
 			"Χωρίς τον σύνδεσμο, δεν είναι δυνατή η αποκρυπτογράφηση του μηνύματος. Χρησιμοποιήστε έναν κωδικό πρόσβασης για να αυξήσετε ακόμα περισσότερο την ασφάλεια. " +
-			"Ο πηγαίος κώδικας του εργαλείου είναι ανοιχτός και μπορεί να προβληθεί στο"},
-		{"info1", ". Εάν θέλετε να επικοινωνήσετε μαζί μας, στείλτε μας ένα"},
-		{"info2", "μήνυμα"},
-		{"info3", "."},
+			"Ο πηγαίος κώδικας του εργαλείου είναι ανοιχτός και μπορεί να προβληθεί στο {github}. Εάν θέλετε να επικοινωνήσετε μαζί μας, στείλτε μας ένα {contact}."},
+		{"contactLink", "μήνυμα"},
 		{"generalError", "Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά αργότερα."},
 		{"encryptNetworkError", "Κάτι πήγε στραβά. Δεν μπορώ να αποθηκεύσω το μήνυμα. Παρακαλώ δοκιμάστε ξανά."},
 		{"decryptNetworkError", "Κάτι πήγε στραβά. Δεν μπορώ να διαβάσω το μήνυμα. Παρακαλώ δοκιμάστε ξανά."},
@@ -725,10 +671,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "描述"},
 		{"info", "该工具使用各种加密方法确保最大程度的安全性。" +
 			"没有链接，就无法解密消息。使用密码进一步提高安全性。" +
-			"该工具的源代码是开放的，可以在"},
-		{"info1", "上查看。如果您想联系我们，请给我们发送一条"},
-		{"info2", "消息"},
-		{"info3", "。"},
+			"该工具的源代码是开放的，可以在{github}上查看。如果您想联系我们，请给我们发送一条{contact}。"},
+		{"contactLink", "消息"},
 		{"generalError", "出了点问题。请稍后再试。"},
 		{"encryptNetworkError", "出了点问题。无法保存消息。请重试。"},
 		{"decryptNetworkError", "出了点问题。无法读取消息。请重试。"},
@@ -751,10 +695,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "deskripsi"},
 		{"info", "Alat ini menggunakan berbagai metode enkripsi untuk memastikan keamanan maksimal. " +
 			"Tanpa tautan, tidak mungkin untuk mendekripsi pesan. Gunakan kata sandi untuk meningkatkan keamanan lebih lanjut. " +
-			"Kode sumber alat ini terbuka dan dapat dilihat di"},
-		{"info1", ". Jika Anda ingin menghubungi kami, kirimkan"},
-		{"info2", "pesan"},
-		{"info3", "."},
+			"Kode sumber alat ini terbuka dan dapat dilihat di {github}. Jika Anda ingin menghubungi kami, kirimkan {contact}."},
+		{"contactLink", "pesan"},
 		{"generalError", "Ada yang salah. Silakan coba lagi nanti."},
 		{"encryptNetworkError", "Ada yang salah. Saya tidak dapat menyimpan pesan. Silakan coba lagi."},
 		{"decryptNetworkError", "Ada yang salah. Saya tidak dapat membaca pesan. Silakan coba lagi."},
@@ -777,10 +719,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "açıklama"},
 		{"info", "Araç, maksimum güvenliği sağlamak için çeşitli şifreleme yöntemleri kullanır. " +
 			"Bağlantı olmadan, mesajın şifresini çözmek mümkün değildir. Güvenliği daha da artırmak için bir şifre kullanın. " +
-			"Araçın kaynak kodu açıktır ve"},
-		{"info1", "'da görüntülenebilir. Bize ulaşmak isterseniz, bize bir"},
-		{"info2", "mesaj"},
-		{"info3", "."},
+			"Araçın kaynak kodu açıktır ve {github}'da görüntülenebilir. Bize ulaşmak isterseniz, bize bir {contact}."},
+		{"contactLink", "mesaj"},
 		{"generalError", "Bir şeyler yanlış gitti. Lütfen daha sonra tekrar deneyin."},
 		{"encryptNetworkError", "Bir şeyler yanlış gitti. Mesajı kaydedemiyorum. Lütfen tekrar deneyin."},
 		{"decryptNetworkError", "Bir şeyler yanlış gitti. Mesajı okuyamıyorum. Lütfen tekrar deneyin."},
@@ -803,10 +743,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "विवरण"},
 		{"info", "यह उपकरण अधिकतम सुरक्षा सुनिश्चित करने के लिए विभिन्न एन्क्रिप्शन तरीकों का उपयोग करता है। " +
 			"लिंक के बिना, संदेश को डिक्रिप्ट करना संभव नहीं है। सुरक्षा में और वृद्धि के लिए पासवर्ड का उपयोग करें। " +
-			"उपकरण का स्रोत कोड खुला है और"},
-		{"info1", "पर देखा जा सकता है। यदि आप हमसे संपर्क करना चाहते हैं, तो हमें एक"},
-		{"info2", "संदेश"},
-		{"info3", "भेजें।"},
+			"उपकरण का स्रोत कोड खुला है और {github}पर देखा जा सकता है। यदि आप हमसे संपर्क करना चाहते हैं, तो हमें एक {contact}भेजें।"},
+		{"contactLink", "संदेश"},
 		{"generalError", "कुछ गलत हो गया। कृपया बाद में पुनः प्रयास करें।"},
 		{"encryptNetworkError", "कुछ गलत हो गया। मैं संदेश को सहेज नहीं सकता। कृपया पुनः प्रयास करें।"},
 		{"decryptNetworkError", "कुछ गलत हो गया। मैं संदेश को पढ़ नहीं सकता। कृपया पुनः प्रयास करें।"},
@@ -829,10 +767,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "বিবরণ"},
 		{"info", "এই সরঞ্জামটি বিভিন্ন এনক্রিপশন পদ্ধতি ব্যবহার করে সর্বাধিক নিরাপত্তি নিশ্চিত করে। " +
 			"লিঙ্ক ছাড়া, বার্তাটি ডিক্রিপ্ট করা সম্ভব নয়। নিরাপত্তি বাড়ানোর জন্য পাসওয়ার্ড ব্যবহার করুন। " +
-			"সরঞ্জামটির উৎস কোড খোলা আছে এবং"},
-		{"info1", "দেখা যেতে পারে। আপনি যদি আমাদের সাথে যোগাযোগ করতে চান, আমাদের একটি"},
-		{"info2", "বার্তা"},
-		{"info3", "পাঠান।"},
+			"সরঞ্জামটির উৎস কোড খোলা আছে এবং {github}দেখা যেতে পারে। আপনি যদি আমাদের সাথে যোগাযোগ করতে চান, আমাদের একটি {contact}পাঠান।"},
+		{"contactLink", "বার্তা"},
 		{"generalError", "কিছু ভুল হয়েছে। দয়া করে পরে আবার চেষ্টা করুন।"},
 		{"encryptNetworkError", "কিছু ভুল হয়েছে। আমি বার্তাটি সংরক্ষণ করতে পারছি না। দয়া করে আবার চেষ্টা করুন।"},
 		{"decryptNetworkError", "কিছু ভুল হয়েছে। আমি বার্তাটি পড়তে পারছি না। দয়া করে আবার চেষ্টা করুন।"},
@@ -855,10 +791,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "説明"},
 		{"info", "このツールは、さまざまな暗号化方法を使用して最大限のセキュリティを確保します。" +
 			"リンクがなければ、メッセージを復号化することはできません。セキュリティをさらに強化するためにパスワードを使用してください。" +
-			"ツールのソースコードはオープンで、"},
-		{"info1", "で閲覧できます。私たちに連絡したい場合は、"},
-		{"info2", "メッセージ"},
-		{"info3", "を送ってください。"},
+			"ツールのソースコードはオープンで、{github}で閲覧できます。私たちに連絡したい場合は、{contact}を送ってください。"},
+		{"contactLink", "メッセージ"},
 		{"generalError", "何か問題が発生しました。後でもう一度お試しください。"},
 		{"encryptNetworkError", "何か問題が発生しました。メッセージを保存できません。もう一度お試しください。"},
 		{"decryptNetworkError", "何か問題が発生しました。メッセージを読むことができません。もう一度お試しください。"},
