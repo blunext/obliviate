@@ -139,7 +139,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLinkButton", "Kopiera länk"},
 		{"newMessageButton", "Nytt meddelande"},
 		{"decodedMessage", "Dekrypterat meddelande"},
-		{"messageRead", "Meddelandet har lästs, utgått eller länken är felaktig"},
+		{"messageRead", "Meddelandet har lästs, har gått ut eller så är länken felaktig"},
 		{"readMessageButton", "Dekryptera meddelandet"},
 		{"infoHeader", "beskrivning"},
 		{"info", "Verktyget använder olika krypteringsmetoder för att säkerställa maximal säkerhet. " +
@@ -523,7 +523,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"copyLinkButton", "Копировать ссылку"},
 		{"newMessageButton", "Новое сообщение"},
 		{"decodedMessage", "Расшифрованное сообщение"},
-		{"messageRead", "Сообщение прочитано, срок его действия истёк или ссылка неверна"},
+		{"messageRead", "Сообщение прочитано, срок его действия истек или ссылка неверна"},
 		{"readMessageButton", "Расшифровать сообщение"},
 		{"infoHeader", "описание"},
 		{"info", "Инструмент использует различные методы шифрования для обеспечения максимальной безопасности. " +
