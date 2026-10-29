@@ -104,7 +104,8 @@ var translationsSet = map[language.Tag][]entry{
 		{"enterPasswordPlaceholder", "indtast adgangskoden"},
 		{"linkIsCorrupted", "Linket er beskadiget"},
 	},
-	language.Norwegian: {
+	// Norwegian Bokmål: the matcher maps "nb" to Danish when only "no" is registered; "nb" also matches "no" and "nn"
+	language.MustParse("nb"): {
 		{"title", "Private og sikre notater - send hemmelighetene dine trygt"},
 		{"header", "Private, sikre notater"},
 		{"description", "Sikre krypterte meldinger"},
