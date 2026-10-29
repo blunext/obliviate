@@ -44,30 +44,32 @@ func TestProcessTemplate_ReturnsValidJSON(t *testing.T) {
 	}
 }
 
-// Run with -race: the cached translation map is shared between requests and must not be modified.
-// Only prod mode is tested, as locally the template itself is re-parsed into a shared variable.
+// Run with -race: the template and the cached translation map are shared between requests and must not be modified.
 func TestProcessTemplate_ConcurrentRequests(t *testing.T) {
 	variables, err := os.ReadFile("../variables.json")
 	if err != nil {
 		t.Fatal(err)
 	}
-	conf := &config.Configuration{
-		ProdEnv:            true,
-		EmbededStaticFiles: fstest.MapFS{"variables.json": {Data: variables}},
-	}
-	handler := ProcessTemplate(conf, "publicKey")
 
-	var wg sync.WaitGroup
-	for range 50 {
-		for _, lang := range []string{"pl", "en", "de"} {
-			wg.Go(func() {
-				req := httptest.NewRequest(http.MethodGet, "/variables", nil)
-				req.Header.Set("Accept-Language", lang)
-				rr := httptest.NewRecorder()
-				handler.ServeHTTP(rr, req)
-				assert.Equal(t, http.StatusOK, rr.Code)
-			})
+	for _, prodEnv := range []bool{false, true} {
+		conf := &config.Configuration{
+			ProdEnv:            prodEnv,
+			EmbededStaticFiles: fstest.MapFS{"variables.json": {Data: variables}},
 		}
+		handler := ProcessTemplate(conf, "publicKey")
+
+		var wg sync.WaitGroup
+		for range 50 {
+			for _, lang := range []string{"pl", "en", "de"} {
+				wg.Go(func() {
+					req := httptest.NewRequest(http.MethodGet, "/variables", nil)
+					req.Header.Set("Accept-Language", lang)
+					rr := httptest.NewRecorder()
+					handler.ServeHTTP(rr, req)
+					assert.Equal(t, http.StatusOK, rr.Code)
+				})
+			}
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 }

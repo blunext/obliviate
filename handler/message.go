@@ -33,10 +33,8 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		return string(b), err
 	}}
 
-	var t *template.Template
-	if config.ProdEnv {
-		t = template.Must(template.New("variables.json").Funcs(funcs).ParseFS(config.EmbededStaticFiles, "variables.json"))
-	}
+	// variables.json is embedded in the binary, so it is parsed once in every environment
+	t := template.Must(template.New("variables.json").Funcs(funcs).ParseFS(config.EmbededStaticFiles, "variables.json"))
 
 	translation := i18n.NewTranslation()
 
@@ -44,9 +42,6 @@ func ProcessTemplate(config *config.Configuration, publicKey string) http.Handle
 		ctx := r.Context()
 		slog.InfoContext(ctx, "ProcessTemplate Handler")
 
-		if !config.ProdEnv {
-			t, _ = template.New("variables.json").Funcs(funcs).ParseFS(config.EmbededStaticFiles, "variables.json")
-		}
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Vary", "Accept-Language")
 
