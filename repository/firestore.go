@@ -51,7 +51,7 @@ func NewConnection(ctx context.Context, firestoreCredentialFile, projectID, pref
 		conf := &firebase.Config{ProjectID: projectID}
 		app, err = firebase.NewApp(ctx, conf)
 	} else {
-		sa := option.WithCredentialsFile(firestoreCredentialFile)
+		sa := option.WithAuthCredentialsFile(option.ServiceAccount, firestoreCredentialFile)
 		app, err = firebase.NewApp(ctx, nil, sa)
 	}
 

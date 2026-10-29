@@ -37,7 +37,7 @@ func (Algorithm) Encrypt(conf *config.Configuration, plaintext []byte) ([]byte, 
 	if conf.ProdEnv {
 		client, err = cloudkms.NewKeyManagementClient(ctx)
 	} else {
-		client, err = cloudkms.NewKeyManagementClient(ctx, option.WithCredentialsFile(conf.KmsCredentialFile))
+		client, err = cloudkms.NewKeyManagementClient(ctx, option.WithAuthCredentialsFile(option.ServiceAccount, conf.KmsCredentialFile))
 	}
 	if err != nil {
 		return nil, fmt.Errorf("cloudkms.NewKeyManagementClient: %v", err)
@@ -80,7 +80,7 @@ func (Algorithm) Decrypt(conf *config.Configuration, ciphertext []byte) ([]byte,
 	if conf.ProdEnv {
 		client, err = cloudkms.NewKeyManagementClient(ctx)
 	} else {
-		client, err = cloudkms.NewKeyManagementClient(ctx, option.WithCredentialsFile(conf.KmsCredentialFile))
+		client, err = cloudkms.NewKeyManagementClient(ctx, option.WithAuthCredentialsFile(option.ServiceAccount, conf.KmsCredentialFile))
 	}
 	if err != nil {
 		return nil, fmt.Errorf("cloudkms.NewKeyManagementClient: %v", err)
