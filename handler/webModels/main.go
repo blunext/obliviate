@@ -12,7 +12,6 @@ type SaveRequest struct {
 type ReadRequest struct {
 	Hash      string `json:"hash"`
 	PublicKey []byte `json:"publicKey"`
-	Password  bool   `json:"password"`
 }
 
 type DeleteRequest struct {

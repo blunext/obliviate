@@ -79,7 +79,7 @@ func TestProcessSave(t *testing.T) {
 				Hash:              "test-hash-123",
 				PublicKey:         make([]byte, 32),
 				Time:              100,
-				CostFactor:        10,
+				CostFactor:        15,
 			},
 			wantErr: false,
 		},
@@ -96,7 +96,7 @@ func TestProcessSave(t *testing.T) {
 				Hash:              "hash-with-special/chars?test=123",
 				PublicKey:         make([]byte, 32),
 				Time:              50,
-				CostFactor:        5,
+				CostFactor:        15,
 			},
 			wantErr: false,
 		},
@@ -159,8 +159,6 @@ func TestProcessRead(t *testing.T) {
 		TransmissionNonce: nonce[:],
 		Hash:              testHash,
 		PublicKey:         browserPublicKey[:],
-		Time:              100,
-		CostFactor:        10,
 	}
 
 	err = testApp.ProcessSave(ctx, saveReq)
@@ -179,18 +177,16 @@ func TestProcessRead(t *testing.T) {
 			request: webModels.ReadRequest{
 				Hash:      testHash,
 				PublicKey: make([]byte, 32),
-				Password:  false,
 			},
 			wantErr:        false,
 			wantNilMessage: false,
-			wantCostFactor: 10,
+			wantCostFactor: 0,
 		},
 		{
 			name: "read non-existent message",
 			request: webModels.ReadRequest{
 				Hash:      "non-existent-hash",
 				PublicKey: make([]byte, 32),
-				Password:  false,
 			},
 			wantErr:        false,
 			wantNilMessage: true,
@@ -255,14 +251,13 @@ func TestProcessRead_WithPassword(t *testing.T) {
 	err = testApp.ProcessSave(ctx, saveReq)
 	require.NoError(t, err)
 
-	// Read with password=true (message should NOT be deleted)
+	// Read a password-protected message (message should NOT be deleted)
 	recipientPubKey, _, err := box.GenerateKey(rand.Reader)
 	require.NoError(t, err)
 
 	readReq := webModels.ReadRequest{
 		Hash:      testHash,
 		PublicKey: recipientPubKey[:],
-		Password:  true,
 	}
 
 	_, _, err = testApp.ProcessRead(context.Background(), readReq)
@@ -275,7 +270,6 @@ func TestProcessRead_WithPassword(t *testing.T) {
 	readReq2 := webModels.ReadRequest{
 		Hash:      testHash,
 		PublicKey: recipientPubKey2[:],
-		Password:  true,
 	}
 
 	encrypted2, costFactor, err := testApp.ProcessRead(context.Background(), readReq2)
@@ -305,21 +299,18 @@ func TestProcessRead_AutoDelete(t *testing.T) {
 		TransmissionNonce: nonce[:],
 		Hash:              testHash,
 		PublicKey:         browserPublicKey[:],
-		Time:              100,
-		CostFactor:        10,
 	}
 
 	err = testApp.ProcessSave(ctx, saveReq)
 	require.NoError(t, err)
 
-	// Read with password=false (message SHOULD be deleted)
+	// Read a message without password (message SHOULD be deleted)
 	recipientPubKey, _, err := box.GenerateKey(rand.Reader)
 	require.NoError(t, err)
 
 	readReq := webModels.ReadRequest{
 		Hash:      testHash,
 		PublicKey: recipientPubKey[:],
-		Password:  false,
 	}
 
 	_, _, err = testApp.ProcessRead(context.Background(), readReq)
@@ -332,12 +323,49 @@ func TestProcessRead_AutoDelete(t *testing.T) {
 	readReq2 := webModels.ReadRequest{
 		Hash:      testHash,
 		PublicKey: recipientPubKey2[:],
-		Password:  false,
 	}
 
 	encrypted2, _, err := testApp.ProcessRead(context.Background(), readReq2)
 	assert.NoError(t, err)
 	assert.Nil(t, encrypted2, "message should be deleted after non-password read")
+}
+
+func TestProcessRead_PasswordReadLimit(t *testing.T) {
+	setupTest(t)
+
+	browserPublicKey, browserPrivateKey, err := box.GenerateKey(rand.Reader)
+	require.NoError(t, err)
+
+	nonce, err := testKeys.GenerateNonce()
+	require.NoError(t, err)
+
+	encrypted := box.Seal(nonce[:], []byte("limited reads"), &nonce, testKeys.PublicKey, browserPrivateKey)
+
+	testHash := "read-limit-hash"
+	ctx := context.WithValue(context.Background(), config.CountryCode, "US")
+
+	err = testApp.ProcessSave(ctx, webModels.SaveRequest{
+		Message:           encrypted[24:],
+		TransmissionNonce: nonce[:],
+		Hash:              testHash,
+		PublicKey:         browserPublicKey[:],
+		CostFactor:        15,
+	})
+	require.NoError(t, err)
+
+	recipientPubKey, _, err := box.GenerateKey(rand.Reader)
+	require.NoError(t, err)
+	readReq := webModels.ReadRequest{Hash: testHash, PublicKey: recipientPubKey[:]}
+
+	for i := range maxPasswordMessageReads {
+		result, _, err := testApp.ProcessRead(context.Background(), readReq)
+		require.NoError(t, err)
+		require.NotNil(t, result, "read %d should return the message", i+1)
+	}
+
+	result, _, err := testApp.ProcessRead(context.Background(), readReq)
+	assert.NoError(t, err)
+	assert.Nil(t, result, "message should be deleted after the read limit")
 }
 
 func TestProcessRead_ConcurrentReadsGetMessageOnce(t *testing.T) {
@@ -408,7 +436,7 @@ func TestProcessDelete(t *testing.T) {
 		Hash:              testHash,
 		PublicKey:         browserPublicKey[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	err = testApp.ProcessSave(ctx, saveReq)
@@ -424,7 +452,6 @@ func TestProcessDelete(t *testing.T) {
 	readReq := webModels.ReadRequest{
 		Hash:      testHash,
 		PublicKey: recipientPubKey[:],
-		Password:  false,
 	}
 
 	result, _, err := testApp.ProcessRead(context.Background(), readReq)
@@ -486,7 +513,7 @@ func TestProcessDeleteExpired(t *testing.T) {
 		Hash:              "expired-hash-1",
 		PublicKey:         browserPublicKey[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	err = testApp.ProcessSave(ctx, saveReq1)
@@ -506,7 +533,7 @@ func TestProcessDeleteExpired(t *testing.T) {
 		Hash:              "active-hash-1",
 		PublicKey:         browserPublicKey[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	err = testApp.ProcessSave(ctx, saveReq2)
@@ -523,7 +550,6 @@ func TestProcessDeleteExpired(t *testing.T) {
 	readReq1 := webModels.ReadRequest{
 		Hash:      "expired-hash-1",
 		PublicKey: recipientPubKey[:],
-		Password:  false,
 	}
 
 	result1, _, err := testApp.ProcessRead(context.Background(), readReq1)
@@ -537,7 +563,6 @@ func TestProcessDeleteExpired(t *testing.T) {
 	readReq2 := webModels.ReadRequest{
 		Hash:      "active-hash-1",
 		PublicKey: recipientPubKey2[:],
-		Password:  false,
 	}
 
 	result2, _, err := testApp.ProcessRead(context.Background(), readReq2)
@@ -559,7 +584,7 @@ func TestProcessSave_VerifyExpiration(t *testing.T) {
 		Hash:              "expiration-test",
 		PublicKey:         browserPublicKey[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	beforeSave := time.Now()

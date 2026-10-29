@@ -76,9 +76,6 @@
         const obj = {}
         obj.hash = base64.encode(nacl.hash(urlNonce))
         obj.publicKey = base64.encode(ephemeralKeys.publicKey)
-        if (hasPassword) {
-            obj.password = true
-        }
 
         post('POST', obj, CONSTANTS.READ_URL, decryptTransmission, loadError)
 

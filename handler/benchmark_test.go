@@ -46,7 +46,7 @@ func BenchmarkSaveHandler(b *testing.B) {
 		Hash:              "bench-hash",
 		PublicKey:         senderPub[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 	bodyBytes, _ := json.Marshal(reqBody)
 

@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -128,6 +129,65 @@ func TestSaveHandler_Validation(t *testing.T) {
 			expectedInBody: "",
 		},
 		{
+			name: "CostFactor below range",
+			body: webModels.SaveRequest{
+				Message:           []byte("test message"),
+				TransmissionNonce: make([]byte, 24),
+				Hash:              "test-hash",
+				PublicKey:         make([]byte, 32),
+				CostFactor:        costFactor - 2,
+			},
+			expectedStatus: http.StatusBadRequest,
+			expectedInBody: "",
+		},
+		{
+			name: "CostFactor above range",
+			body: webModels.SaveRequest{
+				Message:           []byte("test message"),
+				TransmissionNonce: make([]byte, 24),
+				Hash:              "test-hash",
+				PublicKey:         make([]byte, 32),
+				CostFactor:        costFactor + 2,
+			},
+			expectedStatus: http.StatusBadRequest,
+			expectedInBody: "",
+		},
+		{
+			name: "CostFactor one below current",
+			body: webModels.SaveRequest{
+				Message:           []byte("test message"),
+				TransmissionNonce: make([]byte, 24),
+				Hash:              "cost-factor-minus-one",
+				PublicKey:         make([]byte, 32),
+				CostFactor:        costFactor - 1,
+			},
+			expectedStatus: http.StatusOK,
+			expectedInBody: "[]",
+		},
+		{
+			name: "CostFactor one above current",
+			body: webModels.SaveRequest{
+				Message:           []byte("test message"),
+				TransmissionNonce: make([]byte, 24),
+				Hash:              "cost-factor-plus-one",
+				PublicKey:         make([]byte, 32),
+				CostFactor:        costFactor + 1,
+			},
+			expectedStatus: http.StatusOK,
+			expectedInBody: "[]",
+		},
+		{
+			name: "valid request without password",
+			body: webModels.SaveRequest{
+				Message:           []byte("valid encrypted message"),
+				TransmissionNonce: make([]byte, 24),
+				Hash:              "valid-hash-no-password",
+				PublicKey:         make([]byte, 32),
+			},
+			expectedStatus: http.StatusOK,
+			expectedInBody: "[]",
+		},
+		{
 			name: "valid request",
 			body: webModels.SaveRequest{
 				Message:           []byte("valid encrypted message"),
@@ -135,7 +195,7 @@ func TestSaveHandler_Validation(t *testing.T) {
 				Hash:              "valid-hash",
 				PublicKey:         make([]byte, 32),
 				Time:              100,
-				CostFactor:        10,
+				CostFactor:        15,
 			},
 			expectedStatus: http.StatusOK,
 			expectedInBody: "[]",
@@ -343,6 +403,41 @@ func TestExpiredHandler(t *testing.T) {
 }
 
 // TestSaveAndReadIntegration tests successful save and read flow
+// TestRead_ClientPasswordFlagIgnored checks that a reader cannot keep a message without password
+// alive by claiming it has one: the mode comes from the stored message, not from the request.
+func TestRead_ClientPasswordFlagIgnored(t *testing.T) {
+	testApp, appKeys := setupTestApp(t)
+
+	browserPublicKey, browserPrivateKey, err := box.GenerateKey(rand.Reader)
+	require.NoError(t, err)
+
+	var transmissionNonce [24]byte
+	_, err = io.ReadFull(rand.Reader, transmissionNonce[:])
+	require.NoError(t, err)
+
+	saveBody, _ := json.Marshal(webModels.SaveRequest{
+		Message:           box.Seal(nil, []byte("read once"), &transmissionNonce, appKeys.PublicKey, browserPrivateKey),
+		TransmissionNonce: transmissionNonce[:],
+		Hash:              "password-flag-hash",
+		PublicKey:         browserPublicKey[:],
+	})
+	saveRR := httptest.NewRecorder()
+	Save(testApp).ServeHTTP(saveRR, httptest.NewRequest("POST", "/save", bytes.NewBuffer(saveBody)))
+	require.Equal(t, http.StatusOK, saveRR.Code)
+
+	// the request an old client (or an attacker) sends for a password-protected message
+	readBody := `{"hash":"password-flag-hash","publicKey":"` +
+		base64.StdEncoding.EncodeToString(browserPublicKey[:]) + `","password":true}`
+
+	readRR := httptest.NewRecorder()
+	Read(testApp).ServeHTTP(readRR, httptest.NewRequest("POST", "/read", strings.NewReader(readBody)))
+	assert.Equal(t, http.StatusOK, readRR.Code, "first read should succeed")
+
+	readRR2 := httptest.NewRecorder()
+	Read(testApp).ServeHTTP(readRR2, httptest.NewRequest("POST", "/read", strings.NewReader(readBody)))
+	assert.Equal(t, http.StatusNotFound, readRR2.Code, "message without password should be deleted after the first read")
+}
+
 func TestSaveAndReadIntegration(t *testing.T) {
 	testApp, appKeys := setupTestApp(t)
 
@@ -369,7 +464,7 @@ func TestSaveAndReadIntegration(t *testing.T) {
 		Hash:              messageHash,
 		PublicKey:         browserPublicKey[:], // Browser's public key, so app can encrypt response for browser
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	// Save message
@@ -387,7 +482,6 @@ func TestSaveAndReadIntegration(t *testing.T) {
 	readReq := webModels.ReadRequest{
 		Hash:      messageHash,
 		PublicKey: browserPublicKey[:], // Browser's public key
-		Password:  false,
 	}
 
 	readBody, _ := json.Marshal(readReq)

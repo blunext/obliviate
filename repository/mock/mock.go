@@ -32,25 +32,7 @@ func (d *MockDB) SaveMessage(ctx context.Context, data model.MessageModel) error
 	return nil
 }
 
-func (d *MockDB) GetAndDeleteMessage(ctx context.Context, key string) (model.MessageType, error) {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-
-	m, ok := d.messageStore[key]
-	if !ok {
-		slog.Debug("key not found", logs.Key, key)
-		return model.MessageType{}, nil
-	}
-	slog.Debug("key found", logs.Key, key)
-	delete(d.messageStore, key)
-
-	if m.Message.ValidTo.Before(time.Now()) {
-		return model.MessageType{}, nil
-	}
-	return m.Message, nil
-}
-
-func (d *MockDB) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
+func (d *MockDB) ReadMessage(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 
@@ -60,17 +42,18 @@ func (d *MockDB) GetMessageWithReadLimit(ctx context.Context, key string, maxRea
 		return model.MessageType{}, nil
 	}
 
-	// Check read count limit
-	if m.Message.ReadCount >= maxReads {
+	switch {
+	case m.Message.ValidTo.Before(time.Now()), m.Message.ReadCount >= maxReads:
 		delete(d.messageStore, key)
 		return model.MessageType{}, nil
+	case m.Message.CostFactor == 0:
+		delete(d.messageStore, key)
+		return m.Message, nil
+	default:
+		m.Message.ReadCount++
+		d.messageStore[key] = m
+		return m.Message, nil
 	}
-
-	// Update read count
-	m.Message.ReadCount++
-	d.messageStore[key] = m
-
-	return m.Message, nil
 }
 
 func (d *MockDB) DeleteMessage(ctx context.Context, key string) {

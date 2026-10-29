@@ -52,17 +52,9 @@ func (s *App) ProcessSave(ctx context.Context, request webModels.SaveRequest) er
 func (s *App) ProcessRead(ctx context.Context, request webModels.ReadRequest) ([]byte, int, error) {
 	hashEncoded := url.PathEscape(request.Hash)
 
-	var data model.MessageType
-	var err error
-
-	if request.Password {
-		// For password-protected messages, use read limit
-		data, err = s.db.GetMessageWithReadLimit(ctx, hashEncoded, maxPasswordMessageReads)
-	} else {
-		// the message is deleted in the same transaction, before it is decrypted
-		data, err = s.db.GetAndDeleteMessage(ctx, hashEncoded)
-	}
-
+	// the stored data decides whether the message is deleted now or has a read limit (password);
+	// it happens in the same transaction, before the message is decrypted
+	data, err := s.db.ReadMessage(ctx, hashEncoded, maxPasswordMessageReads)
 	if err != nil {
 		return nil, 0, fmt.Errorf("error in GetMessage, err: %v", err)
 	}

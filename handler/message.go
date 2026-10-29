@@ -22,6 +22,10 @@ const (
 	emptyBody        = "empty body post, no json expected"
 	maxSaveBodySize  = 256 * 1024 * 6 // ~1.5MB: accounts for base64 encoding (~33% overhead) + JSON structure
 	maxSmallBodySize = 1024           // for Read/Delete endpoints (hash + public key)
+	// costFactor is the scrypt logN of password messages (0 means no password) and must match
+	// CONSTANTS.costFactor in web/src/routes/Commons.js; ±1 is accepted, so it can be changed
+	// by one step without breaking browsers that still have the previous frontend cached
+	costFactor = 15
 )
 
 func ProcessTemplate(config *config.Configuration, publicKey string) http.HandlerFunc {
@@ -85,6 +89,8 @@ func Save(app *app.App) http.HandlerFunc {
 			finishRequestWithErr(ctx, w, "TransmissionNonce length is wrong !=24", http.StatusBadRequest, app.Config.ProdEnv)
 		case len(data.PublicKey) != 32:
 			finishRequestWithErr(ctx, w, "PublicKey length is wrong !=32", http.StatusBadRequest, app.Config.ProdEnv)
+		case data.CostFactor != 0 && (data.CostFactor < costFactor-1 || data.CostFactor > costFactor+1):
+			finishRequestWithErr(ctx, w, fmt.Sprintf("CostFactor is out of range = %d", data.CostFactor), http.StatusBadRequest, app.Config.ProdEnv)
 		default:
 			ctx := context.WithValue(ctx, config.AcceptLanguage, r.Header.Get("Accept-Language"))
 			ctx = context.WithValue(ctx, config.CountryCode, r.Header.Get("CF-IPCountry"))

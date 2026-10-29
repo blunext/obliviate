@@ -77,7 +77,7 @@ func TestEndToEnd_MessageLifecycle(t *testing.T) {
 		Hash:              hash,
 		PublicKey:         senderPub[:],
 		Time:              100,
-		CostFactor:        10,
+		CostFactor:        15,
 	}
 
 	// 3. SAVE

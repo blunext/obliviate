@@ -22,8 +22,7 @@ const counterShards = 5
 
 type DataBase interface {
 	SaveMessage(ctx context.Context, data model.MessageModel) error
-	GetAndDeleteMessage(context.Context, string) (model.MessageType, error)
-	GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error)
+	ReadMessage(ctx context.Context, key string, maxReads int) (model.MessageType, error)
 	DeleteMessage(context.Context, string)
 	DeleteBeforeNow(context.Context) error
 	SaveEncryptedKeys(context.Context, []byte) error
@@ -95,9 +94,10 @@ func (d *db) SaveMessage(ctx context.Context, data model.MessageModel) error {
 	return nil
 }
 
-// GetAndDeleteMessage reads the message and deletes it in one transaction,
-// so concurrent reads cannot both get it and the deletion cannot be lost.
-func (d *db) GetAndDeleteMessage(ctx context.Context, key string) (model.MessageType, error) {
+// ReadMessage reads the message in one transaction and decides from the stored data what happens to it:
+// a message without a password (costFactor 0) is deleted, a password-protected one has its read count
+// incremented and is deleted once maxReads is reached. The client cannot choose the mode.
+func (d *db) ReadMessage(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
 	var result model.MessageType
 
 	docRef := d.client.Collection(d.messageCollection.coll).Doc(key)
@@ -119,70 +119,26 @@ func (d *db) GetAndDeleteMessage(ctx context.Context, key string) (model.Message
 			return fmt.Errorf("error mapping data into message struct: %v", err)
 		}
 
-		if err := tx.Delete(docRef); err != nil {
-			return fmt.Errorf("error deleting message: %v", err)
-		}
-
-		if result.ValidTo.Before(time.Now()) {
-			slog.WarnContext(ctx, "message found but not valid")
-			result = model.MessageType{}
-		}
-		return nil
-	})
-
-	if err != nil {
-		return model.MessageType{}, err
-	}
-
-	return result, nil
-}
-
-func (d *db) GetMessageWithReadLimit(ctx context.Context, key string, maxReads int) (model.MessageType, error) {
-	var result model.MessageType
-
-	docRef := d.client.Collection(d.messageCollection.coll).Doc(key)
-
-	err := d.client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
-		doc, err := tx.Get(docRef)
-		if err != nil {
-			if status.Code(err) == codes.NotFound {
-				slog.InfoContext(ctx, "message not found")
-				return nil
-			}
-			return fmt.Errorf("error while getting message in transaction, err: %v", err)
-		}
-
-		if err := doc.DataTo(&result); err != nil {
-			return fmt.Errorf("error mapping data into message struct: %v", err)
-		}
-
-		if result.ValidTo.Before(time.Now()) {
+		switch {
+		case result.ValidTo.Before(time.Now()):
 			slog.WarnContext(ctx, "message found but expired")
 			result = model.MessageType{}
-			return nil
-		}
-
-		// Check read count limit
-		if result.ReadCount >= maxReads {
+			return tx.Delete(docRef)
+		case result.CostFactor == 0:
+			// no password: read once
+			return tx.Delete(docRef)
+		case result.ReadCount >= maxReads:
 			slog.WarnContext(ctx, "message read limit exceeded, deleting", logs.Key, key, "readCount", result.ReadCount)
-			if err := tx.Delete(docRef); err != nil {
-				return fmt.Errorf("error deleting message after limit exceeded: %v", err)
-			}
 			result = model.MessageType{}
-			return nil
+			return tx.Delete(docRef)
+		default:
+			slog.InfoContext(ctx, "message read count incremented", logs.Key, key, "readCount", result.ReadCount+1)
+			return tx.Update(docRef, []firestore.Update{{Path: "readCount", Value: result.ReadCount + 1}})
 		}
-
-		// Update read count
-		if err := tx.Update(docRef, []firestore.Update{{Path: "readCount", Value: result.ReadCount + 1}}); err != nil {
-			return fmt.Errorf("error updating read count: %v", err)
-		}
-
-		slog.InfoContext(ctx, "message read count incremented", logs.Key, key, "readCount", result.ReadCount+1)
-		return nil
 	})
 
 	if err != nil {
-		return model.MessageType{}, err
+		return model.MessageType{}, fmt.Errorf("read message transaction error: %v", err)
 	}
 
 	return result, nil
