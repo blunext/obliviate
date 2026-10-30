@@ -26,6 +26,21 @@ import (
 //go:embed handler/testdata/variables.json
 var testStaticFiles embed.FS
 
+func TestSecurityHeaders(t *testing.T) {
+	handler := securityHeaders(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+	}))
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	assert.Equal(t, "max-age=31536000", rr.Header().Get("Strict-Transport-Security"))
+	assert.Equal(t, "nosniff", rr.Header().Get("X-Content-Type-Options"))
+	assert.Equal(t, "no-referrer", rr.Header().Get("Referrer-Policy"))
+	assert.Equal(t, "DENY", rr.Header().Get("X-Frame-Options"))
+	assert.Equal(t, "frame-ancestors 'none'", rr.Header().Get("Content-Security-Policy"))
+	assert.Equal(t, "same-origin", rr.Header().Get("Cross-Origin-Opener-Policy"))
+}
+
 func setupIntegrationApp(t *testing.T) (*app.App, *http.ServeMux, *crypt.Keys) {
 	conf := &config.Configuration{
 		DefaultDurationTime: time.Hour * 24 * 7,

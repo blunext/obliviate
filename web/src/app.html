@@ -88,12 +88,7 @@
 			}
 		}
     </style>
-	<script>
-        window.onSvelteReady = function() {
-            document.querySelector('.svelte-loading').style.display = 'none';
-            document.querySelector('.svelte-content').style.display = 'block';
-        };
-	</script>
+	<script src="%sveltekit.assets%/ready.js"></script>
 </head>
 <body data-sveltekit-preload-data="hover">
 <div class="svelte-loading">loading....</div>

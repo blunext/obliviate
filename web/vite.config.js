@@ -3,7 +3,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import adapter from '@sveltejs/adapter-static';
 import { defineConfig } from 'vite';
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
 	plugins: [
 		sveltekit({
 			adapter: adapter({
@@ -14,6 +14,19 @@ export default defineConfig({
 				strict: true,
 			}),
 			preprocess: [vitePreprocess({})],
+			csp: {
+				mode: 'hash',
+				directives: {
+					'default-src': ['self'],
+					'script-src': ['self'],
+					'style-src': ['self', 'unsafe-inline'],
+					'img-src': ['self', 'data:'],
+					'connect-src': command === 'serve' ? ['self', 'http://localhost:3000'] : ['self'],
+					'object-src': ['none'],
+					'base-uri': ['none'],
+					'form-action': ['none'],
+				},
+			},
 		}),
 	],
 
@@ -27,4 +40,4 @@ export default defineConfig({
 			},
 		},
 	},
-});
+}));

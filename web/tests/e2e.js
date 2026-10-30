@@ -214,6 +214,23 @@ async (page) => {
     ok('Wąski ekran: etykieta przy odczycie', await r.locator('label[for=password]').isVisible() && !(await r.locator('.input-group-text').first().isVisible()));
     await c.close(); }
 
+  // 14. security headers and Content Security Policy
+  { const headers = (await ctx.request.get(BASE)).headers();
+    ok('Nagłówki bezpieczeństwa', headers['x-content-type-options'] === 'nosniff' && headers['x-frame-options'] === 'DENY' &&
+      headers['referrer-policy'] === 'no-referrer' && headers['content-security-policy'] === "frame-ancestors 'none'" && !!headers['strict-transport-security']);
+    const p = await fresh(); await p.goto(BASE); await p.locator('textarea').first().waitFor();
+    const csp = await p.locator('meta[http-equiv="content-security-policy"]').getAttribute('content');
+    ok('CSP w meta', csp.includes("script-src 'self'") && csp.includes("base-uri 'none'") && !csp.includes("script-src 'self' 'unsafe-inline'"), csp.slice(0, 60));
+    await p.waitForTimeout(300);
+    ok('Brak naruszeń CSP podczas testów', !consoleErrors.some(e => /Content.Security.Policy/i.test(e)), consoleErrors.find(e => /Content.Security.Policy/i.test(e)));
+    const blocked = await p.evaluate(() => new Promise(done => {
+      document.addEventListener('securitypolicyviolation', () => done(true), { once: true });
+      const s = document.createElement('script'); s.textContent = 'document.body.dataset.injected = "1"'; document.head.append(s);
+      setTimeout(() => done(false), 300);
+    }));
+    ok('CSP blokuje wstrzyknięty skrypt', blocked && await p.evaluate(() => document.body.dataset.injected === undefined));
+    await p.close(); }
+
   const failed = results.filter(r => r.startsWith('FAIL')).length;
   return `${results.length - failed}/${results.length} PASS\n` + results.join('\n') +
     '\n\nBłędy konsoli:\n' + ([...new Set(consoleErrors)].join('\n') || '(brak)');
