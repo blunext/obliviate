@@ -188,7 +188,7 @@ async (page) => {
     await c.close();
   }
 
-  // 13. password row: above the field on narrow screens, in one row from 576 px
+  // 13. password row: above the field on narrow screens, in one row from 390 px
   { const { p: e, link } = await encrypt('narrow', pass); await e.close();
     const c = await ctx.browser().newContext({ viewport: { width: 360, height: 640 }, extraHTTPHeaders: { 'Accept-Language': 'el' } });
     const p = await c.newPage(); await p.goto(BASE);
@@ -207,14 +207,27 @@ async (page) => {
     await input.fill('a'); await p.waitForTimeout(500); const weak = await color();
     await input.fill('Tr0ub4dor&3-horse-battery-staple!'); await p.waitForTimeout(500);
     ok('Wąski ekran: tarcza pokazuje siłę hasła', weak !== await color());
-    await p.setViewportSize({ width: 576, height: 640 });
-    ok('Od 576 px: etykieta w wierszu pola', !(await label.isVisible()) && await p.locator('.input-group-text').first().isVisible() && await shields.count() === 1);
+    await p.setViewportSize({ width: 390, height: 640 });
+    ok('Od 390 px: etykieta w wierszu pola', !(await label.isVisible()) && await p.locator('.input-group-text').first().isVisible() && await shields.count() === 1);
+    ok('Od 390 px: placeholder ukryty, brak przewijania w bok', await input.evaluate(e => getComputedStyle(e, '::placeholder').color) === 'rgba(0, 0, 0, 0)' &&
+      await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
     await p.close();
     const r = await c.newPage(); await r.goto(link); await r.locator('button.btn-danger').waitFor();
     ok('Wąski ekran: etykieta przy odczycie', await r.locator('label[for=password]').isVisible() && !(await r.locator('.input-group-text').first().isVisible()));
     await c.close(); }
 
-  // 14. security headers and Content Security Policy
+  // 14. action buttons: stacked below 768 px, so long texts stay in one line
+  { const c = await ctx.browser().newContext({ viewport: { width: 576, height: 640 }, extraHTTPHeaders: { 'Accept-Language': 'ru' } });
+    const p = await c.newPage(); await p.goto(BASE);
+    const toggle = p.locator('button.btn-success'), secure = p.locator('button.btn-danger');
+    await secure.waitFor();
+    const stacked = async () => (await toggle.boundingBox()).y < (await secure.boundingBox()).y;
+    ok('Przyciski przy 576 px: jeden pod drugim, w jednym wierszu', await stacked() && (await secure.boundingBox()).height === (await toggle.boundingBox()).height);
+    await p.setViewportSize({ width: 768, height: 640 });
+    ok('Przyciski od 768 px: obok siebie', !(await stacked()));
+    await c.close(); }
+
+  // 15. security headers and Content Security Policy
   { const headers = (await ctx.request.get(BASE)).headers();
     const csp = headers['content-security-policy'] || '';
     ok('Nagłówki bezpieczeństwa', headers['x-content-type-options'] === 'nosniff' && headers['x-frame-options'] === 'DENY' &&

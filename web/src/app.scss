@@ -1,14 +1,27 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
 
-/* On narrow screens the password label sits above the field, which becomes the first visible item of its input group */
-@include media-breakpoint-down(sm) {
+/* On screens narrower than 390 px the password label sits above the field, which becomes the first visible item of its input group */
+@media (min-width: 390px) {
+    .password-above {
+        display: none !important;
+    }
+}
+
+@media (max-width: 389.98px) {
+    .password-inline {
+        display: none !important;
+    }
+
     #password {
         margin-left: 0;
         border-top-left-radius: var(--bs-border-radius);
         border-bottom-left-radius: var(--bs-border-radius);
+    }
+}
 
-        &::placeholder {
-            color: transparent;
-        }
+/* On phones the placeholder does not fit next to the label */
+@include media-breakpoint-down(sm) {
+    #password::placeholder {
+        color: transparent;
     }
 }

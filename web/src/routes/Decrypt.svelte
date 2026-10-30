@@ -242,12 +242,12 @@
     {:else}
         {#if hasPassword}
             <div class="row">
-                <div class="d-sm-none mb-2">
+                <div class="password-above mb-2">
                     <label class="text-secondary" for="password">{data.password}</label>
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group flex-nowrap">
-                        <div class="input-group-prepend d-none d-sm-block">
+                        <div class="input-group-prepend password-inline">
                             <span class="input-group-text">{data.password}</span>
                         </div>
                         <input id="password" type={showPassword ? "text" : "password"}
@@ -264,14 +264,14 @@
             </div>
         {/if}
         <div class="row">
-            <div class="col-sm mb-2">
+            <div class="col-md mb-2">
                 <button type="button" on:click={decrypt}
                         class="btn btn-danger btn-lg w-100 {decodeButton ? '' : 'disabled'}">
                     <span class="spinner-border spinner-border-sm {decodeButtonSpinner ? '' : 'd-none'}"></span>
                     {data.readMessageButton}
                 </button>
             </div>
-            <div class="col-sm">
+            <div class="col-md">
                 <button type="button" class="btn btn-primary btn-lg w-100"
                         on:click={newMessageCallback}>{data.newMessageButton}
                 </button>

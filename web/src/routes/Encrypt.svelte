@@ -198,13 +198,13 @@
 <div class="container">
     <div class="row">
         <div class={hasPassword ? "mb-3" : "mb-3 collapse"}>
-            <div class="d-flex d-sm-none justify-content-between align-items-center mb-2">
+            <div class="password-above d-flex justify-content-between align-items-center mb-2">
                 <label class="text-secondary" for="password">{data.password}</label>
                 <ShieldIcon score={messagePassword === "" ? undefined : passwordScore} />
             </div>
             <div class="input-group flex-nowrap">
-                <span class="input-group-text d-none d-sm-flex">{data.password}</span>
-                <span class="input-group-text d-none d-sm-flex">
+                <span class="input-group-text password-inline">{data.password}</span>
+                <span class="input-group-text password-inline">
                     <ShieldIcon score={messagePassword === "" ? undefined : passwordScore} />
                 </span>
                 <input id="password" type={showPassword ? "text" : "password"}
@@ -219,12 +219,12 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm mb-2">
+        <div class="col-md mb-2">
             <button type="button" class="btn btn-success btn-lg w-100"
                     on:click={onPasswordToggle}>{data.password}
             </button>
         </div>
-        <div class="col-sm">
+        <div class="col-md">
             <button type="button"
                     class={buttonEncode ? "btn btn-danger btn-lg w-100" : "btn btn-danger btn-lg w-100 disabled"}
                     on:click={processEncrypt}>
