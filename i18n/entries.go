@@ -379,14 +379,14 @@ var translationsSet = map[language.Tag][]entry{
 	},
 	language.Catalan: {
 		{"title", "Notes privades i segures: envia els teus secrets de manera segura"},
-		{"header", "Notes privades segures"},
+		{"header", "Notes privades i segures"},
 		{"enterTextMessage", "Introdueix el missatge per xifrar"},
 		{"secureButton", "Xifra el missatge"},
 		{"copyLink", "Copia l'enllaç i envia'l a un amic. El missatge s'eliminarà immediatament després de ser llegit o al cap de 4 setmanes."},
 		{"copyLinkButton", "Copia l'enllaç"},
 		{"newMessageButton", "Missatge nou"},
 		{"decodedMessage", "Missatge desxifrat"},
-		{"messageRead", "Missatge llegit, caducat o l'enllaç és incorrecte"},
+		{"messageRead", "El missatge s'ha llegit o ha caducat, o l'enllaç és incorrecte"},
 		{"readMessageButton", "Desxifra el missatge"},
 		{"infoHeader", "descripció"},
 		{"info", "L'eina utilitza diversos mètodes de xifratge per garantir la màxima seguretat. " +
@@ -681,7 +681,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"header", "私密安全筆記"},
 		{"enterTextMessage", "輸入要加密的訊息"},
 		{"secureButton", "加密訊息"},
-		{"copyLink", "複製連結並傳送給朋友。訊息被閱讀後將立即刪除，否則將在 4 週後刪除。"},
+		{"copyLink", "複製連結並傳送給朋友。訊息讀取後會立即刪除，若未讀取則會在 4 週後刪除。"},
 		{"copyLinkButton", "複製連結"},
 		{"newMessageButton", "新訊息"},
 		{"decodedMessage", "已解密的訊息"},
@@ -739,7 +739,7 @@ var translationsSet = map[language.Tag][]entry{
 			"Bukas ang source code ng tool at maaari itong tingnan sa {github}. Kung gusto mong makipag-ugnayan sa amin, magpadala sa amin ng {contact}."},
 		{"contactLink", "mensahe"},
 		{"generalError", "Nagkaproblema. Pakisubukang muli mamaya."},
-		{"encryptNetworkError", "Nagkaproblema. Hindi ko mai-save ang mensahe. Pakisubukang muli."},
+		{"encryptNetworkError", "Nagkaproblema. Hindi ko ma-save ang mensahe. Pakisubukang muli."},
 		{"decryptNetworkError", "Nagkaproblema. Hindi ko mabasa ang mensahe. Pakisubukang muli."},
 		{"password", "Password"},
 		{"enterPasswordPlaceholder", "ilagay ang password"},
@@ -862,17 +862,17 @@ var translationsSet = map[language.Tag][]entry{
 	},
 	language.Vietnamese: {
 		{"title", "Ghi chú riêng tư và an toàn - gửi bí mật của bạn một cách an toàn"},
-		{"header", "Ghi chú riêng tư an toàn"},
+		{"header", "Ghi chú riêng tư và an toàn"},
 		{"enterTextMessage", "Nhập tin nhắn cần mã hóa"},
 		{"secureButton", "Mã hóa tin nhắn"},
-		{"copyLink", "Sao chép liên kết và gửi cho bạn bè. Tin nhắn sẽ bị xóa ngay sau khi được đọc hoặc sau 4 tuần."},
+		{"copyLink", "Sao chép liên kết và gửi cho một người bạn. Tin nhắn sẽ bị xóa ngay sau khi được đọc hoặc sau 4 tuần."},
 		{"copyLinkButton", "Sao chép liên kết"},
 		{"newMessageButton", "Tin nhắn mới"},
 		{"decodedMessage", "Tin nhắn đã giải mã"},
 		{"messageRead", "Tin nhắn đã được đọc, đã hết hạn hoặc liên kết không đúng"},
 		{"readMessageButton", "Giải mã tin nhắn"},
 		{"infoHeader", "mô tả"},
-		{"info", "Công cụ này sử dụng nhiều phương pháp mã hóa khác nhau để đảm bảo an toàn tối đa. " +
+		{"info", "Công cụ này sử dụng nhiều phương pháp mã hóa khác nhau để đạt mức bảo mật tối đa. " +
 			"Không có liên kết thì không thể giải mã tin nhắn. Hãy dùng mật khẩu để tăng cường bảo mật hơn nữa. " +
 			"Mã nguồn của công cụ được công khai và có thể xem trên {github}. Nếu bạn muốn liên hệ với chúng tôi, hãy gửi cho chúng tôi một {contact}."},
 		{"contactLink", "tin nhắn"},
@@ -888,7 +888,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"header", "บันทึกส่วนตัวที่ปลอดภัย"},
 		{"enterTextMessage", "ป้อนข้อความที่ต้องการเข้ารหัส"},
 		{"secureButton", "เข้ารหัสข้อความ"},
-		{"copyLink", "คัดลอกลิงก์และส่งให้เพื่อน ข้อความจะถูกลบทันทีหลังจากอ่านหรือหลังจาก 4 สัปดาห์"},
+		{"copyLink", "คัดลอกลิงก์แล้วส่งให้เพื่อน ข้อความจะถูกลบทันทีหลังจากอ่าน หรือเมื่อครบ 4 สัปดาห์"},
 		{"copyLinkButton", "คัดลอกลิงก์"},
 		{"newMessageButton", "ข้อความใหม่"},
 		{"decodedMessage", "ข้อความที่ถอดรหัสแล้ว"},
@@ -897,7 +897,7 @@ var translationsSet = map[language.Tag][]entry{
 		{"infoHeader", "คำอธิบาย"},
 		{"info", "เครื่องมือนี้ใช้วิธีการเข้ารหัสหลายแบบเพื่อความปลอดภัยสูงสุด " +
 			"หากไม่มีลิงก์จะไม่สามารถถอดรหัสข้อความได้ ใช้รหัสผ่านเพื่อเพิ่มความปลอดภัยยิ่งขึ้น " +
-			"ซอร์สโค้ดของเครื่องมือนี้เปิดเผยและดูได้ที่ {github} หากต้องการติดต่อเรา โปรดส่ง{contact}ถึงเรา"},
+			"ซอร์สโค้ดของเครื่องมือนี้เปิดเผยต่อสาธารณะและดูได้ที่ {github} หากต้องการติดต่อเรา โปรดส่ง{contact}ถึงเรา"},
 		{"contactLink", "ข้อความ"},
 		{"generalError", "เกิดข้อผิดพลาด โปรดลองอีกครั้งในภายหลัง"},
 		{"encryptNetworkError", "เกิดข้อผิดพลาด ไม่สามารถบันทึกข้อความได้ โปรดลองอีกครั้ง"},
