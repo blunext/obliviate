@@ -1,10 +1,12 @@
 package i18n
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"html"
 	"log/slog"
+	"slices"
 	"strings"
 	"sync"
 
@@ -28,15 +30,18 @@ type i18n struct {
 
 func NewTranslation() *i18n {
 
-	var languages []language.Tag
-
-	languages = append(languages, language.English)
+	// English is the default; Russian wins ties between Cyrillic languages, e.g. for Bashkir or Chechen
+	languages := []language.Tag{language.English, language.Russian}
 
 	for tag := range translationsSet {
-		if tag != language.English {
+		if tag != language.English && tag != language.Russian {
 			languages = append(languages, tag)
 		}
 	}
+	// the matcher resolves ties by list order, so it must not depend on map iteration
+	slices.SortFunc(languages[2:], func(a, b language.Tag) int {
+		return cmp.Compare(a.String(), b.String())
+	})
 	tr := i18n{
 		matcher:      language.NewMatcher(languages),
 		translations: make(map[string]translation),

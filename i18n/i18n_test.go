@@ -43,6 +43,15 @@ func TestI18n_GetLazyTranslation(t *testing.T) {
 
 }
 
+func TestI18n_MatcherTiesAreDeterministic(t *testing.T) {
+	for i := 0; i < 50; i++ {
+		for _, tag := range []string{"ba", "ce", "cv", "os"} {
+			translation := NewTranslation().GetTranslation(context.Background(), tag)
+			assert.Equal(t, "Приватные безопасные заметки", translation["header"], tag)
+		}
+	}
+}
+
 func TestI18n_InfoIsRenderedWithLinks(t *testing.T) {
 	trans := NewTranslation()
 	translation := trans.GetTranslation(context.Background(), "pl")
