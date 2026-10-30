@@ -1,5 +1,6 @@
 {
   "PublicKey": "{{.PublicKey}}",
+  "lang": "{{.lang}}",
   "header": "{{.header}}",
   "enterTextMessage": "{{.enterTextMessage}}",
   "password": "{{.password}}",

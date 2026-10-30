@@ -161,6 +161,7 @@ async (page) => {
     await p2.close(); }
   { const p = await fresh(); await p.route('**/variables', r => r.abort()); await p.goto(BASE); await p.waitForTimeout(1500);
     ok('Błąd /variables -> alert, strona się renderuje', p.alerts.length === 1 && await p.locator('textarea').count() === 1);
+    ok('Błąd /variables -> domyślny tytuł i lang', await p.title() !== '' && await p.locator('html').getAttribute('lang') === 'en');
     await p.close(); }
 
   // 10. long message
@@ -176,6 +177,16 @@ async (page) => {
     const btn = await p.locator('button.btn-danger').innerText();
     ok('Wersja angielska', /[A-Za-z]/.test(btn) && btn !== v.secureButton, btn.trim());
     await c.close(); }
+
+  // 12. page title and lang follow the served language
+  for (const [header, lang] of [['en-US', 'en'], ['pl-PL', 'pl'], ['zh-TW', 'zh-Hans'], ['nn-NO', 'nb']]) {
+    const c = await ctx.browser().newContext({ extraHTTPHeaders: { 'Accept-Language': header } });
+    const expected = await (await c.request.get(BASE + 'variables')).json();
+    const p = await c.newPage(); await p.goto(BASE); await p.locator('textarea').first().waitFor();
+    const title = await p.title(), htmlLang = await p.locator('html').getAttribute('lang');
+    ok(`Tytuł i lang dla ${header}`, title === expected.title && htmlLang === lang, `${htmlLang} | ${title}`);
+    await c.close();
+  }
 
   const failed = results.filter(r => r.startsWith('FAIL')).length;
   return `${results.length - failed}/${results.length} PASS\n` + results.join('\n') +

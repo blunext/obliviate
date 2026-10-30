@@ -204,6 +204,15 @@ func TestI18n_EveryTagGetsCompleteTranslation(t *testing.T) {
 	assert.Empty(t, failed)
 }
 
+func TestI18n_LangIsTheServedLanguage(t *testing.T) {
+	for _, data := range dialectData {
+		for _, tag := range data.tags {
+			translation := NewTranslation().GetTranslation(context.Background(), tag)
+			assert.Equal(t, data.expected.String(), translation["lang"], "%q", tag)
+		}
+	}
+}
+
 func TestI18n_MatcherTiesAreDeterministic(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		for _, tag := range []string{"ba", "ce", "cv", "os"} {

@@ -91,6 +91,7 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 			for _, entry := range oneLanguage {
 				tran[entry.key] = entry.msg
 			}
+			tran["lang"] = tag.String()
 		}
 	}
 

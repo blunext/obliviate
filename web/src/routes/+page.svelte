@@ -33,6 +33,11 @@
     }
 
     onMount(() => {
+        // app.html keeps the English defaults when the texts could not be loaded
+        if (data.lang) {
+            document.documentElement.lang = data.lang
+            document.title = data.title
+        }
         if (window.onSvelteReady) {
             window.onSvelteReady()
         }

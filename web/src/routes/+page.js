@@ -5,6 +5,7 @@ export const prerender = true
 
 let vars = {
     serverPublicKey: /** @type {Uint8Array} */ (new Uint8Array()),
+    lang: "",
     copyLink: "",
     copyLinkButton: "",
     decodedMessage: "",

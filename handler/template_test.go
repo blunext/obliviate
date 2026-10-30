@@ -37,6 +37,7 @@ func TestProcessTemplate_ReturnsValidJSON(t *testing.T) {
 			var data map[string]any
 			if assert.NoError(t, json.Unmarshal(rr.Body.Bytes(), &data), "lang %s: invalid JSON", lang) {
 				assert.Equal(t, "publicKey", data["PublicKey"], "lang %s", lang)
+				assert.NotEmpty(t, data["lang"], "lang %s", lang)
 				assert.Contains(t, data["info"], `<a href="https://github.com/blunext/obliviate"`, "lang %s", lang)
 				assert.Contains(t, data["info"], `<a href="mailto:info@securenote.io"`, "lang %s", lang)
 			}
