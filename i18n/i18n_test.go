@@ -138,6 +138,34 @@ func TestI18n_DialectsMatchClosestLanguage(t *testing.T) {
 	}
 }
 
+func TestI18n_OversizedHeaderIsIgnored(t *testing.T) {
+	trans := NewTranslation()
+
+	fits := strings.Repeat("pl,", maxAcceptLanguageLength/3)
+	assert.Equal(t, titleOf(language.Polish), trans.GetTranslation(context.Background(), fits)["title"])
+
+	tooLong := strings.Repeat("pl,", maxAcceptLanguageLength/3+1)
+	assert.Equal(t, titleOf(language.English), trans.GetTranslation(context.Background(), tooLong)["title"])
+}
+
+func TestI18n_HardcodedLanguagesHaveTranslations(t *testing.T) {
+	assert.NotEmpty(t, translationsSet[language.English])
+	assert.NotEmpty(t, translationsSet[language.Russian])
+}
+
+// A translation is cached per language, so a tag requested first must not spoil it for the others.
+func TestI18n_TagDoesNotPoisonCache(t *testing.T) {
+	for _, data := range dialectData {
+		for _, tag := range data.tags {
+			trans := NewTranslation()
+			trans.GetTranslation(context.Background(), tag)
+
+			translation := trans.GetTranslation(context.Background(), data.expected.String())
+			assert.Equal(t, titleOf(data.expected), translation["title"], "after %q", tag)
+		}
+	}
+}
+
 func TestI18n_EveryTagGetsCompleteTranslation(t *testing.T) {
 	regions := []string{
 		"AL", "AO", "AR", "AT", "AU", "BA", "BD", "BE", "BG", "BR", "BY", "CA", "CH", "CL", "CN", "CO", "CY", "CZ", "DE", "DK",

@@ -16,6 +16,9 @@ import (
 )
 
 const (
+	// real browsers send far less; parsing cost grows with the length of this untrusted header
+	maxAcceptLanguageLength = 1024
+
 	githubLink        = `<a href="https://github.com/blunext/obliviate" target="_blank" rel="noopener noreferrer">GitHub</a>`
 	contactLinkFormat = `<a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">%s</a>`
 )
@@ -60,6 +63,10 @@ func NewTranslation() *i18n {
 
 func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) translation {
 	var acceptedTag language.Tag
+
+	if len(acceptLanguage) > maxAcceptLanguageLength {
+		acceptLanguage = ""
+	}
 
 	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
 	if err != nil {
