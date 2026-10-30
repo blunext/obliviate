@@ -37,7 +37,7 @@ func TestSecurityHeaders(t *testing.T) {
 	assert.Equal(t, "nosniff", rr.Header().Get("X-Content-Type-Options"))
 	assert.Equal(t, "no-referrer", rr.Header().Get("Referrer-Policy"))
 	assert.Equal(t, "DENY", rr.Header().Get("X-Frame-Options"))
-	assert.Equal(t, "frame-ancestors 'none'", rr.Header().Get("Content-Security-Policy"))
+	assert.Equal(t, contentSecurityPolicy, rr.Header().Get("Content-Security-Policy"))
 	assert.Equal(t, "same-origin", rr.Header().Get("Cross-Origin-Opener-Policy"))
 }
 

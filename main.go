@@ -106,15 +106,19 @@ func main() {
 	}
 }
 
-// securityHeaders sets the headers for every response. There is no script policy: it would block the script that
-// Cloudflare Bot Fight Mode injects into the page.
+// contentSecurityPolicy allows inline scripts for the SvelteKit bootstrap and the script injected by Cloudflare Bot
+// Fight Mode. An inline script could therefore run, but connect-src and img-src stop it from sending data elsewhere.
+const contentSecurityPolicy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; " +
+	"img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+
+// securityHeaders sets the headers for every response.
 func securityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Strict-Transport-Security", "max-age=31536000")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		w.Header().Set("X-Frame-Options", "DENY")
-		w.Header().Set("Content-Security-Policy", "frame-ancestors 'none'")
+		w.Header().Set("Content-Security-Policy", contentSecurityPolicy)
 		w.Header().Set("Cross-Origin-Opener-Policy", "same-origin")
 		next.ServeHTTP(w, r)
 	})
