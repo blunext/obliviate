@@ -11,7 +11,6 @@ import (
 	"obliviate/logs"
 
 	"golang.org/x/text/language"
-	"golang.org/x/text/message"
 )
 
 const (
@@ -33,15 +32,9 @@ func NewTranslation() *i18n {
 
 	languages = append(languages, language.English)
 
-	for tag, oneLanguage := range translationsSet {
+	for tag := range translationsSet {
 		if tag != language.English {
 			languages = append(languages, tag)
-		}
-		for _, entry := range oneLanguage {
-			err := message.SetString(tag, entry.key, entry.msg)
-			if err != nil {
-				slog.Error("pair population error", logs.Error, err)
-			}
 		}
 	}
 	tr := i18n{
@@ -71,12 +64,11 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 	}
 
 	tran := translation{}
-	printer := message.NewPrinter(acceptedTag)
 
 	for tag, oneLanguage := range translationsSet {
 		if tag.String()[:2] == acceptedBaseLang {
 			for _, entry := range oneLanguage {
-				tran[entry.key] = printer.Sprintf(entry.key)
+				tran[entry.key] = entry.msg
 			}
 		}
 	}

@@ -22,6 +22,9 @@ var testData = []testFields{
 	{"no", "Private, sikre notater"},
 	{"nn-NO", "Private, sikre notater"},
 	{"da", "Private sikre noter"},
+	// zh-TW alone must not put raw keys in the cache shared with zh-CN
+	{"zh-TW", "私密安全笔记"},
+	{"zh-CN", "私密安全笔记"},
 }
 
 func TestI18n_GetLazyTranslation(t *testing.T) {
