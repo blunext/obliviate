@@ -68,7 +68,7 @@ var dialectData = []struct {
 	{language.Latvian, []string{"lv", "lv-LV"}},
 	{language.Lithuanian, []string{"lt", "lt-LT"}},
 	{language.Hungarian, []string{"hu", "hu-HU", "hu-RO", "hu-SK"}},
-	{language.Polish, []string{"pl", "pl-PL", "ko,pl;q=0.5", "*;q=0.5,pl;q=0.1", "en;q=0.1,pl;q=0.9", "az,pl;q=0.5"}},
+	{language.Polish, []string{"pl", "pl-PL", "ar,pl;q=0.5", "*;q=0.5,pl;q=0.1", "en;q=0.1,pl;q=0.9", "az,pl;q=0.5"}},
 	{language.Czech, []string{"cs", "cs-CZ"}},
 	{language.Slovak, []string{"sk", "sk-SK"}},
 	{language.Slovenian, []string{"sl", "sl-SI"}},
@@ -104,10 +104,13 @@ var dialectData = []struct {
 		"zh-TW,zh-Hant;q=0.9", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
 	}},
 	{language.Indonesian, []string{"id", "id-ID", "ms", "ms-MY", "ms-SG", "ms-BN", "jv", "su"}},
-	{language.Turkish, []string{"tr", "tr-TR", "tr-CY", "az", "az-AZ", "az-Latn", "ko,az;q=0.5"}},
+	{language.Turkish, []string{"tr", "tr-TR", "tr-CY", "az", "az-AZ", "az-Latn", "ar,az;q=0.5"}},
 	{language.Hindi, []string{"hi", "hi-IN", "mr", "bho", "mai", "awa", "sa", "gu"}},
 	{language.Bengali, []string{"bn", "bn-BD", "bn-IN", "as", "syl", "rkt"}},
 	{language.Japanese, []string{"ja", "ja-JP"}},
+	{language.Korean, []string{"ko", "ko-KR", "ko-KP", "ko-CN", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7", "ko,pl;q=0.5", "ko,az;q=0.5"}},
+	{language.Vietnamese, []string{"vi", "vi-VN", "vi-US", "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7"}},
+	{language.Thai, []string{"th", "th-TH", "th-TH,th;q=0.9,en-US;q=0.8,en;q=0.7"}},
 }
 
 func titleOf(tag language.Tag) string {
