@@ -107,6 +107,7 @@ var dialectData = []struct {
 		"zh-TW,zh-Hant;q=0.9", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7", "zh-HK,zh;q=0.9,en;q=0.8", "zh-MO,zh;q=0.9",
 	}},
 	{language.Indonesian, []string{"id", "id-ID", "ms", "ms-MY", "ms-SG", "ms-BN", "jv", "su"}},
+	{language.Filipino, []string{"fil", "fil-PH", "tl", "tl-PH", "fil-PH,fil;q=0.9,en-US;q=0.8,en;q=0.7"}},
 	{language.Turkish, []string{"tr", "tr-TR", "tr-CY", "az", "az-AZ", "az-Latn", "ar,az;q=0.5"}},
 	{language.Hindi, []string{"hi", "hi-IN", "mr", "bho", "mai", "awa", "sa", "gu"}},
 	{language.Bengali, []string{"bn", "bn-BD", "bn-IN", "as", "syl", "rkt"}},
@@ -217,15 +218,11 @@ func TestI18n_LangIsTheServedLanguage(t *testing.T) {
 }
 
 func TestI18n_LanguagesWithCommonPrefixStaySeparate(t *testing.T) {
-	filipino := language.MustParse("fil")
-	translationsSet[filipino] = []entry{{"title", "fil title"}}
-	defer delete(translationsSet, filipino)
-
 	trans := NewTranslation()
 	for tag, expected := range map[string]language.Tag{
 		"zh-TW": language.TraditionalChinese,
 		"zh-CN": language.SimplifiedChinese,
-		"fil":   filipino,
+		"fil":   language.Filipino,
 		"fi":    language.Finnish,
 	} {
 		assert.Equal(t, titleOf(expected), trans.GetTranslation(context.Background(), tag)["title"], "%q", tag)
