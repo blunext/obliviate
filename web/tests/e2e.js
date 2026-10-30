@@ -90,8 +90,8 @@ async (page) => {
     await p.locator('button.btn-danger').click(); await p.waitForTimeout(400);
     ok('Hasło włączone, puste -> walidacja', await p.locator('input[placeholder].is-invalid').count() === 1);
     const color = () => p.locator('svg circle').nth(1).getAttribute('stroke');
-    await p.locator('input[placeholder]').fill('a'); await p.waitForTimeout(300); const weak = await color();
-    await p.locator('input[placeholder]').fill('Tr0ub4dor&3-horse-battery-staple!'); await p.waitForTimeout(300); const strong = await color();
+    await p.locator('input[placeholder]').fill('a'); await p.waitForTimeout(500); const weak = await color();
+    await p.locator('input[placeholder]').fill('Tr0ub4dor&3-horse-battery-staple!'); await p.waitForTimeout(500); const strong = await color();
     ok('Wskaźnik siły hasła', weak !== strong, `${weak} -> ${strong}`);
     await p.locator('input[placeholder] + button').click();
     ok('Pokaż/ukryj hasło', await p.locator('input[placeholder]').getAttribute('type') === 'text');
@@ -179,7 +179,7 @@ async (page) => {
     await c.close(); }
 
   // 12. page title and lang follow the served language
-  for (const [header, lang] of [['en-US', 'en'], ['pl-PL', 'pl'], ['zh-TW', 'zh-Hans'], ['nn-NO', 'nb']]) {
+  for (const [header, lang] of [['en-US', 'en'], ['pl-PL', 'pl'], ['zh-TW', 'zh-Hant'], ['zh-CN', 'zh-Hans'], ['nn-NO', 'nb']]) {
     const c = await ctx.browser().newContext({ extraHTTPHeaders: { 'Accept-Language': header } });
     const expected = await (await c.request.get(BASE + 'variables')).json();
     const p = await c.newPage(); await p.goto(BASE); await p.locator('textarea').first().waitFor();

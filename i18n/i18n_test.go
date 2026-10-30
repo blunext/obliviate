@@ -23,8 +23,7 @@ var testData = []testFields{
 	{"no", "Private, sikre notater"},
 	{"nn-NO", "Private, sikre notater"},
 	{"da", "Private sikre noter"},
-	// zh-TW alone must not put raw keys in the cache shared with zh-CN
-	{"zh-TW", "私密安全笔记"},
+	{"zh-TW", "私密安全筆記"},
 	{"zh-CN", "私密安全笔记"},
 }
 
@@ -98,10 +97,14 @@ var dialectData = []struct {
 	}},
 	{language.Greek, []string{"el", "el-GR", "el-CY"}},
 	{language.SimplifiedChinese, []string{
-		"zh", "zh-CN", "zh-Hans", "zh-Hans-CN", "zh-Hans-HK", "zh-SG", "zh-MY", "zh-HK", "zh-MO", "zh-TW", "zh_TW", "ZH-tw",
-		"zh-Hant", "zh-Hant-TW", "zh-Hant-HK", "zh-hant-tw", "zh-DE", "zh-US", "zh-CA", "zh-GB", "zh-AU",
-		"cmn", "cmn-Hans", "wuu", "hak", "nan", "gan", "hsn", "yue", "yue-HK", "yue-Hant", "yue-Hans",
-		"zh-TW,zh-Hant;q=0.9", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+		"zh", "zh-CN", "zh-Hans", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-TW", "zh-SG", "zh-MY", "zh-ID", "zh-DE", "zh-US", "zh-CA", "zh-GB", "zh-AU",
+		"cmn", "cmn-Hans", "wuu", "hak", "nan", "gan", "hsn", "yue-Hans", "yue-CN",
+		"zh-CN,zh;q=0.9,en;q=0.8",
+	}},
+	{language.TraditionalChinese, []string{
+		"zh-TW", "zh_TW", "ZH-tw", "zh-HK", "zh-MO", "zh-Hant", "zh-Hant-TW", "zh-Hant-HK", "zh-Hant-MO", "zh-hant-tw",
+		"cmn-Hant", "cmn-TW", "yue", "yue-HK", "yue-Hant",
+		"zh-TW,zh-Hant;q=0.9", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7", "zh-HK,zh;q=0.9,en;q=0.8", "zh-MO,zh;q=0.9",
 	}},
 	{language.Indonesian, []string{"id", "id-ID", "ms", "ms-MY", "ms-SG", "ms-BN", "jv", "su"}},
 	{language.Turkish, []string{"tr", "tr-TR", "tr-CY", "az", "az-AZ", "az-Latn", "ar,az;q=0.5"}},
@@ -215,9 +218,7 @@ func TestI18n_LangIsTheServedLanguage(t *testing.T) {
 
 func TestI18n_LanguagesWithCommonPrefixStaySeparate(t *testing.T) {
 	filipino := language.MustParse("fil")
-	translationsSet[language.TraditionalChinese] = []entry{{"title", "zh-Hant title"}}
 	translationsSet[filipino] = []entry{{"title", "fil title"}}
-	defer delete(translationsSet, language.TraditionalChinese)
 	defer delete(translationsSet, filipino)
 
 	trans := NewTranslation()

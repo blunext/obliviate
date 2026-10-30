@@ -26,10 +26,11 @@ const (
 // languageFallbacks are appended after the user's languages, for those the matcher maps to English or a distant language.
 // Keys are a base language, optionally with a script.
 var languageFallbacks = map[string]language.Tag{
-	"az":      language.Turkish,
-	"rue":     language.Ukrainian,
-	"yue":     language.SimplifiedChinese,
-	"bs-Cyrl": language.Serbian,
+	"az":       language.Turkish,
+	"rue":      language.Ukrainian,
+	"yue":      language.TraditionalChinese,
+	"yue-Hans": language.SimplifiedChinese,
+	"bs-Cyrl":  language.Serbian,
 }
 
 type translation map[string]string
@@ -72,6 +73,9 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 
 	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
 	if err == nil {
+		for i, tag := range acceptTagList {
+			acceptTagList[i] = withChineseScript(tag)
+		}
 		_, index, _ := t.matcher.Match(withFallbacks(acceptTagList)...)
 		acceptedTag = t.languages[index]
 	}
@@ -101,6 +105,20 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 
 	slog.InfoContext(ctx, "language created", logs.Language, acceptedTag)
 	return tran
+}
+
+// withChineseScript picks the script for a Chinese tag without one. Left to the matcher, a following bare "zh" beats
+// zh-HK, and regions such as MY or US get Traditional Chinese.
+func withChineseScript(tag language.Tag) language.Tag {
+	base, script, region := tag.Raw()
+	if base.String() != "zh" || script.String() != "Zzzz" {
+		return tag
+	}
+	switch region.String() {
+	case "TW", "HK", "MO":
+		return language.TraditionalChinese
+	}
+	return language.SimplifiedChinese
 }
 
 func withFallbacks(tags []language.Tag) []language.Tag {

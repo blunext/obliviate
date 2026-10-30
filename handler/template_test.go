@@ -27,7 +27,7 @@ func TestProcessTemplate_ReturnsValidJSON(t *testing.T) {
 		}
 		handler := ProcessTemplate(conf, "publicKey")
 
-		for _, lang := range []string{"en", "pl", "de", "fr", "tr", "ja", "zh-CN", "hi", "da"} {
+		for _, lang := range []string{"en", "pl", "de", "fr", "tr", "ja", "zh-CN", "zh-TW", "hi", "da"} {
 			req := httptest.NewRequest(http.MethodGet, "/variables", nil)
 			req.Header.Set("Accept-Language", lang)
 			rr := httptest.NewRecorder()
