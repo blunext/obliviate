@@ -18,6 +18,5 @@
   "generalError": "{{.generalError}}",
   "decryptNetworkError": "{{.decryptNetworkError}}",
   "decodedMessage": "{{.decodedMessage}}",
-  "title": "{{.title}}",
-  "description": "{{.description}}"
+  "title": "{{.title}}"
 }

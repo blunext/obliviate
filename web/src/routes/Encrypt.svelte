@@ -13,7 +13,6 @@
         copyLinkButton: "",
         decodedMessage: "",
         decryptNetworkError: "",
-        description: "",
         encryptNetworkError: "",
         enterTextMessage: "",
         generalError: "",

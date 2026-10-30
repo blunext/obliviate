@@ -11,7 +11,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.English: {
 		{"title", "Private and secure notes - send your secrets safely"},
 		{"header", "Private secure notes"},
-		{"description", "Secure encrypted messages"},
 		{"enterTextMessage", "Enter the message to encrypt"},
 		{"secureButton", "Encrypt the message"},
 		{"copyLink", "Copy the link and send it to a friend. The message will be deleted immediately after being read or after 4 weeks."},
@@ -35,7 +34,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.German: {
 		{"title", "Private und sichere Notizen - Versenden Sie Ihre Geheimnisse sicher"},
 		{"header", "Private sichere Notizen"},
-		{"description", "Sichere verschlüsselte Nachrichten"},
 		{"enterTextMessage", "Geben Sie die zu verschlüsselnde Nachricht ein"},
 		{"secureButton", "Nachricht verschlüsseln"},
 		{"copyLink", "Kopieren Sie den Link und senden Sie ihn an einen Freund. Die Nachricht wird sofort nach dem Lesen oder nach 4 Wochen gelöscht."},
@@ -59,7 +57,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Dutch: {
 		{"title", "Privé en veilige notities - stuur je geheimen veilig"},
 		{"header", "Privé veilige notities"},
-		{"description", "Beveiligde versleutelde berichten"},
 		{"enterTextMessage", "Voer het bericht in om te versleutelen"},
 		{"secureButton", "Versleutel het bericht"},
 		{"copyLink", "Kopieer de link en stuur deze naar een vriend. Het bericht wordt onmiddellijk verwijderd nadat het is gelezen of na 4 weken."},
@@ -83,7 +80,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Danish: {
 		{"title", "Private og sikre noter - send dine hemmeligheder sikkert"},
 		{"header", "Private sikre noter"},
-		{"description", "Sikre krypterede beskeder"},
 		{"enterTextMessage", "Indtast beskeden, der skal krypteres"},
 		{"secureButton", "Kryptér beskeden"},
 		{"copyLink", "Kopier linket og send det til en ven. Beskeden vil blive slettet umiddelbart efter at være blevet læst eller efter 4 uger."},
@@ -108,7 +104,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.MustParse("nb"): {
 		{"title", "Private og sikre notater - send hemmelighetene dine trygt"},
 		{"header", "Private, sikre notater"},
-		{"description", "Sikre krypterte meldinger"},
 		{"enterTextMessage", "Tast inn melding for kryptering"},
 		{"secureButton", "Krypter melding"},
 		{"copyLink", "Kopier lenken og send den til en venn. Meldingen slettes umiddelbart etter at den er lest, eller etter 4 uker."},
@@ -132,7 +127,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Swedish: {
 		{"title", "Privata och säkra anteckningar - skicka dina hemligheter säkert"},
 		{"header", "Privata säkra anteckningar"},
-		{"description", "Säkra krypterade meddelanden"},
 		{"enterTextMessage", "Ange meddelandet som ska krypteras"},
 		{"secureButton", "Kryptera meddelandet"},
 		{"copyLink", "Kopiera länken och skicka den till en vän. Meddelandet raderas omedelbart efter att det har lästs eller efter 4 veckor."},
@@ -156,7 +150,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Finnish: {
 		{"title", "Yksityiset ja turvalliset muistiinpanot - lähetä salaisuutesi turvallisesti"},
 		{"header", "Yksityiset turvalliset muistiinpanot"},
-		{"description", "Turvalliset salatut viestit"},
 		{"enterTextMessage", "Anna salattava viesti"},
 		{"secureButton", "Salaa viesti"},
 		{"copyLink", "Kopioi linkki ja lähetä se ystävällesi. Viesti poistetaan heti lukemisen jälkeen tai 4 viikon kuluttua."},
@@ -180,7 +173,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Estonian: {
 		{"title", "Privaatsed ja turvalised märkmed - saatke oma saladused turvaliselt"},
 		{"header", "Privaatsed turvalised märkmed"},
-		{"description", "Turvalised krüpteeritud sõnumid"},
 		{"enterTextMessage", "Sisestage krüpteeritav sõnum"},
 		{"secureButton", "Krüpteeri sõnum"},
 		{"copyLink", "Kopeerige link ja saatke see sõbrale. Sõnum kustutatakse kohe pärast lugemist või 4 nädala möödumist."},
@@ -204,7 +196,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Latvian: {
 		{"title", "Privātas un drošas piezīmes - nosūtiet savus noslēpumus droši"},
 		{"header", "Privātas drošas piezīmes"},
-		{"description", "Drošas šifrētas ziņas"},
 		{"enterTextMessage", "Ievadiet šifrējamo ziņu"},
 		{"secureButton", "Šifrēt ziņu"},
 		{"copyLink", "Kopējiet saiti un nosūtiet to draugam. Ziņa tiks dzēsta nekavējoties pēc izlasīšanas vai pēc 4 nedēļām."},
@@ -228,7 +219,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Lithuanian: {
 		{"title", "Privatūs ir saugūs užrašai - siųskite savo paslaptis saugiai"},
 		{"header", "Privatūs saugūs užrašai"},
-		{"description", "Saugūs užšifruoti pranešimai"},
 		{"enterTextMessage", "Įveskite pranešimą, kurį norite užšifruoti"},
 		{"secureButton", "Užšifruoti pranešimą"},
 		{"copyLink", "Nukopijuokite nuorodą ir siųskite ją draugui. Pranešimas bus ištrintas iš karto po perskaitymo arba po 4 savaičių."},
@@ -252,7 +242,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Hungarian: {
 		{"title", "Privát és biztonságos jegyzetek - küldje el titkait biztonságosan"},
 		{"header", "Privát biztonságos jegyzetek"},
-		{"description", "Biztonságos titkosított üzenetek"},
 		{"enterTextMessage", "Írja be a titkosítandó üzenetet"},
 		{"secureButton", "Üzenet titkosítása"},
 		{"copyLink", "Másolja a linket, és küldje el egy barátjának. Az üzenet azonnal törlődik az elolvasása után, vagy 4 hét elteltével."},
@@ -276,7 +265,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Polish: {
 		{"title", "Prywatne i bezpieczne wiadomości – przesyłaj swoje sekrety bezpiecznie"},
 		{"header", "Prywatne, bezpieczne wiadomości"},
-		{"description", "Bezpieczne szyfrowane wiadomości"},
 		{"enterTextMessage", "Wpisz wiadomość do zaszyfrowania"},
 		{"secureButton", "Zaszyfruj wiadomość"},
 		{"copyLink", "Skopiuj link i wyślij go znajomemu. Wiadomość zostanie usunięta natychmiast po odczytaniu lub po 4 tygodniach."},
@@ -300,7 +288,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Czech: {
 		{"title", "Soukromé a zabezpečené poznámky - zašlete svá tajemství bezpečně"},
 		{"header", "Soukromé zabezpečené poznámky"},
-		{"description", "Zabezpečené šifrované zprávy"},
 		{"enterTextMessage", "Zadejte zprávu k zašifrování"},
 		{"secureButton", "Zašifrovat zprávu"},
 		{"copyLink", "Zkopírujte odkaz a pošlete jej příteli. Zpráva bude smazána ihned po přečtení nebo po 4 týdnech."},
@@ -324,7 +311,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Slovak: {
 		{"title", "Súkromné a zabezpečené poznámky - bezpečne posielajte svoje tajomstvá"},
 		{"header", "Súkromné zabezpečené poznámky"},
-		{"description", "Zabezpečené šifrované správy"},
 		{"enterTextMessage", "Zadajte správu na zašifrovanie"},
 		{"secureButton", "Zašifrovať správu"},
 		{"copyLink", "Skopírujte odkaz a pošlite ho priateľovi. Správa sa odstráni hneď po prečítaní alebo po 4 týždňoch."},
@@ -348,7 +334,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Slovenian: {
 		{"title", "Zasebne in varne beležke - varno pošiljanje skrivnosti"},
 		{"header", "Zasebne varne beležke"},
-		{"description", "Varno šifrirana sporočila"},
 		{"enterTextMessage", "Vnesite sporočilo za šifriranje"},
 		{"secureButton", "Šifriraj sporočilo"},
 		{"copyLink", "Kopirajte povezavo in jo pošljite prijatelju. Sporočilo bo izbrisano takoj po branju ali po 4 tednih."},
@@ -372,7 +357,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Spanish: {
 		{"title", "Notas privadas y seguras: envía tus secretos de forma segura"},
 		{"header", "Notas privadas seguras"},
-		{"description", "Mensajes seguros cifrados"},
 		{"enterTextMessage", "Introduce el mensaje para cifrar"},
 		{"secureButton", "Cifrar el mensaje"},
 		{"copyLink", "Copia el enlace y envíalo a un amigo. El mensaje se eliminará inmediatamente después de ser leído o después de 4 semanas."},
@@ -396,7 +380,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Catalan: {
 		{"title", "Notes privades i segures: envia els teus secrets de manera segura"},
 		{"header", "Notes privades segures"},
-		{"description", "Missatges segurs xifrats"},
 		{"enterTextMessage", "Introdueix el missatge per xifrar"},
 		{"secureButton", "Xifra el missatge"},
 		{"copyLink", "Copia l'enllaç i envia'l a un amic. El missatge s'eliminarà immediatament després de ser llegit o al cap de 4 setmanes."},
@@ -420,7 +403,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Portuguese: {
 		{"title", "Notas privadas e seguras - envie seus segredos com segurança"},
 		{"header", "Notas privadas seguras"},
-		{"description", "Mensagens seguras e criptografadas"},
 		{"enterTextMessage", "Digite a mensagem para criptografar"},
 		{"secureButton", "Criptografar a mensagem"},
 		{"copyLink", "Copie o link e envie para um amigo. A mensagem será excluída imediatamente após ser lida ou após 4 semanas."},
@@ -444,7 +426,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Italian: {
 		{"title", "Note private e sicure: invia i tuoi segreti in tutta sicurezza"},
 		{"header", "Note private e sicure"},
-		{"description", "Messaggi sicuri e criptati"},
 		{"enterTextMessage", "Inserisci il messaggio da criptare"},
 		{"secureButton", "Cripta il messaggio"},
 		{"copyLink", "Copia il link e invialo a un amico. Il messaggio verrà eliminato immediatamente dopo essere stato letto o dopo 4 settimane."},
@@ -468,7 +449,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Romanian: {
 		{"title", "Notițe private și securizate - trimiteți secretele în siguranță"},
 		{"header", "Notițe private securizate"},
-		{"description", "Mesaje criptate securizate"},
 		{"enterTextMessage", "Introduceți mesajul de criptat"},
 		{"secureButton", "Criptați mesajul"},
 		{"copyLink", "Copiați linkul și trimiteți-l unui prieten. Mesajul va fi șters imediat după ce este citit sau după 4 săptămâni."},
@@ -492,7 +472,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.French: {
 		{"title", "Notes privées et sécurisées - envoyez vos secrets en toute sécurité"},
 		{"header", "Notes privées sécurisées"},
-		{"description", "Messages sécurisés et chiffrés"},
 		{"enterTextMessage", "Entrez le message à chiffrer"},
 		{"secureButton", "Chiffrer le message"},
 		{"copyLink", "Copiez le lien et envoyez-le à un ami. Le message sera supprimé immédiatement après avoir été lu ou après 4 semaines."},
@@ -516,7 +495,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Ukrainian: {
 		{"title", "Приватні та безпечні нотатки - безпечна передача секретів"},
 		{"header", "Приватні безпечні нотатки"},
-		{"description", "Безпечні зашифровані повідомлення"},
 		{"enterTextMessage", "Введіть повідомлення для шифрування"},
 		{"secureButton", "Зашифрувати повідомлення"},
 		{"copyLink", "Скопіюйте посилання та надішліть його другу. Повідомлення буде видалено одразу після прочитання або через 4 тижні."},
@@ -540,7 +518,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Russian: {
 		{"title", "Приватные и безопасные заметки - безопасная передача секретов"},
 		{"header", "Приватные безопасные заметки"},
-		{"description", "Безопасные зашифрованные сообщения"},
 		{"enterTextMessage", "Введите сообщение для шифрования"},
 		{"secureButton", "Зашифровать сообщение"},
 		{"copyLink", "Скопируйте ссылку и отправьте ее другу. Сообщение будет удалено сразу после прочтения или через 4 недели."},
@@ -564,7 +541,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Bulgarian: {
 		{"title", "Частни и сигурни бележки - изпращайте тайните си безопасно"},
 		{"header", "Частни сигурни бележки"},
-		{"description", "Сигурни криптирани съобщения"},
 		{"enterTextMessage", "Въведете съобщението за криптиране"},
 		{"secureButton", "Криптирай съобщението"},
 		{"copyLink", "Копирайте връзката и я изпратете на приятел. Съобщението ще бъде изтрито веднага след прочитането му или след 4 седмици."},
@@ -588,7 +564,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Croatian: {
 		{"title", "Privatne i sigurne bilješke - sigurno šaljite svoje tajne"},
 		{"header", "Privatne sigurne bilješke"},
-		{"description", "Sigurne šifrirane poruke"},
 		{"enterTextMessage", "Unesite poruku za šifriranje"},
 		{"secureButton", "Šifriraj poruku"},
 		{"copyLink", "Kopirajte poveznicu i pošaljite je prijatelju. Poruka će biti izbrisana odmah nakon što se pročita ili nakon 4 tjedna."},
@@ -612,7 +587,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Albanian: {
 		{"title", "Shënime private dhe të sigurta - dërgoni sekretet tuaja me siguri"},
 		{"header", "Shënime private të sigurta"},
-		{"description", "Mesazhe të koduara të sigurta"},
 		{"enterTextMessage", "Shkruani mesazhin për t'u koduar"},
 		{"secureButton", "Kodoni mesazhin"},
 		{"copyLink", "Kopjoni lidhjen dhe dërgojani një miku. Mesazhi do të fshihet menjëherë pasi të lexohet ose pas 4 javësh."},
@@ -636,7 +610,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Serbian: {
 		{"title", "Privatne i sigurne beleške - bezbedno šaljite svoje tajne"},
 		{"header", "Privatne sigurne beleške"},
-		{"description", "Sigurne šifrovane poruke"},
 		{"enterTextMessage", "Unesite poruku za šifrovanje"},
 		{"secureButton", "Šifruj poruku"},
 		{"copyLink", "Kopirajte link i pošaljite ga prijatelju. Poruka će biti odmah obrisana nakon čitanja ili nakon 4 nedelje."},
@@ -660,7 +633,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Greek: {
 		{"title", "Ιδιωτικές και ασφαλείς σημειώσεις - στείλτε τα μυστικά σας με ασφάλεια"},
 		{"header", "Ιδιωτικές ασφαλείς σημειώσεις"},
-		{"description", "Ασφαλή κρυπτογραφημένα μηνύματα"},
 		{"enterTextMessage", "Εισάγετε το μήνυμα προς κρυπτογράφηση"},
 		{"secureButton", "Κρυπτογράφηση του μηνύματος"},
 		{"copyLink", "Αντιγράψτε τον σύνδεσμο και στείλτε τον σε έναν φίλο. Το μήνυμα θα διαγραφεί αμέσως μετά την ανάγνωση ή μετά από 4 εβδομάδες."},
@@ -684,7 +656,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.SimplifiedChinese: {
 		{"title", "私密且安全的笔记 - 安全发送您的秘密"},
 		{"header", "私密安全笔记"},
-		{"description", "安全加密的消息"},
 		{"enterTextMessage", "输入要加密的消息"},
 		{"secureButton", "加密消息"},
 		{"copyLink", "复制链接并发送给朋友。消息被阅读后将立即删除，否则将在 4 周后删除。"},
@@ -708,7 +679,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.TraditionalChinese: {
 		{"title", "私密且安全的筆記 - 安全傳送您的秘密"},
 		{"header", "私密安全筆記"},
-		{"description", "安全加密的訊息"},
 		{"enterTextMessage", "輸入要加密的訊息"},
 		{"secureButton", "加密訊息"},
 		{"copyLink", "複製連結並傳送給朋友。訊息被閱讀後將立即刪除，否則將在 4 週後刪除。"},
@@ -732,7 +702,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Indonesian: {
 		{"title", "Catatan pribadi dan aman - kirim rahasia Anda dengan aman"},
 		{"header", "Catatan pribadi yang aman"},
-		{"description", "Pesan terenkripsi aman"},
 		{"enterTextMessage", "Masukkan pesan yang akan dienkripsi"},
 		{"secureButton", "Enkripsi pesan"},
 		{"copyLink", "Salin tautan dan kirim ke teman. Pesan akan dihapus segera setelah dibaca atau setelah 4 minggu."},
@@ -756,7 +725,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Turkish: {
 		{"title", "Özel ve güvenli notlar - sırlarınızı güvenle gönderin"},
 		{"header", "Özel güvenli notlar"},
-		{"description", "Güvenli şifreli mesajlar"},
 		{"enterTextMessage", "Şifrelemek için mesajı girin"},
 		{"secureButton", "Mesajı şifrele"},
 		{"copyLink", "Bağlantıyı kopyalayın ve bir arkadaşa gönderin. Mesaj, okunduktan hemen sonra veya 4 hafta sonra silinecektir."},
@@ -780,7 +748,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Hindi: {
 		{"title", "निजी और सुरक्षित नोट्स - अपने रहस्यों को सुरक्षित रूप से भेजें"},
 		{"header", "निजी सुरक्षित नोट्स"},
-		{"description", "सुरक्षित एन्क्रिप्टेड संदेश"},
 		{"enterTextMessage", "एन्क्रिप्ट करने के लिए संदेश दर्ज करें"},
 		{"secureButton", "संदेश को एन्क्रिप्ट करें"},
 		{"copyLink", "लिंक को कॉपी करें और इसे एक मित्र को भेजें। संदेश पढ़ने के तुरंत बाद या 4 सप्ताह के बाद हटा दिया जाएगा।"},
@@ -804,7 +771,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Bengali: {
 		{"title", "ব্যক্তিগত এবং নিরাপদ নোটস - আপনার গোপন তথ্য নিরাপদে পাঠান"},
 		{"header", "ব্যক্তিগত নিরাপদ নোটস"},
-		{"description", "নিরাপদ এনক্রিপ্টেড বার্তা"},
 		{"enterTextMessage", "এনক্রিপ্ট করার জন্য বার্তা লিখুন"},
 		{"secureButton", "বার্তাটি এনক্রিপ্ট করুন"},
 		{"copyLink", "লিঙ্কটি কপি করুন এবং এটি একজন বন্ধুর কাছে পাঠান। বার্তাটি পড়ার সঙ্গে সঙ্গে অথবা ৪ সপ্তাহ পরে মুছে ফেলা হবে।"},
@@ -828,7 +794,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Japanese: {
 		{"title", "プライベートで安全なメモ - 秘密を安全に送信"},
 		{"header", "プライベートで安全なメモ"},
-		{"description", "安全な暗号化メッセージ"},
 		{"enterTextMessage", "暗号化するメッセージを入力してください"},
 		{"secureButton", "メッセージを暗号化"},
 		{"copyLink", "リンクをコピーして友達に送信してください。メッセージは読まれた直後に削除されます。未読の場合は4週間後に削除されます。"},
@@ -852,7 +817,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Korean: {
 		{"title", "비공개 보안 노트 - 비밀을 안전하게 보내세요"},
 		{"header", "비공개 보안 노트"},
-		{"description", "안전하게 암호화된 메시지"},
 		{"enterTextMessage", "암호화할 메시지를 입력하세요"},
 		{"secureButton", "메시지 암호화"},
 		{"copyLink", "링크를 복사하여 친구에게 보내세요. 메시지는 읽은 직후 또는 4주 후에 삭제됩니다."},
@@ -876,7 +840,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Vietnamese: {
 		{"title", "Ghi chú riêng tư và an toàn - gửi bí mật của bạn một cách an toàn"},
 		{"header", "Ghi chú riêng tư an toàn"},
-		{"description", "Tin nhắn mã hóa an toàn"},
 		{"enterTextMessage", "Nhập tin nhắn cần mã hóa"},
 		{"secureButton", "Mã hóa tin nhắn"},
 		{"copyLink", "Sao chép liên kết và gửi cho bạn bè. Tin nhắn sẽ bị xóa ngay sau khi được đọc hoặc sau 4 tuần."},
@@ -900,7 +863,6 @@ var translationsSet = map[language.Tag][]entry{
 	language.Thai: {
 		{"title", "บันทึกส่วนตัวและปลอดภัย - ส่งความลับของคุณอย่างปลอดภัย"},
 		{"header", "บันทึกส่วนตัวที่ปลอดภัย"},
-		{"description", "ข้อความเข้ารหัสที่ปลอดภัย"},
 		{"enterTextMessage", "ป้อนข้อความที่ต้องการเข้ารหัส"},
 		{"secureButton", "เข้ารหัสข้อความ"},
 		{"copyLink", "คัดลอกลิงก์และส่งให้เพื่อน ข้อความจะถูกลบทันทีหลังจากอ่านหรือหลังจาก 4 สัปดาห์"},
