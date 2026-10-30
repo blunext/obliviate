@@ -38,8 +38,8 @@
             document.documentElement.lang = data.lang
             document.title = data.title
         }
-        if (window.onSvelteReady) {
-            window.onSvelteReady()
+        for (const [selector, display] of [['.svelte-loading', 'none'], ['.svelte-content', 'block']]) {
+            /** @type {HTMLElement} */ (document.querySelector(selector)).style.display = display
         }
         hash = window.location.hash
         if (hash) {
