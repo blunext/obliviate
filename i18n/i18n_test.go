@@ -213,6 +213,24 @@ func TestI18n_LangIsTheServedLanguage(t *testing.T) {
 	}
 }
 
+func TestI18n_LanguagesWithCommonPrefixStaySeparate(t *testing.T) {
+	filipino := language.MustParse("fil")
+	translationsSet[language.TraditionalChinese] = []entry{{"title", "zh-Hant title"}}
+	translationsSet[filipino] = []entry{{"title", "fil title"}}
+	defer delete(translationsSet, language.TraditionalChinese)
+	defer delete(translationsSet, filipino)
+
+	trans := NewTranslation()
+	for tag, expected := range map[string]language.Tag{
+		"zh-TW": language.TraditionalChinese,
+		"zh-CN": language.SimplifiedChinese,
+		"fil":   filipino,
+		"fi":    language.Finnish,
+	} {
+		assert.Equal(t, titleOf(expected), trans.GetTranslation(context.Background(), tag)["title"], "%q", tag)
+	}
+}
+
 func TestI18n_MatcherTiesAreDeterministic(t *testing.T) {
 	for i := 0; i < 50; i++ {
 		for _, tag := range []string{"ba", "ce", "cv", "os"} {

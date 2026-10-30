@@ -35,7 +35,8 @@ var languageFallbacks = map[string]language.Tag{
 type translation map[string]string
 
 type i18n struct {
-	translations map[string]translation
+	translations map[language.Tag]translation
+	languages    []language.Tag
 	matcher      language.Matcher
 	sync.Mutex
 }
@@ -55,55 +56,50 @@ func NewTranslation() *i18n {
 		return cmp.Compare(a.String(), b.String())
 	})
 	tr := i18n{
+		languages:    languages,
 		matcher:      language.NewMatcher(languages),
-		translations: make(map[string]translation),
+		translations: make(map[language.Tag]translation),
 	}
 	return &tr
 }
 
 func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) translation {
-	var acceptedTag language.Tag
+	acceptedTag := language.English
 
 	if len(acceptLanguage) > maxAcceptLanguageLength {
 		acceptLanguage = ""
 	}
 
 	acceptTagList, _, err := language.ParseAcceptLanguage(acceptLanguage)
-	if err != nil {
-		acceptedTag = language.English
-	} else {
-		acceptedTag, _, _ = t.matcher.Match(withFallbacks(acceptTagList)...)
+	if err == nil {
+		_, index, _ := t.matcher.Match(withFallbacks(acceptTagList)...)
+		acceptedTag = t.languages[index]
 	}
-	acceptedBaseLang := acceptedTag.String()[:2]
 
 	t.Lock()
 	defer t.Unlock()
 
-	if tran, ok := t.translations[acceptedBaseLang]; ok {
-		slog.InfoContext(ctx, "translation exists", logs.Language, acceptedBaseLang)
+	if tran, ok := t.translations[acceptedTag]; ok {
+		slog.InfoContext(ctx, "translation exists", logs.Language, acceptedTag)
 		return tran
 	}
 
 	tran := translation{}
 
-	for tag, oneLanguage := range translationsSet {
-		if tag.String()[:2] == acceptedBaseLang {
-			for _, entry := range oneLanguage {
-				tran[entry.key] = entry.msg
-			}
-			tran["lang"] = tag.String()
-		}
+	for _, entry := range translationsSet[acceptedTag] {
+		tran[entry.key] = entry.msg
 	}
 
 	if len(tran) == 0 {
-		slog.ErrorContext(ctx, "could not determine translation", logs.LanguageTag, acceptedTag, logs.Language, acceptedBaseLang)
+		slog.ErrorContext(ctx, "could not determine translation", logs.LanguageTag, acceptedTag)
 	} else {
+		tran["lang"] = acceptedTag.String()
 		tran["info"] = renderInfo(tran["info"], tran["contactLink"])
 	}
 
-	t.translations[acceptedBaseLang] = tran
+	t.translations[acceptedTag] = tran
 
-	slog.InfoContext(ctx, "language created", logs.Language, acceptedBaseLang)
+	slog.InfoContext(ctx, "language created", logs.Language, acceptedTag)
 	return tran
 }
 
