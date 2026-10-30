@@ -1,1 +1,14 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */
+
+/* On narrow screens the password label sits above the field, which becomes the first visible item of its input group */
+@include media-breakpoint-down(sm) {
+    #password {
+        margin-left: 0;
+        border-top-left-radius: var(--bs-border-radius);
+        border-bottom-left-radius: var(--bs-border-radius);
+
+        &::placeholder {
+            color: transparent;
+        }
+    }
+}

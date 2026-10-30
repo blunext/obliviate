@@ -243,12 +243,15 @@
     {:else}
         {#if hasPassword}
             <div class="row">
+                <div class="d-sm-none mb-2">
+                    <label class="text-secondary" for="password">{data.password}</label>
+                </div>
                 <div class="input-group mb-3">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend d-none d-sm-block">
                             <span class="input-group-text">{data.password}</span>
                         </div>
-                        <input type={showPassword ? "text" : "password"}
+                        <input id="password" type={showPassword ? "text" : "password"}
                                class="form-control {messagePasswordOk ? '' : 'is-invalid'}"
                                placeholder={data.enterPasswordPlaceholder}
                                on:input={updatePassword}

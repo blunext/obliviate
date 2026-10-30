@@ -199,12 +199,16 @@
 <div class="container">
     <div class="row">
         <div class={hasPassword ? "mb-3" : "mb-3 collapse"}>
-            <div class="input-group">
-                <span class="input-group-text">{data.password}</span>
-                <span class="input-group-text">
+            <div class="d-flex d-sm-none justify-content-between align-items-center mb-2">
+                <label class="text-secondary" for="password">{data.password}</label>
+                <ShieldIcon score={messagePassword === "" ? undefined : passwordScore} />
+            </div>
+            <div class="input-group flex-nowrap">
+                <span class="input-group-text d-none d-sm-flex">{data.password}</span>
+                <span class="input-group-text d-none d-sm-flex">
                     <ShieldIcon score={messagePassword === "" ? undefined : passwordScore} />
                 </span>
-                <input type={showPassword ? "text" : "password"}
+                <input id="password" type={showPassword ? "text" : "password"}
                        class={passwordOk ? "form-control" : "form-control is-invalid"}
                        placeholder={data.enterPasswordPlaceholder}
                        bind:value={messagePassword}
