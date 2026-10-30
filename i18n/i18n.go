@@ -20,6 +20,15 @@ const (
 	contactLinkFormat = `<a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">%s</a>`
 )
 
+// languageFallbacks are appended after the user's languages, for those the matcher maps to English or a distant language.
+// Keys are a base language, optionally with a script.
+var languageFallbacks = map[string]language.Tag{
+	"az":      language.Turkish,
+	"rue":     language.Ukrainian,
+	"yue":     language.SimplifiedChinese,
+	"bs-Cyrl": language.Serbian,
+}
+
 type translation map[string]string
 
 type i18n struct {
@@ -56,7 +65,7 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 	if err != nil {
 		acceptedTag = language.English
 	} else {
-		acceptedTag, _, _ = t.matcher.Match(acceptTagList...)
+		acceptedTag, _, _ = t.matcher.Match(withFallbacks(acceptTagList)...)
 	}
 	acceptedBaseLang := acceptedTag.String()[:2]
 
@@ -88,6 +97,19 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 
 	slog.InfoContext(ctx, "language created", logs.Language, acceptedBaseLang)
 	return tran
+}
+
+func withFallbacks(tags []language.Tag) []language.Tag {
+	for _, tag := range tags {
+		base, _ := tag.Base()
+		script, _ := tag.Script()
+		if fallback, ok := languageFallbacks[base.String()+"-"+script.String()]; ok {
+			tags = append(tags, fallback)
+		} else if fallback, ok := languageFallbacks[base.String()]; ok {
+			tags = append(tags, fallback)
+		}
+	}
+	return tags
 }
 
 // renderInfo escapes the info text and replaces {github} and {contact} placeholders with HTML links
