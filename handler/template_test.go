@@ -20,6 +20,9 @@ func TestProcessTemplate_ReturnsValidJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// a quote in a translation would break the JSON if a value were not encoded
+	assert.NotContains(t, string(variables), `"{{`)
+
 	for _, prodEnv := range []bool{false, true} {
 		conf := &config.Configuration{
 			ProdEnv:            prodEnv,

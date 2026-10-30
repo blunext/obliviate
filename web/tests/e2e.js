@@ -89,7 +89,7 @@ async (page) => {
     await p.locator('button.btn-success').click();
     await p.locator('button.btn-danger').click(); await p.waitForTimeout(400);
     ok('Hasło włączone, puste -> walidacja', await p.locator('input[placeholder].is-invalid').count() === 1);
-    const color = () => p.locator('svg circle').nth(1).getAttribute('stroke');
+    const color = () => p.locator('svg:visible circle').nth(1).getAttribute('stroke');
     await p.locator('input[placeholder]').fill('a'); await p.waitForTimeout(500); const weak = await color();
     await p.locator('input[placeholder]').fill('Tr0ub4dor&3-horse-battery-staple!'); await p.waitForTimeout(500); const strong = await color();
     ok('Wskaźnik siły hasła', weak !== strong, `${weak} -> ${strong}`);
@@ -187,6 +187,32 @@ async (page) => {
     ok(`Tytuł i lang dla ${header}`, title === expected.title && htmlLang === lang, `${htmlLang} | ${title}`);
     await c.close();
   }
+
+  // 13. password row: above the field on narrow screens, in one row from 576 px
+  { const { p: e, link } = await encrypt('narrow', pass); await e.close();
+    const c = await ctx.browser().newContext({ viewport: { width: 360, height: 640 }, extraHTTPHeaders: { 'Accept-Language': 'el' } });
+    const p = await c.newPage(); await p.goto(BASE);
+    await p.locator('textarea').first().waitFor();
+    await p.locator('button.btn-success').click();
+    const label = p.locator('label[for=password]'), input = p.locator('#password'), shields = p.locator('svg[width="32"]:visible');
+    ok('Wąski ekran: etykieta nad polem', await label.isVisible() && (await label.boundingBox()).y < (await input.boundingBox()).y);
+    await label.click();
+    ok('Wąski ekran: etykieta ustawia fokus', await input.evaluate(e => e === document.activeElement));
+    ok('Wąski ekran: jedna tarcza', await shields.count() === 1);
+    ok('Wąski ekran: oko w wierszu pola', Math.abs((await p.locator('#password + button').boundingBox()).y - (await input.boundingBox()).y) < 2);
+    ok('Wąski ekran: pole szerokie i zaokrąglone', (await input.boundingBox()).width > 200 && await input.evaluate(e => getComputedStyle(e).borderTopLeftRadius) !== '0px');
+    ok('Wąski ekran: placeholder ukryty', await input.evaluate(e => getComputedStyle(e, '::placeholder').color) === 'rgba(0, 0, 0, 0)');
+    ok('Wąski ekran: brak przewijania w bok', await p.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth));
+    const color = () => shields.locator('circle').nth(1).getAttribute('stroke');
+    await input.fill('a'); await p.waitForTimeout(500); const weak = await color();
+    await input.fill('Tr0ub4dor&3-horse-battery-staple!'); await p.waitForTimeout(500);
+    ok('Wąski ekran: tarcza pokazuje siłę hasła', weak !== await color());
+    await p.setViewportSize({ width: 576, height: 640 });
+    ok('Od 576 px: etykieta w wierszu pola', !(await label.isVisible()) && await p.locator('.input-group-text').first().isVisible() && await shields.count() === 1);
+    await p.close();
+    const r = await c.newPage(); await r.goto(link); await r.locator('button.btn-danger').waitFor();
+    ok('Wąski ekran: etykieta przy odczycie', await r.locator('label[for=password]').isVisible() && !(await r.locator('.input-group-text').first().isVisible()));
+    await c.close(); }
 
   const failed = results.filter(r => r.startsWith('FAIL')).length;
   return `${results.length - failed}/${results.length} PASS\n` + results.join('\n') +

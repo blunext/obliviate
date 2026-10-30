@@ -50,7 +50,7 @@ var dialectData = []struct {
 }{
 	{language.English, []string{
 		"en", "en-US", "en-GB", "en-CA", "en-AU", "en-NZ", "en-IE", "en-IN", "en-ZA", "en-SG", "en-PH", "en-NG", "EN-us",
-		"az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7", "rue,en;q=0.5", "yue,en;q=0.5",
+		"az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7", "rue,en;q=0.5",
 		// nothing to match, or the header is invalid
 		"", "*", "und", "xx", "!!!", "tlh", "x-klingon", "en-gb:q=0.5",
 	}},
@@ -98,12 +98,13 @@ var dialectData = []struct {
 	{language.Greek, []string{"el", "el-GR", "el-CY"}},
 	{language.SimplifiedChinese, []string{
 		"zh", "zh-CN", "zh-Hans", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-TW", "zh-SG", "zh-MY", "zh-ID", "zh-DE", "zh-US", "zh-CA", "zh-GB", "zh-AU",
-		"cmn", "cmn-Hans", "wuu", "hak", "nan", "gan", "hsn", "yue-Hans", "yue-CN",
+		"cmn", "cmn-Hans", "cmn-CN", "cmn-MY", "cmn-US", "cmn-SG", "wuu", "wuu-CN", "hak", "nan", "gan", "hsn", "yue-Hans", "yue-CN",
 		"zh-CN,zh;q=0.9,en;q=0.8",
 	}},
 	{language.TraditionalChinese, []string{
 		"zh-TW", "zh_TW", "ZH-tw", "zh-HK", "zh-MO", "zh-Hant", "zh-Hant-TW", "zh-Hant-HK", "zh-Hant-MO", "zh-hant-tw",
-		"cmn-Hant", "cmn-TW", "yue", "yue-HK", "yue-Hant",
+		"cmn-Hant", "cmn-TW", "yue", "yue-HK", "yue-Hant", "nan-TW", "hak-TW", "hak-HK", "wuu-TW", "gan-TW", "hsn-TW", "lzh-TW",
+		"yue,en;q=0.5", "yue,zh;q=0.9", "yue-HK,zh;q=0.9", "yue-HK,zh;q=0.9,en;q=0.8",
 		"zh-TW,zh-Hant;q=0.9", "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7", "zh-HK,zh;q=0.9,en;q=0.8", "zh-MO,zh;q=0.9",
 	}},
 	{language.Indonesian, []string{"id", "id-ID", "ms", "ms-MY", "ms-SG", "ms-BN", "jv", "su"}},
@@ -148,10 +149,10 @@ func TestI18n_DialectsMatchClosestLanguage(t *testing.T) {
 func TestI18n_OversizedHeaderIsIgnored(t *testing.T) {
 	trans := NewTranslation()
 
-	fits := strings.Repeat("pl,", maxAcceptLanguageLength/3)
+	fits := "pl" + strings.Repeat(" ", maxAcceptLanguageLength-2)
 	assert.Equal(t, titleOf(language.Polish), trans.GetTranslation(context.Background(), fits)["title"])
 
-	tooLong := strings.Repeat("pl,", maxAcceptLanguageLength/3+1)
+	tooLong := fits + " "
 	assert.Equal(t, titleOf(language.English), trans.GetTranslation(context.Background(), tooLong)["title"])
 }
 

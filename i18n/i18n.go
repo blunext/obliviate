@@ -23,6 +23,11 @@ const (
 	contactLinkFormat = `<a href="mailto:info@securenote.io" target="_blank" rel="noopener noreferrer">%s</a>`
 )
 
+// chineseLanguages are the Chinese languages whose script depends on the region.
+var chineseLanguages = map[string]bool{
+	"zh": true, "cmn": true, "yue": true, "nan": true, "hak": true, "wuu": true, "gan": true, "hsn": true, "lzh": true,
+}
+
 // languageFallbacks are appended after the user's languages, for those the matcher maps to English or a distant language.
 // Keys are a base language, optionally with a script.
 var languageFallbacks = map[string]language.Tag{
@@ -111,12 +116,16 @@ func (t *i18n) GetTranslation(ctx context.Context, acceptLanguage string) transl
 // zh-HK, and regions such as MY or US get Traditional Chinese.
 func withChineseScript(tag language.Tag) language.Tag {
 	base, script, region := tag.Raw()
-	if base.String() != "zh" || script.String() != "Zzzz" {
+	if !chineseLanguages[base.String()] || script.String() != "Zzzz" {
 		return tag
 	}
 	switch region.String() {
 	case "TW", "HK", "MO":
 		return language.TraditionalChinese
+	case "ZZ":
+		if base.String() == "yue" {
+			return language.TraditionalChinese
+		}
 	}
 	return language.SimplifiedChinese
 }
