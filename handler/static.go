@@ -4,8 +4,10 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
-	"obliviate/logs"
 	"os"
+	"unicode/utf8"
+
+	"obliviate/logs"
 
 	"obliviate/config"
 )
@@ -14,6 +16,11 @@ func StaticFiles(config *config.Configuration, useEmbedFS bool) http.HandlerFunc
 	fs := http.FileServer(getStaticsFS(config.EmbededStaticFiles, useEmbedFS, config.StaticFilesLocation))
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		// a path that is not valid UTF-8 cannot name a file, so it is a 404 and not a 500 from http.FileServer
+		if !utf8.ValidString(r.URL.Path) {
+			http.NotFound(w, r)
+			return
+		}
 		fs.ServeHTTP(w, r)
 	}
 }
